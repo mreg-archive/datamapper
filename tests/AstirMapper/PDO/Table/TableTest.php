@@ -1,5 +1,6 @@
 <?php
-namespace itbz\AstirMapper\PDO;
+namespace itbz\AstirMapper\PDO\Table;
+use itbz\AstirMapper\PDO\Search;
 use PDO;
 
 
@@ -37,7 +38,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception
+     * @expectedException itbz\AstirMapper\Exception\TableException
      */
     function testSetPrimaryKeyException()
     {
@@ -113,7 +114,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception
+     * @expectedException itbz\AstirMapper\Exception\TableException
      */
     function testGetColumnIdentifierException()
     {
@@ -157,7 +158,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception
+     * @expectedException itbz\AstirMapper\Exception\TableException
      */
     function testDeleteException()
     {
@@ -192,7 +193,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception
+     * @expectedException itbz\AstirMapper\Exception\TableException
      */
     function testUpdateException()
     {

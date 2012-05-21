@@ -13,16 +13,17 @@
  * @package AstirMapper
  *
  */
-namespace itbz\AstirMapper;
+namespace itbz\AstirMapper\Exception;
+use itbz\AstirMapper\Exception;
 
 
 /**
  *
- * Base exception
+ * Table exception
  *
  * @package AstirMapper
  *
  */
-class Exception extends \Exception
+class TableException extends Exception
 {
 }

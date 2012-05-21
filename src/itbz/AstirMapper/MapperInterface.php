@@ -29,11 +29,11 @@ interface MapperInterface
 
     /**
      *
-     * Persistently stor record
+     * Persistently store record
      *
      * @param ModelInterface $record
      *
-     * @throws Exception if unable to save
+     * @return int Number of affected rows
      *
      */
     public function save(ModelInterface $record);
@@ -45,6 +45,8 @@ interface MapperInterface
      *
      * @param ModelInterface $record
      *
+	 * @return int Number of affected rows
+	 *
      */
     public function delete(ModelInterface $record);
 
@@ -57,7 +59,7 @@ interface MapperInterface
      *
      * @return ModelInterface
      *
-     * @throws Exception if unable to find
+     * @throws NotFoundException if no record was found
      *
      */
     public function find(ModelInterface $record);
@@ -67,11 +69,13 @@ interface MapperInterface
      *
      * Get iterator containing multiple racords based on search
      *
+     * @param ModelInterface $record
+     *
      * @param SearchInterface $search
      *
      * @return Iterator
      *
      */
-    public function findMany(SearchInterface $search);
+    public function findMany(ModelInterface $record, SearchInterface $search);
 
 }

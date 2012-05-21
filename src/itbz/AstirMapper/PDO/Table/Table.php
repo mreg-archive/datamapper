@@ -15,8 +15,9 @@
  * @subpackage PDO
  *
  */
-namespace itbz\AstirMapper\PDO;
-use itbz\AstirMapper\Exception;
+namespace itbz\AstirMapper\PDO\Table;
+use itbz\AstirMapper\Exception\TableException;
+use itbz\AstirMapper\PDO\Search;
 use PDO;
 use PDOStatement;
 
@@ -24,6 +25,10 @@ use PDOStatement;
 /**
  *
  * PDO table for use by PDO models
+ *
+ * NOTE: Expects all database tables to have primary keys definied over only
+ * one column. In other words PDO\Table can not handle tables with composite
+ * primary keys.
  *
  * @package AstirMapper
  *
@@ -40,7 +45,7 @@ class Table
      * @var PDO $_pdo
      *
      */
-    private $_pdo;
+    protected $_pdo;
 
 
     /**
@@ -98,7 +103,9 @@ class Table
      *
      * PDO table for use by PDO models 
      *
-     * @param PDO $pdo
+     * @param string $name Name of database table
+     *
+     * @param PDO $pdo PDO object for interacting with database
      *
      */
     public function __construct($name, PDO $pdo)
@@ -149,7 +156,7 @@ class Table
      *
      * @param string $key
      *
-     * @throws Exception if key is not a native column in table
+     * @throws TableException if key is not a native column in table
      *
      */
     public function setPrimaryKey($key)
@@ -158,7 +165,7 @@ class Table
         if (!$this->isNativeColumn($key)) {
             $name = $this->getName();
             $msg = "Unable to set non-native primary key '$key' to '$name'";
-            throw new Exception($msg);
+            throw new TableException($msg);
         }
         $this->_primaryKey = $key;
     }
@@ -288,14 +295,14 @@ class Table
      *
      * @return string
      *
-     * @throw Exception if column does not exist
+     * @throw TableException if column does not exist
      *
      */
     public function getColumnIdentifier($colname)
     {
         if (!$this->isColumn($colname)) {
             $msg = "Column '$colname' does not exist in '{$this->getName()}'";
-            throw new Exception($msg);
+            throw new TableException($msg);
         }
         $columns = $this->getColumns();
         
@@ -394,10 +401,10 @@ class Table
 
         $query = $base . $sWhere . $orderBy . $search->getLimit();
         
-        $statement = $this->_pdo->prepare($query);
-        $statement->execute(array_values($where));
+        $stmt = $this->_pdo->prepare($query);
+        $stmt->execute(array_values($where));
         
-        return $statement;
+        return $stmt;
     }
 
 
@@ -455,14 +462,14 @@ class Table
      *
      * @return PDOStatement
      *
-     * @throws Exception if where is empty
+     * @throws TableException if where is empty
      *
      */
     public function update(array $data, array $where)
     {
         if (empty($where)) {
             $msg = "Unable to delete from empty where clause";
-            throw new Exception($msg);
+            throw new TableException($msg);
         }
 
         $values = array();
@@ -473,10 +480,10 @@ class Table
 
         $sWhere = implode(' AND ', array_keys($where));
         $query = "UPDATE `{$this->getName()}` SET $values WHERE $sWhere";
-        $statement = $this->_pdo->prepare($query);
-        $statement->execute(array_values($where));
+        $stmt = $this->_pdo->prepare($query);
+        $stmt->execute(array_values($where));
 
-        return $statement;
+        return $stmt;
     }
 
 
@@ -490,21 +497,21 @@ class Table
      *
      * @return PDOStatement
      *
-     * @throws Exception if where is empty
+     * @throws TableException if where is empty
      *
      */
     public function delete(array $where)
     {
         if (empty($where)) {
             $msg = "Unable to delete from empty where clause";
-            throw new Exception($msg);
+            throw new TableException($msg);
         }
         $sWhere = implode(' AND ', array_keys($where));
         $query = "DELETE FROM `{$this->getName()}` WHERE $sWhere";
-        $statement = $this->_pdo->prepare($query);
-        $statement->execute(array_values($where));
+        $stmt = $this->_pdo->prepare($query);
+        $stmt->execute(array_values($where));
 
-        return $statement;
+        return $stmt;
     }
 
 }

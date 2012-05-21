@@ -13,16 +13,17 @@
  * @package AstirMapper
  *
  */
-namespace itbz\AstirMapper;
+namespace itbz\AstirMapper\Exception;
+use itbz\AstirMapper\Exception;
 
 
 /**
  *
- * Base exception
+ * When trying to read from db nothing was found
  *
  * @package AstirMapper
  *
  */
-class Exception extends \Exception
+class NotFoundException extends Exception
 {
 }

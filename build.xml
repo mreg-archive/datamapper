@@ -9,12 +9,6 @@
         <include name="**/*.php" />
     </fileset>
 
-    <fileset dir="${TEST_DIR}" id="testCode">
-        <include name="**/*Test*.php"/>
-        <exclude name="**/Abstract*.php"/>
-    </fileset>
-
-
     <target name="build" depends="test,codesniffer,messdetector,copydetector">
     </target>
 
@@ -34,18 +28,12 @@
 
 
     <target name="test" depends="getdependencies">
-        <phpunit
-            printsummary="true"
-            haltonfailure="true"
-            haltonerror="true"
-            haltonincomplete="true"
-            haltonskipped="true"
-            bootstrap="${APP_ROOT}/vendor/autoload.php"
-            >
-            <batchtest>
-                <fileset refid="testCode" />
-            </batchtest>
-        </phpunit>
+        <exec
+            command="phpunit"
+            dir="${TEST_DIR}"
+            checkreturn="true"
+            passthru="true"
+            />
     </target>
 
 

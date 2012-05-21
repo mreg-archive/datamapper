@@ -1,0 +1,7 @@
+<phpunit bootstrap="bootstrap.php" backupGlobals="false" backupStaticAttributes="false">
+    <testsuites>
+        <testsuite>
+            <directory>./AstirMapper</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
