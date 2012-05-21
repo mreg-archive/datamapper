@@ -16,7 +16,7 @@
  *
  */
 namespace itbz\AstirMapper\PDO\Table;
-use itbz\AstirMapper\Exception\TableException;
+use itbz\AstirMapper\Exception\PdoException;
 use itbz\AstirMapper\PDO\Search;
 use PDO;
 use PDOStatement;
@@ -156,7 +156,7 @@ class Table
      *
      * @param string $key
      *
-     * @throws TableException if key is not a native column in table
+     * @throws PdoException if key is not a native column in table
      *
      */
     public function setPrimaryKey($key)
@@ -165,7 +165,7 @@ class Table
         if (!$this->isNativeColumn($key)) {
             $name = $this->getName();
             $msg = "Unable to set non-native primary key '$key' to '$name'";
-            throw new TableException($msg);
+            throw new PdoException($msg);
         }
         $this->_primaryKey = $key;
     }
@@ -295,14 +295,14 @@ class Table
      *
      * @return string
      *
-     * @throw TableException if column does not exist
+     * @throw PdoException if column does not exist
      *
      */
     public function getColumnIdentifier($colname)
     {
         if (!$this->isColumn($colname)) {
             $msg = "Column '$colname' does not exist in '{$this->getName()}'";
-            throw new TableException($msg);
+            throw new PdoException($msg);
         }
         $columns = $this->getColumns();
         
@@ -462,14 +462,14 @@ class Table
      *
      * @return PDOStatement
      *
-     * @throws TableException if where is empty
+     * @throws PdoException if where is empty
      *
      */
     public function update(array $data, array $where)
     {
         if (empty($where)) {
             $msg = "Unable to delete from empty where clause";
-            throw new TableException($msg);
+            throw new PdoException($msg);
         }
 
         $values = array();
@@ -497,14 +497,14 @@ class Table
      *
      * @return PDOStatement
      *
-     * @throws TableException if where is empty
+     * @throws PdoException if where is empty
      *
      */
     public function delete(array $where)
     {
         if (empty($where)) {
             $msg = "Unable to delete from empty where clause";
-            throw new TableException($msg);
+            throw new PdoException($msg);
         }
         $sWhere = implode(' AND ', array_keys($where));
         $query = "DELETE FROM `{$this->getName()}` WHERE $sWhere";

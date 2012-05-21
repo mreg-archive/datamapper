@@ -1,12 +1,10 @@
 <?php
-namespace itbz\Astir;
+namespace itbz\AstirMapper\Attribute;
 
+/*
 class OperatorTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * Test toSearchSql()
-     */
     public function testToSearchSql()
     {
         $op = new Operator('<', 'val');
@@ -16,9 +14,6 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * Test toInsertSql()
-     */
     public function testToInsertSql()
     {
         $op = new Operator('=', 'val');
@@ -29,8 +24,8 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test invalid operator
-     * @expectedException InvalidArgumentException
-     */
+     * @ expectedException InvalidArgumentException
+     * /
     public function testOperatorFail()
     {
         $op = new Operator('sdfsdf', 'val');
@@ -38,9 +33,8 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * Test supported operators
-     * @dataProvider operatorProvider
-     */ 
+     * @ dataProvider operatorProvider
+     * / 
     public function testOperators($operator, $inverted)
     {
         $op = new Operator($operator, 'val');
@@ -50,9 +44,8 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * Test operator inversion
-     * @dataProvider operatorProvider
-     */
+     * @ dataProvider operatorProvider
+     * /
     public function testInversion($operator, $inverted)
     {
         $op = new Operator($operator, 'val');
@@ -61,9 +54,6 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * Provide the list of valid operators and their inversions
-     */
     public function operatorProvider()
     {
         return array(
@@ -87,3 +77,4 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
     }
 
 }
+*/

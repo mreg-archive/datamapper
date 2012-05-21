@@ -19,11 +19,11 @@ use itbz\AstirMapper\Exception;
 
 /**
  *
- * Table exception
+ * Base exception for the PDO subpackage
  *
  * @package AstirMapper
  *
  */
-class TableException extends Exception
+class PdoException extends Exception
 {
 }

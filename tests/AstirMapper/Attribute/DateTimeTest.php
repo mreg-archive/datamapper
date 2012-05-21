@@ -1,13 +1,10 @@
 <?php
-namespace itbz\Astir;
+namespace itbz\AstirMapper\Attribute;
 
-
+/*
 class DateTimeTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * Test construct method and timestamp argument
-     */
     public function testConstruct()
     {
         $zone = new \DateTimeZone('UTC');
@@ -22,9 +19,6 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * Test that toString delivers timestamp
-     */
     public function testToString()
     {
         $d = new DateTime('2147483647');
@@ -34,8 +28,8 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test timestamp overflow. NOTE: 32bit dependent test
-     * @expectedException InvalidArgumentException
-     */
+     * @ expectedException InvalidArgumentException
+     * /
     public function testTimestampOverflow()
     {
         $d = new DateTime('2147483648');
@@ -44,17 +38,14 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test timestamp underflow. NOTE: 32bit dependent test
-     * @expectedException InvalidArgumentException
-     */
+     * @ expectedException InvalidArgumentException
+     * /
     public function testTimestampUnderflow()
     {
         $d = new DateTime('-2147483649');
     }
 
 
-    /**
-     * Test toSearchSql()
-     */
     public function testToSearchSql()
     {
         $d = new DateTime('2147483647');
@@ -63,9 +54,6 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * Test toInsertSql()
-     */
     public function testToInsertSql()
     {
         $d = new DateTime('2147483647');
@@ -75,3 +63,4 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     }
 
 }
+*/

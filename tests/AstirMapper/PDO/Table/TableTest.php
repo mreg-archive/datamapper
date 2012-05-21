@@ -38,7 +38,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\TableException
+     * @expectedException itbz\AstirMapper\Exception\PdoException
      */
     function testSetPrimaryKeyException()
     {
@@ -114,7 +114,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\TableException
+     * @expectedException itbz\AstirMapper\Exception\PdoException
      */
     function testGetColumnIdentifierException()
     {
@@ -158,7 +158,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\TableException
+     * @expectedException itbz\AstirMapper\Exception\PdoException
      */
     function testDeleteException()
     {
@@ -193,7 +193,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\TableException
+     * @expectedException itbz\AstirMapper\Exception\PdoException
      */
     function testUpdateException()
     {

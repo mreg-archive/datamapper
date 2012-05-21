@@ -1,14 +1,10 @@
 <?php
-namespace itbz\Astir;
-use PHPUnit_Framework_TestCase;
+namespace itbz\AstirMapper\Attribute;
 
-
-class BoolTest extends PHPUnit_Framework_TestCase
+/*
+class BoolTest extends \PHPUnit_Framework_TestCase
 {
 
-   /**
-     * Test the isTrue() method
-     */
     public function testIsTrue()
     {
         $bool = new Bool(TRUE);
@@ -18,9 +14,6 @@ class BoolTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * Test construct method and various valid arguments
-     */
     public function testConstruct()
     {
         $bool = new Bool(0);
@@ -61,9 +54,6 @@ class BoolTest extends PHPUnit_Framework_TestCase
     }
  
 
-    /**
-     * Test that toString delivers '1' and '0' strings
-     */
     public function testToString()
     {
         $bool = new Bool(TRUE);
@@ -73,9 +63,6 @@ class BoolTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * Test that toInt delivers 1 and 0
-     */
     public function testToInt()
     {
         $bool = new Bool(TRUE);
@@ -85,9 +72,6 @@ class BoolTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * Test toSearchSql()
-     */
     public function testToSearchSql()
     {
         $bool = new Bool(TRUE);
@@ -96,9 +80,6 @@ class BoolTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * Test toInsertSql()
-     */
     public function testToInsertSql()
     {
         $bool = new Bool(TRUE);
@@ -108,3 +89,4 @@ class BoolTest extends PHPUnit_Framework_TestCase
     }
 
 }
+*/

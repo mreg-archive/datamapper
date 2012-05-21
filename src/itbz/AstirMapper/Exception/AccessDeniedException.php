@@ -14,16 +14,15 @@
  *
  */
 namespace itbz\AstirMapper\Exception;
-use itbz\AstirMapper\Exception;
 
 
 /**
  *
- * Data not found exception
+ * Access denied exception
  *
  * @package AstirMapper
  *
  */
-class NotFoundException extends Exception
+class AccessDeniedException extends PdoException
 {
 }
