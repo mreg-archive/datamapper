@@ -30,7 +30,7 @@ use itbz\AstirMapper\MapperInterface;
             kan spara ett object med hjälp av att läsa namn på fälten direkt från object
                 eller leta efter funktioner av typ getParam()
 
-            $mapper = new MemberMapper($authUser);
+            $mapper = new MemberMapper($authUser);  // kan jag implementera rättigheter såhär??
 
             $mapper->save($member);
 
@@ -49,11 +49,6 @@ use itbz\AstirMapper\MapperInterface;
                 vad jag annars vill göra med en member kan jaq se i Member.php
                     samt i views.php, member-funktionerna
             
-            det här tror jag kan bli jävligt cool...
-            
-            det blir antagligen ganska enkelt att implementera min rättighetskod
-                i en sån här mapper...
-
 
         för adresser kan det se ut såhär
             $mapper = new AddressMapper();
@@ -63,16 +58,17 @@ use itbz\AstirMapper\MapperInterface;
             Att spara adresser blir sedan ett arbete en adress i taget...
             snyggt!!
 
-        skapa ett Mapper gränssnitt
-            - skapa seda PDOmapper som en implementation
-            - och PDOAUthMapper som en subklass
-            - sedan kan jag om jag vill skapa MangoMappers osv...
         
-        
-        
-         fundera om jag kanske kan använda detta gränssnitt istället för Wrapper som jag har skrivit nu...
-            jag tror att detta helt enkelt är en riktigt bra idé
-            men utvärdera innan jag gör klar...
+        jag har kvar all funktionalitet jag skrivit i Astir
+            men jag bryter ut det till flera olika klasser
+
+            * spara/hämta hamnar i Mapper.php
+            * allt med att iterera i Record.php hamnar i en Iterator.php istället
+            * setId osv hamnar i varje Model istället
+            * getPhoneNumber osv. som ni är i Models hamnar i en egen Mapper istället
+            
+            * allting får helt enkelt sin egen plats i klass-strukturen
+                vilket helt klart blir en tydlig förbättring!!!!
 
 
          börja med att implementera de är idéerna i wrapper
