@@ -1,11 +1,11 @@
 <?php
 namespace itbz\AstirMapper\Attribute;
 
-/*
+
 class DateTimeTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testConstruct()
+    function testConstruct()
     {
         $zone = new \DateTimeZone('UTC');
 
@@ -19,7 +19,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testToString()
+    function testToString()
     {
         $d = new DateTime('2147483647');
         $this->assertEquals((string)$d, '2147483647');
@@ -27,10 +27,19 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
 
     /**
+     * @expectedException itbz\AstirMapper\Exception
+     */
+    function testTimestampNotNumeric()
+    {
+        $d = new DateTime('sdf');
+    }
+
+
+    /**
      * Test timestamp overflow. NOTE: 32bit dependent test
-     * @ expectedException InvalidArgumentException
-     * /
-    public function testTimestampOverflow()
+     * @expectedException itbz\AstirMapper\Exception
+     */
+    function testTimestampOverflow()
     {
         $d = new DateTime('2147483648');
     }
@@ -38,15 +47,15 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test timestamp underflow. NOTE: 32bit dependent test
-     * @ expectedException InvalidArgumentException
-     * /
-    public function testTimestampUnderflow()
+     * @expectedException itbz\AstirMapper\Exception
+     */
+    function testTimestampUnderflow()
     {
         $d = new DateTime('-2147483649');
     }
 
 
-    public function testToSearchSql()
+    function testToSearchSql()
     {
         $d = new DateTime('2147483647');
         $sql = $d->toSearchSql($context);
@@ -54,7 +63,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testToInsertSql()
+    function testToInsertSql()
     {
         $d = new DateTime('2147483647');
         $sql = $d->toInsertSql($use);
@@ -62,5 +71,28 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($use);
     }
 
+
+    /**
+     * @expectedException itbz\AstirMapper\Exception
+     */
+    function testCreateFromFormatError()
+    {
+        $d = DateTime::createFromFormat('dferfwrvf', '15-Feb-2009');
+    }
+    
+
+    function testCreateFromFormat()
+    {
+        $d = DateTime::createFromFormat('j-M-Y', '15-Feb-2009');
+        $this->assertEquals('090215', $d->format('ymd'));
+
+        $d = DateTime::createFromFormat(
+            'j-M-Y',
+            '15-Feb-2009',
+            new \DateTimeZone('Pacific/Nauru')
+        );
+        $this->assertEquals('090215', $d->format('ymd'));
+
+        $this->assertInstanceOf('itbz\AstirMapper\Attribute\DateTime', $d);
+    }
 }
-*/

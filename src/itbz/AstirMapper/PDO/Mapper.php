@@ -25,36 +25,43 @@ use PDO;
 
 /*
 
-** intressant med hur grumpy gör sin grej med mappers
-    med protected för alla värden
-    och sedan magic methods för get och set på alla dessa värden...
+    - Attribute är vinklde mot SQL, specielt Operator...
     
-    jag skulle kunna skriva en mapper som tar ett table object
-        hittar vilka fält som är med (om det inte hårdkodas i mapper)
-        kan spara ett object med hjälp av att läsa namn på fälten direkt
-            från object
-            eller leta efter funktioner av typ getParam()
+    Bool, Null och Wrapper behövs antagligen inte: idéer hit...
 
-        $mapper = new MemberMapper($authUser); 
-        // kan jag implementera rättigheter såhär??
-
-        $mapper->save($member);
-
-        $mapper->find($member)
-            kan läsa den info som finns i member, och sedan fylla member
-                med det som saknas
-
-        $mapper->findById(1);
-
-
-        $iterator = $mappar->findAllMembers($member);
-            kan läsa info från member men hämta mycket olika värden...
+        eftersom all data skrivs till databasen via queries så är de i PHPs ögon
+            strängar
         
-        $membersIterator = $mapper->findFromFaction($faction);
+        det betyder att allt ska konverteras till strängar
+            då kan jag helt enkelt ha speciella regler för det
+         
+            convertToString()
+            
+            bool blir 1 eller 0
+            nummer blir helt enkelt sin sträng
+            NULL blir null...
+            objects blir till sträng om __tostring finns
+                annars undantag
+            array kan bli comma separerad lista..
+            
+            och that's it folks,
+                på detta sätt blir det verkligen enklare
+            
+            skriv test till PdoStackTest där jag ser att det verkligen
+                skrivs till databasen som jag vill att det ska göras...
 
-        osv. jag kan nog fundera ut en massa mer hur detta ska fungera
-            vad jag annars vill göra med en member kan jaq se i Member.php
-                samt i views.php, member-funktionerna
+            ta även bort Bool-test om det här visar sig lyckosamt...
+
+    // --------------------------------------------------
+
+    $mapper = new MemberMapper($authUser); 
+    // kan jag implementera rättigheter såhär??
+
+    $membersIterator = $mapper->findFromFaction($faction);
+
+    osv. jag kan nog fundera ut en massa mer hur detta ska fungera
+        vad jag annars vill göra med en member kan jaq se i Member.php
+            samt i views.php, member-funktionerna
         
 
     för adresser kan det se ut såhär

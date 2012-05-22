@@ -1,7 +1,7 @@
 <?php
 namespace itbz\AstirMapper\Attribute;
 
-/*
+
 class OperatorTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -24,8 +24,8 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test invalid operator
-     * @ expectedException InvalidArgumentException
-     * /
+     * @expectedException itbz\AstirMapper\Exception
+     */
     public function testOperatorFail()
     {
         $op = new Operator('sdfsdf', 'val');
@@ -33,8 +33,8 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @ dataProvider operatorProvider
-     * / 
+     * @dataProvider operatorProvider
+     */ 
     public function testOperators($operator, $inverted)
     {
         $op = new Operator($operator, 'val');
@@ -44,8 +44,8 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @ dataProvider operatorProvider
-     * /
+     * @dataProvider operatorProvider
+     */
     public function testInversion($operator, $inverted)
     {
         $op = new Operator($operator, 'val');
@@ -77,4 +77,3 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
     }
 
 }
-*/

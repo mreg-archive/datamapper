@@ -1,18 +1,34 @@
 <?php
 /**
+ *
+ * This file is part of the AstirMapper package
+ *
  * Copyright (c) 2012 Hannes Forsgård
- * Licensed under the WTFPL (http://sam.zoy.org/wtfpl/)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package Astir
+ *
+ * @package AstirMapper
+ *
  */
-namespace itbz\Astir;
+namespace itbz\AstirMapper\Attribute;
+
+
+
+// Också ganska galet att det här ska behövas
+// om objekt kan göras om till string borde det räcka för Mapper...
 
 
 /**
+ *
  * Attribute wrapper class
- * @package Astir
+ *
+ * @package AstirMapper
+ *
  */
-class AttrWrap implements Attribute
+class AttrWrap implements AttributeInterface
 {
 
     /**

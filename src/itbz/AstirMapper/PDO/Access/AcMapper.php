@@ -40,7 +40,7 @@ namespace itbz\AstirMapper\PDO\Access;
         och sedan gränssnitts-grejer till Mapper...??
     
     när jag ska testa mot databas
-        mysql_query("LOAD DATA LOCAL INFILE '/path/to/file' INTO TABLE mytable");
+      mysql_query("LOAD DATA LOCAL INFILE '/path/to/file' INTO TABLE mytable");
 
 */
 
