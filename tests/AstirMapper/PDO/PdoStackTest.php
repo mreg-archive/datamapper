@@ -44,7 +44,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $model1->name = "foobar";
         $mapper->save($model1);
         $mapper->save($model1);
-        
+
         // Find by primary key
         $model2 = $mapper->findByPk(1);
         $this->assertEquals('foobar', $model2->name);
@@ -78,6 +78,53 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         foreach ($iterator as $key => $mod) {}
         
         $this->assertEquals('3', $key);
+    }
+
+
+    function testInsertBool()
+    {
+        $mapper = $this->getMapper();
+        $model = new DataModel();
+
+        $model->name = FALSE;
+        $mapper->save($model);
+
+        $model->name = TRUE;
+        $mapper->save($model);
+
+        $model2 = $mapper->findByPk(1);
+        $this->assertSame('0', $model2->name);
+        $this->assertFalse((bool)$model2->name);
+
+        $model3 = $mapper->findByPk(2);
+        $this->assertSame('1', $model3->name);
+        $this->assertTrue((bool)$model3->name);
+    }
+
+
+    function testInsertNull()
+    {
+        $mapper = $this->getMapper();
+        $model = new DataModel();
+        $model->name = NULL;
+        $mapper->save($model);
+
+        $model2 = $mapper->findByPk(1);
+        $this->assertNull($model2->name);
+    }
+
+
+    function testInsertDateTime()
+    {
+        $d = new DateTime('2012-01-02');
+        $mapper = $this->getMapper();
+        $model = new DataModel();
+        $model->name = $d;
+        $mapper->save($model);
+
+        $model2 = $mapper->findByPk(1);
+        $model2->name = new DateTime('@' . $model2->name);
+        $this->assertEquals('2012-01-01', $model2->name->format('Y-m-d'));
     }
 
 }

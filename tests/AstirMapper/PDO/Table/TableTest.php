@@ -1,6 +1,7 @@
 <?php
 namespace itbz\AstirMapper\PDO\Table;
 use itbz\AstirMapper\PDO\Search;
+use itbz\AstirMapper\PDO\Attribute;
 use PDO;
 
 
@@ -135,15 +136,17 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $data = array(
-            'id' => '1',
-            'foo1' => 'data',
-            'foobar' => 'a',
-        );
-        $foo->insert($data);
+        $foo->insert(array(
+            new Attribute('id', '1'),
+            new Attribute('foo1', 'data'),
+            new Attribute('foobar', 'a')
+        ));
         
-        $data['id'] = '2';
-        $foo->insert($data);
+        $foo->insert(array(
+            new Attribute('id', '2'),
+            new Attribute('foo1', 'data'),
+            new Attribute('foobar', 'a')
+        ));
         
         $this->assertEquals(2, $foo->lastInsertId());
         
@@ -171,19 +174,20 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $data = array(
-            'id' => '1',
-            'foo1' => 'data',
-            'foobar' => 'a',
-        );
-        $foo->insert($data);
+        $foo->insert(array(
+            new Attribute('id', '1'),
+            new Attribute('foo1', 'data'),
+            new Attribute('foobar', 'a')
+        ));
 
         $stmt = $foo->select(new Search());  
         $rowCount = 0;
         while ( $row = $stmt->fetch() ) $rowCount++;
         $this->assertEquals(1, $rowCount);
 
-        $stmt = $foo->delete(array("id=?"=>1));
+        $stmt = $foo->delete(array(
+            new Attribute('id', 1)
+        ));
 
         $stmt = $foo->select(new Search());
         $rowCount = 0;
@@ -198,7 +202,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     function testUpdateException()
     {
         $foo = new Table('foo', $this->getPdo());
-        $foo->update(array('foo1' => 'new', 'foobar' => 'b'), array());
+        $foo->update(array(), array());
     }
 
 
@@ -206,14 +210,21 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $data = array(
-            'id' => '1',
-            'foo1' => 'data',
-            'foobar' => 'a',
-        );
-        $foo->insert($data);
+        $foo->insert(array(
+            new Attribute('id', '1'),
+            new Attribute('foo1', 'data'),
+            new Attribute('foobar', 'a')
+        ));
 
-        $foo->update(array('foo1' => 'new', 'foobar' => 'b'), array('id=?'=>1));
+        $foo->update(
+            array(
+                new Attribute('foo1', 'new'),
+                new Attribute('foobar', 'b')
+            ),
+            array(
+                new Attribute('id', 1)
+            )
+        );
 
         $stmt = $foo->select(new Search());  
         $row = $stmt->fetch();
@@ -235,11 +246,35 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $bar->addNaturalJoin($x);
         $foo->addNaturalJoin($bar);
 
-        $foo->insert(array('id'=>'1', 'foo1'=>'foo-data', 'foobar'=>'a'));
-        $foo->insert(array('id'=>'2', 'foo1'=>'foo-data', 'foobar'=>'b'));
-        $bar->insert(array('foobar'=>'a', 'bar1'=>'bar-data', 'barx'=>'A'));
-        $bar->insert(array('foobar'=>'b', 'bar1'=>'bar-data', 'barx'=>'B'));
-        $x->insert(array('barx'=>'A', 'x1'=>'x-data'));
+        $foo->insert(array(
+            new Attribute('id', '1'),
+            new Attribute('foo1', 'foo-data'),
+            new Attribute('foobar', 'a')
+        ));
+
+        $foo->insert(array(
+            new Attribute('id', '2'),
+            new Attribute('foo1', 'foo-data'),
+            new Attribute('foobar', 'b')
+        ));
+
+        $bar->insert(array(
+            new Attribute('foobar', 'a'),
+            new Attribute('bar1', 'bar-data'),
+            new Attribute('barx', 'A')
+        ));
+
+        $bar->insert(array(
+            new Attribute('foobar', 'b'),
+            new Attribute('bar1', 'bar-data'),
+            new Attribute('barx', 'B')
+        ));
+
+        $x->insert(array(
+            new Attribute('barx', 'A'),
+            new Attribute('x1', 'x-data')
+        ));
+
 
         return array($foo, $bar, $x);
     }
@@ -249,7 +284,9 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         list($foo, $bar, $x) = $this->getTables();
 
-        $stmt = $foo->select(new Search(), array('id=?'=>1));
+        $stmt = $foo->select(new Search(), array(
+            new Attribute('id', 1)
+        ));
         $row = $stmt->fetch();
         $this->assertEquals('1', $row['id']);
         $this->assertEquals('foo-data', $row['foo1']);
@@ -277,7 +314,9 @@ class TableTest extends \PHPUnit_Framework_TestCase
         while ( $row = $stmt->fetch() ) $rowCount++;
         $this->assertEquals(1, $rowCount);
 
-        $stmt = $foo->select(new Search(), array('id=?'=>2));
+        $stmt = $foo->select(new Search(), array(
+            new Attribute('id', 2)
+        ));
         $rowCount = 0;
         while ( $row = $stmt->fetch() ) $rowCount++;
         $this->assertEquals(1, $rowCount);
@@ -290,7 +329,9 @@ class TableTest extends \PHPUnit_Framework_TestCase
         // Assert selecting only some columns
         $search = new Search();
         $search->addColumn('foo1');
-        $stmt = $foo->select($search, array('id=?'=>2));
+        $stmt = $foo->select($search, array(
+            new Attribute('id', 2)
+        ));
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $data = array('foo1'=>'foo-data');
         $this->assertEquals($data, $stmt->fetch());

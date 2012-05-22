@@ -364,7 +364,7 @@ class Table
      *
      * @param Search $search
      *
-     * @param array $where Array of sql contexts and values
+     * @param array $where Array of Attribute objects
      *
      * @return PDOStatement
      *
@@ -387,9 +387,12 @@ class Table
         $base = "SELECT $select FROM " . $this->getTableIdentifier();
 
         // Set where
-        $sWhere = '';
-        if (!empty($where)) {
-            $sWhere = " WHERE " . implode(' AND ', array_keys($where));
+        if (empty($where)) {
+            $whereClause = '';
+            $whereValues = array();
+        } else {
+            list($whereClause, $whereValues) = self::parseWhereClause($where);
+            $whereClause = ' WHERE ' . $whereClause;
         }
 
         // Set order by
@@ -399,10 +402,10 @@ class Table
             $orderBy .= " {$search->getDirection()}";
         }
 
-        $query = $base . $sWhere . $orderBy . $search->getLimit();
+        $query = $base . $whereClause . $orderBy . ' ' . $search->getLimit();
         
         $stmt = $this->_pdo->prepare($query);
-        $stmt->execute(array_values($where));
+        $stmt->execute(array_values($whereValues));
         
         return $stmt;
     }
@@ -410,10 +413,9 @@ class Table
 
     /**
      *
-     * Insert based on custom set clause
+     * Insert values into db
      *
-     * @param array $data Column names as keys. Data will be escaped and
-     * enclosed in '. Column names will be onclosed in `.
+     * @param array $data Array of Attribute objects
      *
      * @return PDOStatement
      *
@@ -422,9 +424,13 @@ class Table
     {
         $columns = array();
         $values = array();
-        foreach ( $data as $col => $val ) {
-            $columns[] = "`$col`";
-            $values[] = $this->_pdo->quote($val);
+        foreach ($data as $attr) {
+            $columns[] = "`{$attr->getName()}`";
+            $value = $attr->getValue();
+            if ($attr->escape()) {
+                $value = $this->_pdo->quote($value);
+            }
+            $values[] = $value;
         }
         $columns = implode(',', $columns);
         $values = implode(',', $values);
@@ -453,12 +459,11 @@ class Table
 
     /**
      *
-     * Update based on custom set and where clauses
+     * Update db based on where clauses
      *
-     * @param array $data Column names as keys. Data will be escaped and
-     * enclosed in '. Column names will be onclosed in `.
+     * @param array $data Array of Attribute objects
      *
-     * @param array $where Array of sql contexts and values
+     * @param array $where Array of Attribute objects
      *
      * @return PDOStatement
      *
@@ -468,20 +473,25 @@ class Table
     public function update(array $data, array $where)
     {
         if (empty($where)) {
-            $msg = "Unable to delete from empty where clause";
+            $msg = "Unable to update from empty where clause";
             throw new PdoException($msg);
         }
 
-        $values = array();
-        foreach ( $data as $col => $val ) {
-            $values[] = "`$col`=" . $this->_pdo->quote($val);
+        $writeValues = array();
+        foreach ($data as $attr) {
+            $value = $attr->getValue();
+            if ($attr->escape()) {
+                $value = $this->_pdo->quote($value);
+            }
+            $writeValues[] = "`{$attr->getName()}`=$value";
         }
-        $values = implode(',', $values);
+        $writeValues = implode(',', $writeValues);
 
-        $sWhere = implode(' AND ', array_keys($where));
-        $query = "UPDATE `{$this->getName()}` SET $values WHERE $sWhere";
+        list($contexts, $whereValues) = self::parseWhereClause($where);
+
+        $query = "UPDATE `{$this->getName()}` SET $writeValues WHERE $contexts";
         $stmt = $this->_pdo->prepare($query);
-        $stmt->execute(array_values($where));
+        $stmt->execute($whereValues);
 
         return $stmt;
     }
@@ -489,11 +499,9 @@ class Table
 
     /**
      *
-     * Delete based on custom where clause
+     * Delete records from db that matches where
      *
-     * Sql contexts should be in the form '`id` = ?' or '`id` > ?.
-     *
-     * @param array $where Array of sql contexts and values
+     * @param array $where Array of Attribute objects
      *
      * @return PDOStatement
      *
@@ -506,12 +514,36 @@ class Table
             $msg = "Unable to delete from empty where clause";
             throw new PdoException($msg);
         }
-        $sWhere = implode(' AND ', array_keys($where));
-        $query = "DELETE FROM `{$this->getName()}` WHERE $sWhere";
+        list($contexts, $values) = self::parseWhereClause($where);
+        $query = "DELETE FROM `{$this->getName()}` WHERE $contexts";
         $stmt = $this->_pdo->prepare($query);
-        $stmt->execute(array_values($where));
+        $stmt->execute($values);
 
         return $stmt;
+    }
+
+
+    /**
+     *
+     * Parse contexts and search values from where
+     *
+     * @param $where Array of Attribute objects
+     *
+     * @return array First value is a string of contexts, second value is an
+     * array of search values
+     *
+     */
+    static private function parseWhereClause(array $where)
+    {
+        $contexts = array();
+        $values = array();
+        foreach ($where as $attr) {
+            $contexts[] = "`{$attr->getName()}` {$attr->getOperator()} ?";
+            $values[] = $attr->getValue();
+        }
+        $contexts = implode(' AND ', $contexts);
+        
+        return array($contexts, $values);
     }
 
 }

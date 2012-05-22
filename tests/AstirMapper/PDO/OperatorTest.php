@@ -1,34 +1,16 @@
 <?php
-namespace itbz\AstirMapper\Attribute;
+namespace itbz\AstirMapper\PDO;
 
 
 class OperatorTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testToSearchSql()
-    {
-        $op = new Operator('<', 'val');
-        $sql = $op->toSearchSql($context);
-        $this->assertEquals($sql, 'val');
-        $this->assertEquals($context, ':name: < ?');
-    }
-
-
-    public function testToInsertSql()
-    {
-        $op = new Operator('=', 'val');
-        $sql = $op->toInsertSql($use);
-        $this->assertTrue(!$use);
-    }
-
-
     /**
-     * Test invalid operator
-     * @expectedException itbz\AstirMapper\Exception
+     * @expectedException itbz\AstirMapper\Exception\PdoException
      */
-    public function testOperatorFail()
+    public function testInvalidOperator()
     {
-        $op = new Operator('sdfsdf', 'val');
+        $op = new Operator('column', 'val', 'sdfsdf');
     }
 
 
@@ -37,9 +19,8 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
      */ 
     public function testOperators($operator, $inverted)
     {
-        $op = new Operator($operator, 'val');
-        $sql = $op->toSearchSql($context);
-        $this->assertEquals($context, ":name: $operator ?");
+        $op = new Operator('column', 'value', $operator);
+        $this->assertEquals($operator, $op->getOperator());
     }
 
 
@@ -48,9 +29,9 @@ class OperatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testInversion($operator, $inverted)
     {
-        $op = new Operator($operator, 'val');
-        $sql = $op->invert()->toSearchSql($context);
-        $this->assertEquals($context, ":name: $inverted ?");
+        $op = new Operator('column', 'value', $operator);
+        $op->invert();
+        $this->assertEquals($inverted, $op->getOperator());
     }
 
 

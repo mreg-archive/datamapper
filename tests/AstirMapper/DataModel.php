@@ -8,7 +8,7 @@ class DataModel implements ModelInterface
     public function load(array $data)
     {
         $this->id = $data['id'];
-        if (isset($data['name'])) {
+        if (array_key_exists('name', $data)) {
             $this->name = $data['name'];
         }
     }

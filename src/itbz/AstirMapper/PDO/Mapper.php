@@ -20,39 +20,12 @@ use itbz\AstirMapper\MapperInterface;
 use itbz\AstirMapper\ModelInterface;
 use itbz\AstirMapper\SearchInterface;
 use itbz\AstirMapper\Exception\NotFoundException;
+use itbz\AstirMapper\Exception;
 use itbz\AstirMapper\PDO\Table\Table;
 use PDO;
 
+
 /*
-
-    - Attribute är vinklde mot SQL, specielt Operator...
-    
-    Bool, Null och Wrapper behövs antagligen inte: idéer hit...
-
-        eftersom all data skrivs till databasen via queries så är de i PHPs ögon
-            strängar
-        
-        det betyder att allt ska konverteras till strängar
-            då kan jag helt enkelt ha speciella regler för det
-         
-            convertToString()
-            
-            bool blir 1 eller 0
-            nummer blir helt enkelt sin sträng
-            NULL blir null...
-            objects blir till sträng om __tostring finns
-                annars undantag
-            array kan bli comma separerad lista..
-            
-            och that's it folks,
-                på detta sätt blir det verkligen enklare
-            
-            skriv test till PdoStackTest där jag ser att det verkligen
-                skrivs till databasen som jag vill att det ska göras...
-
-            ta även bort Bool-test om det här visar sig lyckosamt...
-
-    // --------------------------------------------------
 
     $mapper = new MemberMapper($authUser); 
     // kan jag implementera rättigheter såhär??
@@ -146,16 +119,16 @@ class Mapper implements MapperInterface
      *
      * Get iterator containing multiple racords based on search
      *
-     * @param ModelInterface $record
+     * @param ModelInterface $model
      *
      * @param SearchInterface $search
      *
      * @return Iterator
      *
      */
-    public function findMany(ModelInterface $record, SearchInterface $search)
+    public function findMany(ModelInterface $model, SearchInterface $search)
     {
-        $where = $this->recordToSearch($record);
+        $where = $this->getAttributes($model);
         $stmt = $this->_table->select($search, $where);
 
         $iterator = new Iterator(
@@ -170,22 +143,22 @@ class Mapper implements MapperInterface
 
     /**
      *
-     * Find records that match current values.
+     * Find models that match current model values.
      *
-     * @param ModelInterface $record
+     * @param ModelInterface $model
      *
      * @return ModelInterface
      *
-     * @throws NotFoundException if no record was found
+     * @throws NotFoundException if no model was found
      *
      */
-    public function find(ModelInterface $record)
+    public function find(ModelInterface $model)
     {
         $search = new Search();
         $search->setLimit(1);
-        $iterator = $this->findMany($record, $search);
+        $iterator = $this->findMany($model, $search);
         if (!$iterator->valid()) {
-            throw new NotFoundException("No record found");        
+            throw new NotFoundException("No matching records found");        
         }
 
         return $iterator->current();
@@ -194,7 +167,7 @@ class Mapper implements MapperInterface
 
     /**
      *
-     * Find record based on primary key
+     * Find model based on primary key
      *
      * @param scalar $key
      *
@@ -203,27 +176,28 @@ class Mapper implements MapperInterface
      */
     public function findByPk($key)
     {
-        $record = clone $this->_prototype;
+        assert('is_scalar($key)');
+        $model = clone $this->_prototype;
         $data = array($this->_table->getPrimaryKey() => $key);
-        $record->load($data);
+        $model->load($data);
 
-        return $this->find($record);
+        return $this->find($model);
     }
 
 
     /**
      *
-     * Delete record from persistent storage
+     * Delete model from persistent storage
      *
-     * @param ModelInterface $record
+     * @param ModelInterface $model
      *
      * @return int Number of affected rows
      *
      */
-    public function delete(ModelInterface $record)
+    public function delete(ModelInterface $model)
     {
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->recordToSearch($record, $columns);
+        $where = $this->getAttributes($model, $columns);
         $stmt = $this->_table->delete($where);
 
         return $stmt->rowCount();
@@ -232,32 +206,35 @@ class Mapper implements MapperInterface
 
     /**
      *
-     * Persistently store record
+     * Persistently store model
      *
-     * If record contains a primary key and that key exists in the database
-     * record is updated. Else record is inserted.
+     * If model contains a primary key and that key exists in the database
+     * model is updated. Else model is inserted.
      *
-     * @param ModelInterface $record
+     * @param ModelInterface $model
      *
      * @return int Number of affected rows
      *
      */
-    public function save(ModelInterface $record)
+    public function save(ModelInterface $model)
     {
         $pk = $this->_table->getPrimaryKey();
-        $params = $this->readRecordParams($record, array($pk));
+        $attrs = $this->getAttributes($model, array($pk));
         
         try {
-            if (isset($params[$pk]) && $this->findByPk($params[$pk])) {
-                // Record has a primary key and that key exists in db
+            if (
+                isset($attrs[$pk])
+                && $this->findByPk($attrs[$pk]->getValue())
+            ) {
+                // Model has a primary key and that key exists in db
 
-                return $this->update($record);
+                return $this->update($model);
             }
         } catch (NotFoundException $e) {
-            // Do nothing, exception triggers insert, as do records with no PK
+            // Do nothing, exception triggers insert, as do models with no PK
         }
 
-        return $this->insert($record);
+        return $this->insert($model);
     }
 
 
@@ -279,17 +256,17 @@ class Mapper implements MapperInterface
 
     /**
      *
-     * Insert record into table
+     * Insert model into db
      *
-     * @param ModelInterface $record
+     * @param ModelInterface $model
      *
      * @return int Number of affected rows
      *
      */
-    protected function insert(ModelInterface $record)
+    protected function insert(ModelInterface $model)
     {
-        $data = $this->recordToInsert($record);
-        $stmt = $this->_table->insert($data);
+        $attributes = $this->getAttributes($model);
+        $stmt = $this->_table->insert($attributes);
 
         return $stmt->rowCount();
     }
@@ -299,17 +276,17 @@ class Mapper implements MapperInterface
      *
      * Update db using primary key as where clause.
      *
-     * @param ModelInterface $record
+     * @param ModelInterface $model
      *
      * @return int Number of affected rows
      *
      */
-    protected function update(ModelInterface $record)
+    protected function update(ModelInterface $model)
     {
+        $attributes = $this->getAttributes($model);
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->recordToSearch($record, $columns);
-        $data = $this->recordToInsert($record);
-        $stmt = $this->_table->update($data, $where);
+        $where = $this->getAttributes($model, $columns);
+        $stmt = $this->_table->update($attributes, $where);
 
         return $stmt->rowCount();
     }
@@ -317,107 +294,48 @@ class Mapper implements MapperInterface
 
     /**
      *
-     * Get record data as an array with key value pairs ready
-     * to be written to database.
+     * Convert model to an array of Attribute objects
      *
-     * @param ModelInterface $record
+     * Model property names are converted to camel-case. If the requested param
+     * is 'fooBar' first a method called 'getFooBar()' is looked for. If it does
+     * not exist the property 'fooBar' is looked for. If property does not exist
+     * it is simply skipped.
      *
-     * @return array
+     * @param ModelInterface $model
      *
-     */
-    private function recordToInsert(ModelInterface $record)
-    {
-        $data = array();
-
-        $params = $this->readRecordParams(
-            $record,
-            $this->_table->getNativeColumns()
-        );
-
-        foreach ($params as $col => $val) {
-            $use = TRUE;
-            if ( is_a($val, 'itbz\AstirMapper\Attribute\AttributeInterface') ) {
-                $val = $val->toInsertSql($use);
-            }
-            if ( $use ) {
-                $data[$col] = $val;
-            }
-        }
-        
-        return $data;
-    }
-
-
-    /**
+     * @param array $props List of properties to read
      *
-     * Get record data as an array with sql context as keys
-     *
-     * @param ModelInterface $record
-     *
-     * @param array $cols List of columns to include
-     *
-     * @return array
+     * @return array Array of Attribute objects
      *
      */
-    private function recordToSearch(ModelInterface $record, array $cols = NULL)
+    private function getAttributes(ModelInterface $model, array $props = NULL)
     {
-        $data = array();
-
-        if (!$cols) {
-            $cols = $this->_table->getNativeColumns();
+        if (!$props) {
+            $props = $this->_table->getNativeColumns();
         }
 
-        foreach ($this->readRecordParams($record, $cols) as $col => $val) {
-            // :name: will be replaced by attribute name below
-            $context = ":name:=?";
-            if ( is_a($val, 'itbz\AstirMapper\Attribute\AttributeInterface') ) {
-                $val = $val->toSearchSql($context);
+        $attributes = array();
+        foreach ($props as $prop) {
+            $method = $this->getCamelCase($prop, 'get');
+            $camelParam = $this->getCamelCase($prop);
+
+            if (method_exists($model, $method)) {
+                $attr = $model->$method();
+            } elseif (property_exists($model, $camelParam)) {
+                $attr = $model->$camelParam;
+            } else {
+                continue;
             }
-            if ($context !== FALSE) {
-                $context = str_replace(':name:', "`$col`", $context);
-                $data[$context] = (string)$val;
+
+            if (!$attr instanceof Attribute) {
+                $attr = new Attribute($prop, $attr);
             }
-        
-        }
-
-        return $data;
-    }
-
-
-
-    /**
-     *
-     * Read params from record
-     *
-     * All param names are converted to camel-case. If the requested param is
-     * 'fooBar' this method will first look for a method 'getFooBar()'. If
-     * method does not exist object var 'fooBar' is searched. If var does
-     * not exist param is skipped.
-     *
-     * @param ModelInterface $record
-     *
-     * @param array $params List of params to read
-     *
-     * @return array
-     *
-     */
-    private function readRecordParams(ModelInterface $record, array $params)
-    {
-        $return = array();
-        foreach ($params as $param) {
-            $method = $this->getCamelCase($param, 'get');
-            $camelParam = $this->getCamelCase($param);
-
-            if (method_exists($record, $method)) {
-                $return[$param] = $record->$method();
-            } elseif (isset($record->$camelParam)) {
-                $return[$param] = $record->$camelParam;
-            }
+            
+            $attributes[$prop] = $attr;
         }
         
-        return $return;
+        return $attributes;
     }
-
 
 
     /**
