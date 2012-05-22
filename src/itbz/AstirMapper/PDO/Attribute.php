@@ -38,7 +38,7 @@ class Attribute
      * @var string $_name
      *
      */
-    private $_name;
+    protected $_name;
 
 
     /**
@@ -48,7 +48,7 @@ class Attribute
      * @var string $_value
      *
      */
-    private $_value;
+    protected $_value;
 
 
     /**
@@ -58,7 +58,7 @@ class Attribute
      * @var bool $_escape
      *
      */
-    private $_escape;
+    protected $_escape;
 
 
     /**

@@ -16,12 +16,10 @@
  *
  */
 namespace itbz\AstirMapper\PDO\Access;
-
+use itbz\AstirMapper\PDO\Mapper;
+use itbz\AstirMapper\Exception\AccessDeniedException;
 
 /*
-
-    jag måste hålla isär rättigheter på table och på row...
-        rättigheter på table är ju väldigt enkelt, det håller jag på med nedan
 
     hur ska gränssnittet för att ändra ägare, grupp och mode på row se ut?
         $model->id = 1;
@@ -29,18 +27,35 @@ namespace itbz\AstirMapper\PDO\Access;
         $mapper->chgrp($model, 'root');
         $mapper->chmod($model, USER_ALL|GROUP_ALL);                
 
-    sådant som har med ägande av databas-tabell verkar mest logiskt i Table
-    
-    sådant som måste köra specifika queries (eg. isAllowedRow)
-        behöver av tekniska skäl vara i Table
-    
     gränssnittet för att ändra grp osv verkar passa bäst i Mapper
         kanske ska jag göra både och??
         det mesta av arbetet i ett Table
         och sedan gränssnitts-grejer till Mapper...??
     
-    när jag ska testa mot databas
-      mysql_query("LOAD DATA LOCAL INFILE '/path/to/file' INTO TABLE mytable");
+
+    MODE
+
+    måste veta vilket table det gäller
+        skapa mode i mapper
+
+    måste få till så att det blir ett giltigt SQL uttryck även med
+            name = isAllowed...
+        det svåra just nu verkar vara att koden alltid sätter ``
+
+
+    TABLE
+    
+    kan hålla redan på accessinformatino om table, ägare osv...
+        - FIXAT
+        
+    
+    MAPPER
+    
+    fråga table om det är okey att läsa eller skriva till table
+        - FIXAT
+
+    mapper kan också skapa lämpligt mode object när jag ber om att få läsa osv..
+        och även då för att byta ägare, ändra mode osv...
 
 */
 
@@ -53,38 +68,8 @@ namespace itbz\AstirMapper\PDO\Access;
  * @subpackage PDO\Access
  *
  */
-class AcMapper extends \itbz\AstirMapper\PDO\Mapper implements AccessInterface
+class AcMapper extends Mapper
 {
-
-    /**
-     *
-     * Name of owner of table
-     *
-     * @var string $owner
-     *
-     */
-    protected $_owner = '';
-
-
-    /**
-     *
-     * Name of group of table
-     *
-     * @var string $_group
-     *
-     */
-    protected $_group = '';
-
-
-    /**
-     *
-     * Access mode of table
-     *
-     * @var int $_mode
-     *
-     */
-    protected $_mode = 0770;
-
 
     /**
      *
@@ -108,35 +93,17 @@ class AcMapper extends \itbz\AstirMapper\PDO\Mapper implements AccessInterface
 
     /**
      *
-     * Set access restrictions for table
+     * Construct and inject table instance
      *
-     * Use access flags to set mode. AcMapper::OWNER_ALL|AcMapper::GROUP_ALL
-     * gives full access to owner and group. For more compact code use octal
-     * notation. '0700' restrict access to owner only. '0777' allows global
-     * access.
+     * @param AcTable $table
      *
-     * @param string $owner Name of owner
-     *
-     * @param string $group Name of group
-     *
-     * @param int $mode Access flags
+     * @param ModelInterface $prototype Prototype model that will be cloned when
+     * mapper needs a new return object.
      *
      */
-    public function setAccess($owner, $group, $mode = 0770)
+    public function __construct(AcTable $table, ModelInterface $prototype)
     {
-        assert('is_string($owner)');
-        assert('is_string($group)');
-        assert('is_int($mode)');
-        
-        if ($mode < 0) {
-            $mode = 0;
-        } elseif ($mode > 0777) {
-            $mode = 0777;
-        }
-        
-        $this->_owner = $owner;
-        $this->_group = $group;
-        $this->_mode = $mode;
+        parent::__construct($table, $prototype);
     }
 
 
@@ -159,69 +126,87 @@ class AcMapper extends \itbz\AstirMapper\PDO\Mapper implements AccessInterface
 
     /**
      *
-     * Check if user is root
+     * Get iterator containing multiple racords based on search
      *
-     * The root user always have access. As default roots are all users named
-     * 'root' or belonging to a group named 'root'. Override to create different
-     * root definitions.
+     * @param ModelInterface $model
      *
-     * @return bool
+     * @param SearchInterface $search
      *
-     */
-    public function isRoot()
-    {
-        return ($this->_uname == 'root' || in_array('root', $this->_ugroups));
-    }
-
-
-    /**
+     * @return Iterator
      *
-     * Check if user owns table
-     *
-     * @return bool
+     * @throws AccessDeniedException if user does not have access
      *
      */
-    public function isOwner()
+    public function findMany(ModelInterface $model, SearchInterface $search)
     {
-        return ($this->_owner == $this->_uname);
-    }
-
-
-    /**
-     *
-     * Check if user is in group that owns table
-     *
-     * @return bool
-     *
-     */
-    public function isGroup()
-    {
-        return in_array($this->_group, $this->_ugroups);
-    }
-
-
-    /**
-     *
-     * Check if user is allowed to read table
-     *
-     * @return bool
-     *
-     */
-    public function allowTableRead()
-    {
-        if ($this->isRoot()) {
-            return TRUE;
-        }
-        
-        if ($this->isOwner()) {
-            $mask = self::OWNER_READ;
-        } elseif ($this->isGroups()) {
-            $mask = self::GROUP_READ;
-        } else {
-            $mask = self::OTHERS_READ;
+        if (!$this->_table->isAllowedExecute($this->_uname, $this->_ugroups)) {
+            $msg = "Access denied at table '{$this->_table->getName()}'";
+            throw new AccessDeniedException($msg);
         }
 
-        return (($this->_mode & $mask) == $mask);        
+        return parent::findMany($model, $search);
+    }
+
+
+    /**
+     *
+     * Delete model from persistent storage
+     *
+     * @param ModelInterface $model
+     *
+     * @return int Number of affected rows
+     *
+     * @throws AccessDeniedException if user does not have access
+     *
+     */
+    public function delete(ModelInterface $model)
+    {
+        if (!$this->_table->isAllowedWrite($this->_uname, $this->_ugroups)) {
+            $msg = "Access denied at table '{$this->_table->getName()}'";
+            throw new AccessDeniedException($msg);
+        }
+
+        return parent::delete($model);
+    }
+
+
+    /**
+     *
+     * Insert model into db
+     *
+     * @param ModelInterface $model
+     *
+     * @return int Number of affected rows
+     *
+     */
+    protected function insert(ModelInterface $model)
+    {
+        if (!$this->_table->isAllowedWrite($this->_uname, $this->_ugroups)) {
+            $msg = "Access denied at table '{$this->_table->getName()}'";
+            throw new AccessDeniedException($msg);
+        }
+
+        return parent::insert($model);
+    }
+
+
+    /**
+     *
+     * Update db using primary key as where clause.
+     *
+     * @param ModelInterface $model
+     *
+     * @return int Number of affected rows
+     *
+     */
+    protected function update(ModelInterface $model)
+    {
+        if (!$this->_table->isAllowedExecute($this->_uname, $this->_ugroups)) {
+            $msg = "Access denied at table '{$this->_table->getName()}'";
+            throw new AccessDeniedException($msg);
+        }
+
+        return parent::update($model);
     }
 
 }

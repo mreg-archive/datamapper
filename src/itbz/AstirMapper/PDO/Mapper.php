@@ -85,7 +85,7 @@ class Mapper implements MapperInterface
      * @var Table $_table
      *
      */
-    private $_table;
+    protected $_table;
 
 
     /**

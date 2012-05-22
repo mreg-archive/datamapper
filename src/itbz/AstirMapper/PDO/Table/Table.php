@@ -527,7 +527,7 @@ class Table
      *
      * Parse contexts and search values from where
      *
-     * @param $where Array of Attribute objects
+     * @param array $where Array of Attribute objects
      *
      * @return array First value is a string of contexts, second value is an
      * array of search values

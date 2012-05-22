@@ -46,7 +46,7 @@ DELIMITER //
  * @return TINYINT(1) 1 if action is allowed, 0 otherwise.
  */
 DROP FUNCTION IF EXISTS isAllowed//
-CREATE FUNCTION isAllowed( action CHAR(1), owner VARCHAR(10), owner_grp VARCHAR(10), access_mode SMALLINT(2), uname VARCHAR(10), ugrps VARCHAR(200) ) RETURNS TINYINT(1)
+CREATE FUNCTION isAllowed( action CHAR(1), owner VARCHAR(10), owner_grp VARCHAR(10), access_mode SMALLINT, uname VARCHAR(10), ugrps VARCHAR(200) ) RETURNS TINYINT(1)
 	DETERMINISTIC
 	COMMENT 'Returns 1 if action is allowed, 0 otherwise.'
 	LANGUAGE SQL
