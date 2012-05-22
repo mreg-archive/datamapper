@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Exception
+ *
  */
 namespace itbz\AstirMapper\Exception;
 use itbz\AstirMapper\Exception;
@@ -22,6 +24,8 @@ use itbz\AstirMapper\Exception;
  * Data not found exception
  *
  * @package AstirMapper
+ *
+ * @subpackage Exception
  *
  */
 class NotFoundException extends Exception

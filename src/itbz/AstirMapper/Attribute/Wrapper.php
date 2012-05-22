@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Attribute
+ *
  */
 namespace itbz\AstirMapper\Attribute;
 
@@ -26,6 +28,8 @@ namespace itbz\AstirMapper\Attribute;
  * Attribute wrapper class
  *
  * @package AstirMapper
+ *
+ * @subpackage Attribute
  *
  */
 class AttrWrap implements AttributeInterface

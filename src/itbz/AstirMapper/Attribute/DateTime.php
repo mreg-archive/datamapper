@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Attribute
+ *
  */
 namespace itbz\AstirMapper\Attribute;
 use itbz\AstirMapper\Exception;
@@ -29,6 +31,8 @@ use DateTimeZone;
  * In MySQL this amounts to the regular INT type.
  *
  * @package AstirMapper
+ *
+ * @subpackage Attribute
  *
  * @todo Has not been tested on a 64bit PHP build
  *

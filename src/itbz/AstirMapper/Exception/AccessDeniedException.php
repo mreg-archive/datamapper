@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Exception
+ *
  */
 namespace itbz\AstirMapper\Exception;
 
@@ -21,6 +23,8 @@ namespace itbz\AstirMapper\Exception;
  * Access denied exception
  *
  * @package AstirMapper
+ *
+ * @subpackage Exception
  *
  */
 class AccessDeniedException extends PdoException

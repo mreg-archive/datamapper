@@ -12,7 +12,7 @@
  *
  * @package AstirMapper
  *
- * @subpackage PDO
+ * @subpackage PDO\Table
  *
  */
 namespace itbz\AstirMapper\PDO\Table;
@@ -28,7 +28,7 @@ namespace itbz\AstirMapper\PDO\Table;
  *
  * @package AstirMapper
  *
- * @subpackage PDO
+ * @subpackage PDO\Table
  *
  */
 class MysqlTable extends Table

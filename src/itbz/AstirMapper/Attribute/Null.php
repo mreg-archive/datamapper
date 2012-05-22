@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Attribute
+ *
  */
 namespace itbz\AstirMapper\Attribute;
 
@@ -25,6 +27,8 @@ namespace itbz\AstirMapper\Attribute;
  * Null class..
  *
  * @package AstirMapper
+ *
+ * @subpackage Attribute
  *
  */
 class Null implements AttributeInterface

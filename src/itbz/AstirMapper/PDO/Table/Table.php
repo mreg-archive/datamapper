@@ -12,7 +12,7 @@
  *
  * @package AstirMapper
  *
- * @subpackage PDO
+ * @subpackage PDO\Table
  *
  */
 namespace itbz\AstirMapper\PDO\Table;
@@ -32,7 +32,7 @@ use PDOStatement;
  *
  * @package AstirMapper
  *
- * @subpackage PDO
+ * @subpackage PDO\Table
  *
  */
 class Table

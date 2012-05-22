@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Attribute
+ *
  */
 namespace itbz\AstirMapper\Attribute;
 
@@ -31,6 +33,8 @@ namespace itbz\AstirMapper\Attribute;
  * when interacting with the database
  *
  * @package AstirMapper
+ *
+ * @subpackage Attribute
  *
  */
 class Bool implements AttributeInterface

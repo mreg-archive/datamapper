@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Attribute
+ *
  */
 namespace itbz\AstirMapper\Attribute;
 
@@ -26,6 +28,8 @@ namespace itbz\AstirMapper\Attribute;
  * toInsertSql() methods.
  *
  * @package AstirMapper
+ *
+ * @subpackage Attribute
  *
  */
 interface AttributeInterface

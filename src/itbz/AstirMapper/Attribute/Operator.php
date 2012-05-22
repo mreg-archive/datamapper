@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Attribute
+ *
  */
 namespace itbz\AstirMapper\Attribute;
 use itbz\AstirMapper\Exception;
@@ -22,6 +24,8 @@ use itbz\AstirMapper\Exception;
  * Attribute for querying database using variable operators
  *
  * @package AstirMapper
+ *
+ * @subpackage Attribute
  *
  */
 class Operator implements AttributeInterface

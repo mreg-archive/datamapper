@@ -12,6 +12,8 @@
  *
  * @package AstirMapper
  *
+ * @subpackage Exception
+ *
  */
 namespace itbz\AstirMapper\Exception;
 use itbz\AstirMapper\Exception;
@@ -22,6 +24,8 @@ use itbz\AstirMapper\Exception;
  * Base exception for the PDO subpackage
  *
  * @package AstirMapper
+ *
+ * @subpackage Exception
  *
  */
 class PdoException extends Exception
