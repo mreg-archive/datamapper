@@ -2,6 +2,7 @@
 namespace itbz\AstirMapper\PDO\Table;
 use itbz\AstirMapper\PDO\Search;
 use itbz\AstirMapper\PDO\Attribute;
+use itbz\AstirMapper\PDO\AttributeContainer;
 use PDO;
 
 
@@ -136,13 +137,13 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $foo->insert(array(
+        $foo->insert(new AttributeContainer(
             new Attribute('id', '1'),
             new Attribute('foo1', 'data'),
             new Attribute('foobar', 'a')
         ));
         
-        $foo->insert(array(
+        $foo->insert(new AttributeContainer(
             new Attribute('id', '2'),
             new Attribute('foo1', 'data'),
             new Attribute('foobar', 'a')
@@ -166,7 +167,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     function testDeleteException()
     {
         $foo = new Table('foo', $this->getPdo());
-        $foo->delete(array());
+        $foo->delete(new AttributeContainer());
     }
 
 
@@ -174,7 +175,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $foo->insert(array(
+        $foo->insert(new AttributeContainer(
             new Attribute('id', '1'),
             new Attribute('foo1', 'data'),
             new Attribute('foobar', 'a')
@@ -185,7 +186,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         while ( $row = $stmt->fetch() ) $rowCount++;
         $this->assertEquals(1, $rowCount);
 
-        $stmt = $foo->delete(array(
+        $stmt = $foo->delete(new AttributeContainer(
             new Attribute('id', 1)
         ));
 
@@ -199,10 +200,35 @@ class TableTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException itbz\AstirMapper\Exception\PdoException
      */
-    function testUpdateException()
+    function testUpdateEmptyDataException()
     {
         $foo = new Table('foo', $this->getPdo());
-        $foo->update(array(), array());
+        $foo->update(new AttributeContainer(), new AttributeContainer());
+    }
+
+
+    /**
+     * @expectedException itbz\AstirMapper\Exception\PdoException
+     */
+    function testUpdateEmptyWhereException()
+    {
+        $foo = new Table('foo', $this->getPdo());
+        $foo->update(
+            new AttributeContainer(
+                new Attribute('foo', 'bar')
+            ),
+            new AttributeContainer()
+        );
+    }
+
+
+    /**
+     * @expectedException itbz\AstirMapper\Exception\PdoException
+     */
+    function testInsertEmptyValuesException()
+    {
+        $foo = new Table('foo', $this->getPdo());
+        $foo->insert(new AttributeContainer());
     }
 
 
@@ -210,18 +236,18 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $foo->insert(array(
+        $foo->insert(new AttributeContainer(
             new Attribute('id', '1'),
             new Attribute('foo1', 'data'),
             new Attribute('foobar', 'a')
         ));
 
         $foo->update(
-            array(
+            new AttributeContainer(
                 new Attribute('foo1', 'new'),
                 new Attribute('foobar', 'b')
             ),
-            array(
+            new AttributeContainer(
                 new Attribute('id', 1)
             )
         );
@@ -246,35 +272,34 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $bar->addNaturalJoin($x);
         $foo->addNaturalJoin($bar);
 
-        $foo->insert(array(
+        $foo->insert(new AttributeContainer(
             new Attribute('id', '1'),
             new Attribute('foo1', 'foo-data'),
             new Attribute('foobar', 'a')
         ));
 
-        $foo->insert(array(
+        $foo->insert(new AttributeContainer(
             new Attribute('id', '2'),
             new Attribute('foo1', 'foo-data'),
             new Attribute('foobar', 'b')
         ));
 
-        $bar->insert(array(
+        $bar->insert(new AttributeContainer(
             new Attribute('foobar', 'a'),
             new Attribute('bar1', 'bar-data'),
             new Attribute('barx', 'A')
         ));
 
-        $bar->insert(array(
+        $bar->insert(new AttributeContainer(
             new Attribute('foobar', 'b'),
             new Attribute('bar1', 'bar-data'),
             new Attribute('barx', 'B')
         ));
 
-        $x->insert(array(
+        $x->insert(new AttributeContainer(
             new Attribute('barx', 'A'),
             new Attribute('x1', 'x-data')
         ));
-
 
         return array($foo, $bar, $x);
     }
@@ -284,7 +309,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         list($foo, $bar, $x) = $this->getTables();
 
-        $stmt = $foo->select(new Search(), array(
+        $stmt = $foo->select(new Search(), new AttributeContainer(
             new Attribute('id', 1)
         ));
         $row = $stmt->fetch();
@@ -314,7 +339,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         while ( $row = $stmt->fetch() ) $rowCount++;
         $this->assertEquals(1, $rowCount);
 
-        $stmt = $foo->select(new Search(), array(
+        $stmt = $foo->select(new Search(), new AttributeContainer(
             new Attribute('id', 2)
         ));
         $rowCount = 0;
@@ -329,7 +354,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         // Assert selecting only some columns
         $search = new Search();
         $search->addColumn('foo1');
-        $stmt = $foo->select($search, array(
+        $stmt = $foo->select($search, new AttributeContainer(
             new Attribute('id', 2)
         ));
         $stmt->setFetchMode(PDO::FETCH_ASSOC);

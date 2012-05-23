@@ -23,7 +23,7 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
     {
         $a = new Attribute('name', 'foo');
         $this->assertEquals('foo', $a->getValue());
-        $this->assertTrue($a->escape());
+        $this->assertTrue($a->escapeValue());
     }
 
     
@@ -31,7 +31,7 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
     {
         $a = new Attribute('name', TRUE);
         $this->assertEquals('1', $a->getValue());
-        $this->assertTrue($a->escape());
+        $this->assertTrue($a->escapeValue());
 
         $a = new Attribute('name', FALSE);
         $this->assertEquals('0', $a->getValue());
@@ -42,7 +42,7 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
     {
         $a = new Attribute('name', array('foo','bar'));
         $this->assertEquals('foo,bar', $a->getValue());
-        $this->assertTrue($a->escape());
+        $this->assertTrue($a->escapeValue());
     }
 
 
@@ -50,7 +50,7 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
     {
         $a = new Attribute('name', NULL);
         $this->assertEquals('null', $a->getValue());
-        $this->assertFalse($a->escape());
+        $this->assertFalse($a->escapeValue());
     }
 
 
@@ -77,7 +77,7 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
 
         $a = new Attribute('name', $objmock);
         $this->assertEquals('foobar', $a->getValue());
-        $this->assertTrue($a->escape());
+        $this->assertTrue($a->escapeValue());
     }
 
 }

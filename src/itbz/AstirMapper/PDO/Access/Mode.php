@@ -29,7 +29,7 @@ use itbz\AstirMapper\Exception\PdoException;
  * @subpackage PDO\Access
  *
  */
-class Mode extends Attribute
+class Mode extends Attribute implements AccessInterface
 {
 
     /**
@@ -62,17 +62,19 @@ class Mode extends Attribute
 
         $expr = array();
         $expr[] = "'$action'";
-        $expr[] = "`$table`.`owner`";
-        $expr[] = "`$table`.`group`";
-        $expr[] = "`$table`.`mode`";
+        $expr[] = "`$table`.`" . self::OWNER_FIELD . "`";
+        $expr[] = "`$table`.`" . self::GROUP_FIELD . "`";
+        $expr[] = "`$table`.`" . self::MODE_FIELD . "`";
         $expr[] = "'$uname'";
         $expr[] = "'$ugroups'";
 
         $expr = implode(',', $expr);        
         $expr = "isAllowed($expr)";
 
-        parent::__construct('', $expr);
-        $this->_escape = FALSE;
+        parent::__construct('1', $expr);
+        
+        $this->setEscapeName(FALSE);
+        $this->setEscapeValue(FALSE);
     }
 
 }

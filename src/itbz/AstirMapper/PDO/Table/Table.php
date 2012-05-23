@@ -18,6 +18,7 @@
 namespace itbz\AstirMapper\PDO\Table;
 use itbz\AstirMapper\Exception\PdoException;
 use itbz\AstirMapper\PDO\Search;
+use itbz\AstirMapper\PDO\AttributeContainer;
 use PDO;
 use PDOStatement;
 
@@ -326,6 +327,19 @@ class Table
 
     /**
      *
+     * Get array of joined Table objects
+     *
+     * @return array
+     *
+     */
+    public function getJoins()
+    {
+        return $this->_naturalJoins;
+    }
+
+
+    /**
+     *
      * Reverse engineer structure of database table
      *
      * Defaults to an empty array. Override to implement real DB reverse
@@ -360,20 +374,20 @@ class Table
 
     /**
      *
-     * Select based on custom where clause
+     * Select rows from db
      *
      * @param Search $search
      *
-     * @param array $where Array of Attribute objects
+     * @param AttributeContainer $where
      *
      * @return PDOStatement
      *
      */
-    public function select(Search $search, array $where = array())
+    public function select(Search $search, AttributeContainer $where = NULL)
     {
         $columns = $search->getColumns();
 
-        // Set columns
+        // Set select columns
         if (empty($columns)) {
             $select = '*';
         } else {
@@ -387,12 +401,11 @@ class Table
         $base = "SELECT $select FROM " . $this->getTableIdentifier();
 
         // Set where
-        if (empty($where)) {
+        if ($where) {
+            list($whereClause, $whereValues) = $where->getWhere();
+        } else {
             $whereClause = '';
             $whereValues = array();
-        } else {
-            list($whereClause, $whereValues) = self::parseWhereClause($where);
-            $whereClause = ' WHERE ' . $whereClause;
         }
 
         // Set order by
@@ -415,25 +428,20 @@ class Table
      *
      * Insert values into db
      *
-     * @param array $data Array of Attribute objects
+     * @param AttributeContainer $data
      *
      * @return PDOStatement
      *
+     * @throws PdoException if data is empty
+     *
      */
-    public function insert(array $data)
+    public function insert(AttributeContainer $data)
     {
-        $columns = array();
-        $values = array();
-        foreach ($data as $attr) {
-            $columns[] = "`{$attr->getName()}`";
-            $value = $attr->getValue();
-            if ($attr->escape()) {
-                $value = $this->_pdo->quote($value);
-            }
-            $values[] = $value;
+        if ($data->isEmpty()) {
+            $msg = "Unable to insert with no values";
+            throw new PdoException($msg);
         }
-        $columns = implode(',', $columns);
-        $values = implode(',', $values);
+        list($columns, $values) = $data->getInsert($this->_pdo);
         $query = "INSERT INTO `{$this->getName()}` ($columns) VALUES ($values)";
 
         return $this->_pdo->query($query);
@@ -461,35 +469,28 @@ class Table
      *
      * Update db based on where clauses
      *
-     * @param array $data Array of Attribute objects
+     * @param AttributeContainer $data
      *
-     * @param array $where Array of Attribute objects
+     * @param AttributeContainer $where
      *
      * @return PDOStatement
      *
-     * @throws PdoException if where is empty
+     * @throws PdoException if where or data is empty
      *
      */
-    public function update(array $data, array $where)
+    public function update(AttributeContainer $data, AttributeContainer $where)
     {
-        if (empty($where)) {
+        if ($data->isEmpty()) {
+            $msg = "Unable to update with no values";
+            throw new PdoException($msg);
+        }
+        if ($where->isEmpty()) {
             $msg = "Unable to update from empty where clause";
             throw new PdoException($msg);
         }
-
-        $writeValues = array();
-        foreach ($data as $attr) {
-            $value = $attr->getValue();
-            if ($attr->escape()) {
-                $value = $this->_pdo->quote($value);
-            }
-            $writeValues[] = "`{$attr->getName()}`=$value";
-        }
-        $writeValues = implode(',', $writeValues);
-
-        list($contexts, $whereValues) = self::parseWhereClause($where);
-
-        $query = "UPDATE `{$this->getName()}` SET $writeValues WHERE $contexts";
+        $writeValues = $data->getUpdate($this->_pdo);
+        list($whereClause, $whereValues) = $where->getWhere();
+        $query = "UPDATE `{$this->getName()}` SET $writeValues $whereClause";
         $stmt = $this->_pdo->prepare($query);
         $stmt->execute($whereValues);
 
@@ -501,49 +502,25 @@ class Table
      *
      * Delete records from db that matches where
      *
-     * @param array $where Array of Attribute objects
+     * @param AttributeContainer $where
      *
      * @return PDOStatement
      *
      * @throws PdoException if where is empty
      *
      */
-    public function delete(array $where)
+    public function delete(AttributeContainer $where)
     {
-        if (empty($where)) {
+        if ($where->isEmpty()) {
             $msg = "Unable to delete from empty where clause";
             throw new PdoException($msg);
         }
-        list($contexts, $values) = self::parseWhereClause($where);
-        $query = "DELETE FROM `{$this->getName()}` WHERE $contexts";
+        list($clause, $values) = $where->getWhere();
+        $query = "DELETE FROM `{$this->getName()}` $clause";
         $stmt = $this->_pdo->prepare($query);
         $stmt->execute($values);
 
         return $stmt;
-    }
-
-
-    /**
-     *
-     * Parse contexts and search values from where
-     *
-     * @param array $where Array of Attribute objects
-     *
-     * @return array First value is a string of contexts, second value is an
-     * array of search values
-     *
-     */
-    static private function parseWhereClause(array $where)
-    {
-        $contexts = array();
-        $values = array();
-        foreach ($where as $attr) {
-            $contexts[] = "`{$attr->getName()}` {$attr->getOperator()} ?";
-            $values[] = $attr->getValue();
-        }
-        $contexts = implode(' AND ', $contexts);
-        
-        return array($contexts, $values);
     }
 
 }

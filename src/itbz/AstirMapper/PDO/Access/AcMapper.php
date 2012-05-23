@@ -16,48 +16,12 @@
  *
  */
 namespace itbz\AstirMapper\PDO\Access;
+use itbz\AstirMapper\ModelInterface;
 use itbz\AstirMapper\PDO\Mapper;
+use itbz\AstirMapper\PDO\Attribute;
 use itbz\AstirMapper\Exception\AccessDeniedException;
+use itbz\AstirMapper\Exception\PdoException;
 
-/*
-
-    hur ska gränssnittet för att ändra ägare, grupp och mode på row se ut?
-        $model->id = 1;
-        $mapper->chown($model, 'hannes');
-        $mapper->chgrp($model, 'root');
-        $mapper->chmod($model, USER_ALL|GROUP_ALL);                
-
-    gränssnittet för att ändra grp osv verkar passa bäst i Mapper
-        kanske ska jag göra både och??
-        det mesta av arbetet i ett Table
-        och sedan gränssnitts-grejer till Mapper...??
-    
-
-    MODE
-
-    måste veta vilket table det gäller
-        skapa mode i mapper
-
-    måste få till så att det blir ett giltigt SQL uttryck även med
-            name = isAllowed...
-        det svåra just nu verkar vara att koden alltid sätter ``
-
-
-    TABLE
-    
-    kan hålla redan på accessinformatino om table, ägare osv...
-        - FIXAT
-        
-    
-    MAPPER
-    
-    fråga table om det är okey att läsa eller skriva till table
-        - FIXAT
-
-    mapper kan också skapa lämpligt mode object när jag ber om att få läsa osv..
-        och även då för att byta ägare, ändra mode osv...
-
-*/
 
 /**
  *
@@ -68,28 +32,8 @@ use itbz\AstirMapper\Exception\AccessDeniedException;
  * @subpackage PDO\Access
  *
  */
-class AcMapper extends Mapper
+class AcMapper extends Mapper implements AccessInterface
 {
-
-    /**
-     *
-     * Name of user
-     *
-     * @var string $_uname
-     *
-     */
-    protected $_uname = '';
-    
-
-    /**
-     *
-     * List of groups user belongs to
-     *
-     * @var array $_ugroups
-     *
-     */
-    protected $_ugroups = array();
-
 
     /**
      *
@@ -118,95 +62,166 @@ class AcMapper extends Mapper
      */
     public function setUser($uname, array $ugroups = array())
     {
-        assert('is_string($uname)');
-        $this->_uname = $uname;
-        $this->_ugroups = $ugroups;
+        $this->_table->setUser($uname, $ugroups);
     }
 
 
     /**
      *
-     * Get iterator containing multiple racords based on search
+     * Set new owner on rows matching model
+     *
+     * Only roots can change owner
      *
      * @param ModelInterface $model
      *
-     * @param SearchInterface $search
-     *
-     * @return Iterator
-     *
-     * @throws AccessDeniedException if user does not have access
-     *
-     */
-    public function findMany(ModelInterface $model, SearchInterface $search)
-    {
-        if (!$this->_table->isAllowedExecute($this->_uname, $this->_ugroups)) {
-            $msg = "Access denied at table '{$this->_table->getName()}'";
-            throw new AccessDeniedException($msg);
-        }
-
-        return parent::findMany($model, $search);
-    }
-
-
-    /**
-     *
-     * Delete model from persistent storage
-     *
-     * @param ModelInterface $model
+     * @param string $newOwner
      *
      * @return int Number of affected rows
      *
-     * @throws AccessDeniedException if user does not have access
+     * @throws AccessDeniedException if user is not root
+     *
+     * @throws PdoException if primary key model is not set
      *
      */
-    public function delete(ModelInterface $model)
+    public function chown(ModelInterface $model, $newOwner)
     {
-        if (!$this->_table->isAllowedWrite($this->_uname, $this->_ugroups)) {
-            $msg = "Access denied at table '{$this->_table->getName()}'";
+        assert('is_string($newOwner)');
+
+        if (!$this->_table->userIsRoot()) {
+            $msg = "Access denied changing owner, must be root.";
             throw new AccessDeniedException($msg);
         }
+        if (!$this->getPk($model)) {
+            $msg = "Unable to change owner, primary key not set.";
+            throw new PdoException($msg);
+        }
 
-        return parent::delete($model);
+        // Set new owner
+        $data = $this->getAttributes($model);
+        $data->remove(self::OWNER_FIELD);
+        $data->addAttribute(
+            new Attribute(self::OWNER_FIELD, $newOwner)
+        );
+
+        // Update model
+        $columns = array($this->_table->getPrimaryKey());
+        $where = $this->getAttributes($model, $columns);
+        $stmt = $this->_table->update($data, $where);
+
+        return $stmt->rowCount();
     }
 
 
     /**
      *
-     * Insert model into db
+     * Set new mode on rows matching model
+     *
+     * Only owner and root can change mode
      *
      * @param ModelInterface $model
      *
+     * @param int $newMode
+     *
      * @return int Number of affected rows
      *
+     * @throws PdoException if primary key model is not set
+     *
      */
-    protected function insert(ModelInterface $model)
+    public function chmod(ModelInterface $model, $newMode)
     {
-        if (!$this->_table->isAllowedWrite($this->_uname, $this->_ugroups)) {
-            $msg = "Access denied at table '{$this->_table->getName()}'";
-            throw new AccessDeniedException($msg);
+        assert('is_int($newMode)');
+
+        if (!$this->getPk($model)) {
+            $msg = "Unable to change access mode, primary key not set.";
+            throw new PdoException($msg);
         }
 
-        return parent::insert($model);
+        // Set new mode
+        $data = $this->getAttributes($model);
+        $data->remove(self::MODE_FIELD);
+        $data->addAttribute(
+            new Attribute(self::MODE_FIELD, $newMode)
+        );
+
+        $columns = array($this->_table->getPrimaryKey());
+        $where = $this->getAttributes($model, $columns);
+
+        // Only owner and root can change mode
+        if (!$this->_table->userIsRoot()) {
+            $uname = $this->_table->getUser();
+            $where->addAttribute(
+                new Attribute(self::OWNER_FIELD, $uname)
+            );
+        }
+
+        $stmt = $this->_table->update($data, $where);
+
+        return $stmt->rowCount();
     }
 
 
     /**
      *
-     * Update db using primary key as where clause.
+     * Set new group on rows matching model
+     *
+     * Only owner and root can change group
      *
      * @param ModelInterface $model
      *
+     * @param string $newGroup
+     *
      * @return int Number of affected rows
      *
+     * @throws PdoException if primary key model is not set
+     *
+     * @throws AccessDeniedException if is not a member of the new group
+     *
      */
-    protected function update(ModelInterface $model)
+    public function chgrp(ModelInterface $model, $newGroup)
     {
-        if (!$this->_table->isAllowedExecute($this->_uname, $this->_ugroups)) {
-            $msg = "Access denied at table '{$this->_table->getName()}'";
+        assert('is_string($newGroup)');
+
+        if (!$this->getPk($model)) {
+            $msg = "Unable to change group, primary key not set.";
+            throw new PdoException($msg);
+        }
+
+        // Remove 'root' from the list of groups
+        $ugroups = $this->_table->getUserGroups();
+        $index = array_search('root', $ugroups);
+        if ( $index !== FALSE ) {
+            unset($ugroups[$index]);
+        }
+
+        if (
+            !$this->_table->userIsRoot()
+            && !in_array($newGroup, $ugroups)
+        ) {
+            $msg = "Unable to set group '$newGroup', you are not a member.";
             throw new AccessDeniedException($msg);
         }
 
-        return parent::update($model);
+        // Set new group
+        $data = $this->getAttributes($model);
+        $data->remove(self::GROUP_FIELD);
+        $data->addAttribute(
+            new Attribute(self::GROUP_FIELD, $newGroup)
+        );
+
+        $columns = array($this->_table->getPrimaryKey());
+        $where = $this->getAttributes($model, $columns);
+
+        // Only owner and root can change group
+        if (!$this->_table->userIsRoot()) {
+            $uname = $this->_table->getUser();
+            $where->addAttribute(
+                new Attribute(self::OWNER_FIELD, $uname)
+            );
+        }
+
+        $stmt = $this->_table->update($data, $where);
+
+        return $stmt->rowCount();
     }
 
 }

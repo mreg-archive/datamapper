@@ -55,10 +55,20 @@ class Attribute
      *
      * Flag if attribute value should be escaped
      *
-     * @var bool $_escape
+     * @var bool $_escapeValue
      *
      */
-    protected $_escape;
+    private $_escapeValue = TRUE;
+
+
+    /**
+     *
+     * Flag if attribute name should be escaped
+     *
+     * @var bool $_escapeName
+     *
+     */
+    private $_escapeName = TRUE;
 
 
     /**
@@ -83,7 +93,6 @@ class Attribute
     {
         assert('is_string($name)');
         $this->_name = $name;
-        $this->_escape = TRUE;
 
         switch (gettype($value)) {
             case 'boolean':
@@ -96,7 +105,7 @@ class Attribute
 
             case 'NULL':
                 $this->_value = 'null';
-                $this->_escape = FALSE;
+                $this->setEscapeValue(FALSE);
                 break;
 
             case 'object':
@@ -143,14 +152,55 @@ class Attribute
 
     /**
      *
+     * Set if attribute value should be escaped
+     *
+     * @param bool $flag
+     *
+     */
+    public function setEscapeValue($flag)
+    {
+        assert('is_bool($flag)');
+        $this->_escapeValue = $flag;
+    }
+
+
+    /**
+     *
      * Check if attribute value should be escaped
      *
      * @return bool
      *
      */
-    public function escape()
+    public function escapeValue()
     {
-        return $this->_escape;
+        return $this->_escapeValue;
+    }
+
+
+    /**
+     *
+     * Set if attribute name should be escaped
+     *
+     * @param bool $flag
+     *
+     */
+    public function setEscapeName($flag)
+    {
+        assert('is_bool($flag)');
+        $this->_escapeName = $flag;
+    }
+
+
+    /**
+     *
+     * Check if attribute name should be escaped
+     *
+     * @return bool
+     *
+     */
+    public function escapeName()
+    {
+        return $this->_escapeName;
     }
 
 

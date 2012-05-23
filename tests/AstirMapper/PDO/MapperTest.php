@@ -64,8 +64,8 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $search = new Search();
         $search->setLimit(1);
 
-        $where = array(
-            'id' => new Attribute('id', 1)
+        $where = new AttributeContainer(
+            new Attribute('id', 1)
         );
 
         // Assert that select is called with correct params
@@ -113,7 +113,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $model = $this->getMockBuilder('itbz\AstirMapper\ModelInterface')
                       ->getMock();
 
-        // When searching by pk the first call to load must include only PK!!
+        // When searching by pk the first call to load must include only PK
         $model->expects($this->at(0))
               ->method('load')
               ->with(array('id'=>'1'));
@@ -146,7 +146,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
                       ->setMethods(array('getName','load'))
                       ->getMock();
 
-        // model->getName should be invoked to read name!!
+        // model->getName should be invoked to read name
         $model->expects($this->once())
               ->method('getName')
               ->will($this->returnValue($searchName));
@@ -157,43 +157,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /*
-     * Same testing strategy as in testFind
-     * Asserts that attribute->toSearchSql is called when parsing model
-     *
-     * TESTA ATT ANVÄNDA OPERATOR ISTÄLLET!!
-     *
-     * /
-    function testAttributeToSearch()
-    {
-        $nameAttribute = $this->getMockBuilder('itbz\AstirMapper\Attribute\AttributeInterface')
-                              ->getMock();
-
-        // attribute->toSearchSql must be called when creating serch data!! 
-        $nameAttribute->expects($this->atLeastOnce())
-              ->method('toSearchSql');
-
-        $data = array(
-            'name' => $nameAttribute
-        );
-        
-        $table = $this->getSelectOnceTableMock(array_keys($data));
-
-        $table->expects($this->once())
-              ->method('select')
-              ->will($this->returnValue($this->getSelectOnceStmtMock($data)));
-
-        $model = $this->getMockBuilder('itbz\AstirMapper\ModelInterface')
-                      ->getMock();
-
-        $mapper = new Mapper($table, clone $model);
-
-        $model->name = $nameAttribute;
-
-        $mapper->find($model);
-    }*/
-
-
     /**
      * @expectedException itbz\AstirMapper\Exception\NotFoundException
      */
@@ -201,7 +164,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $table = $this->getSelectOnceTableMock(array('id'));
 
-        // Return statement with no data!!
+        // Return statement with no data
         $table->expects($this->once())
               ->method('select')
               ->will($this->returnValue($this->getSelectOnceStmtMock(FALSE)));
@@ -235,21 +198,19 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     function testInsert()
     {
-        $data = array(
-            'id' => new Attribute('id', 1),
-            'name' => new Attribute('name', 'foobar')
-        );
-
-        $table = $this->getSelectOnceTableMock(array_keys($data));
+        $table = $this->getSelectOnceTableMock(array('id', 'name'));
 
         $table->expects($this->any())
               ->method('select')
               ->will($this->returnValue($this->getSelectOnceStmtMock(FALSE)));
 
-        // Assert that insert is called on table with $data!!
+        // Assert that insert is called on table
         $table->expects($this->once())
               ->method('insert')
-              ->with($data)
+              ->with(new AttributeContainer(
+                  new Attribute('id', 1),
+                  new Attribute('name', 'foobar')
+              ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
         $model = $this->getMockBuilder('itbz\AstirMapper\ModelInterface')
@@ -266,19 +227,14 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     function testInsertWithNoPk()
     {
-        // saveing data with no primary key, should trigger insert()
-        $insertData = array(
-            'name' => new Attribute('name', 'foobar')
-        );
+        $table = $this->getSelectOnceTableMock(array('id', 'name'));
 
-        $table = $this->getSelectOnceTableMock(array(
-            'id', 'name'
-        ));
-
-        // Assert that insert is called on table with $insertData!!
+        // Assert that insert is called on table
         $table->expects($this->once())
               ->method('insert')
-              ->with($insertData)
+              ->with(new AttributeContainer(
+                  new Attribute('name', 'foobar')
+              ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
         $model = $this->getMockBuilder('itbz\AstirMapper\ModelInterface')
@@ -299,7 +255,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
                       ->setMethods(array('lastInsertId'))
                       ->getMock();
 
-        // Assert that lastInsertId is called on table!!
+        // Assert that lastInsertId is called on table
         $table->expects($this->once())
               ->method('lastInsertId')
               ->will($this->returnValue(1));
@@ -320,21 +276,19 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             'name' => 'foobar'
         );
 
-        $dataToUpdate = array(
-            'id' => new Attribute('id', 1),
-            'name' => new Attribute('name', 'new name')
-        );
-
         $table = $this->getSelectOnceTableMock(array_keys($dataInDb));
 
         $table->expects($this->any())
               ->method('select')
               ->will($this->returnValue($this->getSelectOnceStmtMock($dataInDb)));
 
-        // Assert that update is called on table with $dataToUpdate!!
+        // Assert that update is called on table
         $table->expects($this->once())
               ->method('update')
-              ->with($dataToUpdate)
+              ->with(new AttributeContainer(
+                  new Attribute('id', 1),
+                  new Attribute('name', 'new name')
+              ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
         $model = $this->getMockBuilder('itbz\AstirMapper\ModelInterface')
@@ -357,8 +311,8 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $table->expects($this->once())
               ->method('delete')
               ->with(
-                  array(
-                     'id' => new Attribute('id', 1)
+                  new AttributeContainer(
+                     new Attribute('id', 1)
                   )
               )
               ->will($this->returnValue($this->getUpdateStmtMock(1)));

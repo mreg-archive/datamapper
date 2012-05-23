@@ -17,7 +17,12 @@
  */
 namespace itbz\AstirMapper\PDO\Access;
 use itbz\AstirMapper\PDO\Table\MysqlTable;
+use itbz\AstirMapper\PDO\Search;
+use itbz\AstirMapper\PDO\AttributeContainer;
+use itbz\AstirMapper\PDO\Attribute;
+use itbz\AstirMapper\Exception\AccessDeniedException;
 use PDO;
+use PDOStatement;
 
 
 /**
@@ -39,7 +44,7 @@ class AcTable extends MysqlTable implements AccessInterface
      * @var string $owner
      *
      */
-    protected $_owner;
+    private $_owner;
 
 
     /**
@@ -49,7 +54,7 @@ class AcTable extends MysqlTable implements AccessInterface
      * @var string $_group
      *
      */
-    protected $_group;
+    private $_group;
 
 
     /**
@@ -59,7 +64,27 @@ class AcTable extends MysqlTable implements AccessInterface
      * @var int $_mode
      *
      */
-    protected $_mode;
+    private $_mode;
+
+
+    /**
+     *
+     * Name of user
+     *
+     * @var string $_uname
+     *
+     */
+    private $_uname = '';
+    
+
+    /**
+     *
+     * List of groups user belongs to
+     *
+     * @var array $_ugroups
+     *
+     */
+    private $_ugroups = array();
 
 
     /**
@@ -98,32 +123,168 @@ class AcTable extends MysqlTable implements AccessInterface
 
     /**
      *
+     * Select rows from db
+     *
+     * @param Search $search
+     *
+     * @param AttributeContainer $where
+     *
+     * @return PDOStatement
+     *
+     * @throws AccessDeniedException if user does not have access
+     *
+     */
+    public function select(Search $search, AttributeContainer $where = NULL)
+    {
+        if (!$this->isAllowedExecute()) {
+            $msg = "Access denied at table '{$this->getName()}'";
+            throw new AccessDeniedException($msg);
+        }
+
+        if (!$where) {
+            $where = new AttributeContainer();
+        }
+
+        // Add mode constraint to where clause
+        $where->addAttribute(
+            new Mode(
+                'r',
+                $this->getName(),
+                $this->_uname,
+                $this->_ugroups
+            )
+        );
+
+        return $this->forwardValidStmt(
+            'selecting from',
+            parent::select($search, $where),
+            $where,
+            $search
+        );
+    }
+
+
+    /**
+     *
+     * Delete records from db that matches where
+     *
+     * @param AttributeContainer $where
+     *
+     * @return PDOStatement
+     *
+     * @throws AccessDeniedException if user does not have access
+     *
+     */
+    public function delete(AttributeContainer $where)
+    {
+        if (!$this->isAllowedWrite()) {
+            $msg = "Access denied at table '{$this->getName()}'";
+            throw new AccessDeniedException($msg);
+        }
+
+        // Add mode constraint to where clause
+        $where->addAttribute(
+            new Mode(
+                'w',
+                $this->getName(),
+                $this->_uname,
+                $this->_ugroups
+            )
+        );
+
+        return $this->forwardValidStmt(
+            'deleting',
+            parent::delete($where),
+            $where
+        );
+    }
+
+
+    /**
+     *
+     * Insert values into db
+     *
+     * @param AttributeContainer $data
+     *
+     * @return PDOStatement
+     *
+     * @throws AccessDeniedException if user does not have access
+     *
+     */
+    public function insert(AttributeContainer $data)
+    {
+        if (!$this->isAllowedWrite()) {
+            $msg = "Access denied at table '{$this->getName()}'";
+            throw new AccessDeniedException($msg);
+        }
+
+        $defaultGroup = isset($this->_ugroups[0]) ? $this->_ugroups[0] : '';
+        $defaults = array(
+            self::OWNER_FIELD => $this->_uname,
+            self::GROUP_FIELD => $defaultGroup,
+            self::MODE_FIELD => 0770
+        );
+
+        foreach ($defaults as $key => $value) {
+            if (!$data->exists($key)) {
+                $data->addAttribute(
+                    new Attribute($key, $value)
+                );
+            }
+        }
+
+        return parent::insert($data);
+    }
+
+
+    /**
+     *
+     * Update db based on where clauses
+     *
+     * @param AttributeContainer $data
+     *
+     * @param AttributeContainer $where
+     *
+     * @return PDOStatement
+     *
+     * @throws AccessDeniedException if user does not have access
+     *
+     */
+    public function update(AttributeContainer $data, AttributeContainer $where)
+    {
+        if (!$this->isAllowedExecute()) {
+            $msg = "Access denied at table '{$this->getName()}'";
+            throw new AccessDeniedException($msg);
+        }
+
+        // Add mode constraint to where clause
+        $where->addAttribute(
+            new Mode(
+                'w',
+                $this->getName(),
+                $this->_uname,
+                $this->_ugroups
+            )
+        );
+
+        return $this->forwardValidStmt(
+            'updating',
+            parent::update($data, $where),
+            $where
+        );
+    }
+
+
+    /**
+     *
      * Check if user is allowed to read table
-     *
-     * @param string $uname
-     *
-     * @param array $ugroups
      *
      * @return bool
      *
      */
-    public function isAllowedRead($uname, array $ugroups)
+    public function isAllowedRead()
     {
-        assert('is_string($uname)');
-        
-        if ($this->isRoot($uname, $ugroups)) {
-            return TRUE;
-        }
-        
-        if ($this->isOwner($uname)) {
-            $mask = self::OWNER_READ;
-        } elseif ($this->isGroup($ugroups)) {
-            $mask = self::GROUP_READ;
-        } else {
-            $mask = self::OTHERS_READ;
-        }
-
-        return (($this->_mode & $mask) == $mask);        
+        return $this->isAllowedTable('r');
     }
 
 
@@ -131,30 +292,12 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * Check if user is allowed to write to table
      *
-     * @param string $uname
-     *
-     * @param array $ugroups
-     *
      * @return bool
      *
      */
-    public function isAllowedWrite($uname, array $ugroups)
+    public function isAllowedWrite()
     {
-        assert('is_string($uname)');
-        
-        if ($this->isRoot($uname, $ugroups)) {
-            return TRUE;
-        }
-        
-        if ($this->isOwner($uname)) {
-            $mask = self::OWNER_WRITE;
-        } elseif ($this->isGroup($ugroups)) {
-            $mask = self::GROUP_WRITE;
-        } else {
-            $mask = self::OTHERS_WRITE;
-        }
-
-        return (($this->_mode & $mask) == $mask);        
+        return $this->isAllowedTable('w');
     }
 
 
@@ -162,27 +305,146 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * Check if user is allowed to execute table
      *
-     * @param string $uname
+     * @return bool
      *
-     * @param array $ugroups
+     */
+    public function isAllowedExecute()
+    {
+        return $this->isAllowedTable('x');
+    }
+
+
+    /**
+     *
+     * Set info about current user
+     *
+     * @param string $uname Name of user
+     *
+     * @param array $ugroups List of groups user belongs to
+     *
+     */
+    public function setUser($uname, array $ugroups = array())
+    {
+        assert('is_string($uname)');
+        $this->_uname = $uname;
+        $this->_ugroups = $ugroups;
+
+        // Recursively set user on joined AcTables
+        foreach ($this->getJoins() as $table) {
+            if ($table instanceof AcTable) {
+                $table->setUser($uname, $ugroups);
+            }
+        }
+    }
+
+
+    /**
+     *
+     * Get name of current user
+     *
+     * @return string
+     *
+     */
+    public function getUser()
+    {
+        return $this->_uname;
+    }
+
+
+    /**
+     *
+     * Get groups of current user
+     *
+     * @return array
+     *
+     */
+    public function getUserGroups()
+    {
+        return $this->_ugroups;
+    }
+
+
+    /**
+     *
+     * Check if user is root
+     *
+     * The root user always have access. Roots are all users named 'root' or
+     * belonging to a group named 'root'.
      *
      * @return bool
      *
      */
-    public function isAllowedExecute($uname, array $ugroups)
+    public function userIsRoot()
     {
-        assert('is_string($uname)');
-        
-        if ($this->isRoot($uname, $ugroups)) {
-            return TRUE;
+        return $this->_uname == 'root' || in_array('root', $this->_ugroups);
+    }
+
+
+    /**
+     *
+     * Check if user owns table
+     *
+     * @return bool
+     *
+     */
+    public function userIsOwner()
+    {
+        return ($this->_owner == $this->_uname);
+    }
+
+
+    /**
+     *
+     * Check if user is in group that owns table
+     *
+     * @return bool
+     *
+     */
+    public function userIsGroup()
+    {
+        return in_array($this->_group, $this->_ugroups);
+    }
+
+
+    /**
+     *
+     * Check if user is allowed to perform action on table
+     *
+     * @param string $action 'r', 'w' or 'x'
+     *
+     * @return bool
+     *
+     */
+    private function isAllowedTable($action)
+    {
+        // Recursively check permissions on joined AcTables
+        foreach ($this->getJoins() as $table) {
+            if (
+                $table instanceof AcTable
+                && !$table->isAllowedTable($action)
+            ) {
+
+                return FALSE;
+            }
         }
         
-        if ($this->isOwner($uname)) {
-            $mask = self::OWNER_EXECUTE;
-        } elseif ($this->isGroup($ugroups)) {
-            $mask = self::GROUP_EXECUTE;
-        } else {
-            $mask = self::OTHERS_EXECUTE;
+        if ($this->userIsRoot()) {
+
+            return TRUE;
+        }
+
+        $masks = array(
+            'r' => 4,
+            'w' => 2,
+            'x' => 1,
+        );
+        
+        $mask = $masks[$action];
+        
+        if ($this->userIsOwner()) {
+            $mask = $mask << 6;
+        } elseif ($this->userIsGroup()) {
+            $mask = $mask << 3;
         }
 
         return (($this->_mode & $mask) == $mask);        
@@ -191,52 +453,57 @@ class AcTable extends MysqlTable implements AccessInterface
 
     /**
      *
-     * Check if user is root
+     * Validate row access for empty statements
      *
-     * The root user always have access. As default roots are all users named
-     * 'root' or belonging to a group named 'root'. Override to create different
-     * root definitions.
+     * Checks if statment is empty (using PDOStamtement::rowCount, hence this
+     * is not supported with all database drivers if the last executed query in
+     * statement was a select). If statement is empty valuate if this is due to
+     * access restrictions. If so throw exception. Else return statement as is.
      *
-     * @param string $uname
+     * @param string $verb Action description to be inserted in exception
+     * message
      *
-     * @param array $ugroups
+     * @param PDOStatement $stmt The statement to evaluate
      *
-     * @return bool
+     * @param AttributeContainer $where Where clause used when creating
+     * statement
      *
-     */
-    private function isRoot($uname, array $ugroups)
-    {
-        return ($uname == 'root' || in_array('root', $ugroups));
-    }
-
-
-    /**
+     * @param Search $search Search clause used when creating statement, if any
      *
-     * Check if user owns table
+     * @return PDOStatement
      *
-     * @param string $uname
-     *
-     * @return bool
+     * @throws AccessDeniedException if statement is empty due to access
+     * restrictions att row level
      *
      */
-    private function isOwner($uname)
+    private function forwardValidStmt(
+        $verb,
+        PDOStatement $stmt,
+        AttributeContainer $where,
+        Search $search = NULL
+    )
     {
-        return ($this->_owner == $uname);
-    }
+        assert('is_string($verb)');
+        
+        if (!$stmt->rowCount()) {
+            if (!$search) {
+                $search = new Search();
+            }
+            $where->popAttribute();
+            $fullAccessStmt = parent::select($search, $where);
+            if ($fullAccessStmt->rowCount()) {
+                // Access restricted, build exception message
+                $pk = $this->getPrimaryKey();
+                $row = '';
+                if ($where->exists($pk)) {
+                    $row = "at row '{$where->get($pk)->getValue()}'";
+                }
+                $msg = "Access denied $verb table '{$this->getName()}' $row";
+                throw new AccessDeniedException($msg);
+            }
+        }
 
-
-    /**
-     *
-     * Check if user is in group that owns table
-     *
-     * @param array $ugroups
-     *
-     * @return bool
-     *
-     */
-    private function isGroup(array $ugroups)
-    {
-        return in_array($this->_group, $ugroups);
+        return $stmt;
     }
 
 }

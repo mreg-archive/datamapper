@@ -218,14 +218,9 @@ class Mapper implements MapperInterface
      */
     public function save(ModelInterface $model)
     {
-        $pk = $this->_table->getPrimaryKey();
-        $attrs = $this->getAttributes($model, array($pk));
-        
         try {
-            if (
-                isset($attrs[$pk])
-                && $this->findByPk($attrs[$pk]->getValue())
-            ) {
+            $pk = $this->getPk($model);
+            if ($pk && $this->findByPk($pk)) {
                 // Model has a primary key and that key exists in db
 
                 return $this->update($model);
@@ -256,6 +251,28 @@ class Mapper implements MapperInterface
 
     /**
      *
+     * Get primary key from model
+     *
+     * @param ModelInterface $model
+     *
+     * @return string Empty string if no key was found
+     *
+     */
+    public function getPk(ModelInterface $model)
+    {
+        $pkName = $this->_table->getPrimaryKey();
+        $container = $this->getAttributes($model, array($pkName));
+        $pk = '';
+        if ($container->exists($pkName)) {
+            $pk = $container->get($pkName)->getValue();
+        }
+        
+        return $pk;
+    }
+
+
+    /**
+     *
      * Insert model into db
      *
      * @param ModelInterface $model
@@ -265,8 +282,8 @@ class Mapper implements MapperInterface
      */
     protected function insert(ModelInterface $model)
     {
-        $attributes = $this->getAttributes($model);
-        $stmt = $this->_table->insert($attributes);
+        $data = $this->getAttributes($model);
+        $stmt = $this->_table->insert($data);
 
         return $stmt->rowCount();
     }
@@ -283,10 +300,10 @@ class Mapper implements MapperInterface
      */
     protected function update(ModelInterface $model)
     {
-        $attributes = $this->getAttributes($model);
+        $data = $this->getAttributes($model);
         $columns = array($this->_table->getPrimaryKey());
         $where = $this->getAttributes($model, $columns);
-        $stmt = $this->_table->update($attributes, $where);
+        $stmt = $this->_table->update($data, $where);
 
         return $stmt->rowCount();
     }
@@ -305,16 +322,17 @@ class Mapper implements MapperInterface
      *
      * @param array $props List of properties to read
      *
-     * @return array Array of Attribute objects
+     * @return AttributeContainer
      *
      */
-    private function getAttributes(ModelInterface $model, array $props = NULL)
+    protected function getAttributes(ModelInterface $model, array $props = NULL)
     {
         if (!$props) {
             $props = $this->_table->getNativeColumns();
         }
 
-        $attributes = array();
+        $container = new AttributeContainer();
+        
         foreach ($props as $prop) {
             $method = $this->getCamelCase($prop, 'get');
             $camelParam = $this->getCamelCase($prop);
@@ -331,10 +349,10 @@ class Mapper implements MapperInterface
                 $attr = new Attribute($prop, $attr);
             }
             
-            $attributes[$prop] = $attr;
+            $container->addAttribute($attr);
         }
         
-        return $attributes;
+        return $container;
     }
 
 

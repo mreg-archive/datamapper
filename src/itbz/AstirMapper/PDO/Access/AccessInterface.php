@@ -32,6 +32,36 @@ interface AccessInterface
 
     /**
      *
+     * Name of owner field in db
+     *
+     * @const string OWNER_FIELD
+     *
+     */
+    const OWNER_FIELD = 'owner';
+
+
+    /**
+     *
+     * Name of group field in db
+     *
+     * @const string GROUP_FIELD
+     *
+     */
+    const GROUP_FIELD = 'group';
+
+
+    /**
+     *
+     * Name of mode field in db
+     *
+     * @const string MODE_FIELD
+     *
+     */
+    const MODE_FIELD = 'mode';
+
+
+    /**
+     *
      * Owner read, write and execute permission flag
      *
      * @const int OWNER_ALL
