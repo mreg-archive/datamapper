@@ -1,6 +1,6 @@
 {
-    "name": "itbz/astirmapper",
-    "description": "PHP data mapper",
+    "name": "itbz/AstirMapper",
+    "description": "Generic data mapper",
     "keywords": ["mapper", "data mapper"],
     "homepage": "https://github.com/itbz/AstirMapper",
     "type": "library",

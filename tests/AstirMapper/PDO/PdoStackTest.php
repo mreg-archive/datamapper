@@ -50,7 +50,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foobar', $model2->name);
 
         // Find by name
-        $model3 = $mapper->find($model1);
+        $model3 = $mapper->find(array('name'=>'foobar'));
         $this->assertEquals('1', $model3->id);
 
         // Delete primary key == 1
@@ -59,7 +59,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $mapper->delete($model4);
 
         // Find by name yields primary key == 2
-        $model5 = $mapper->find($model1);
+        $model5 = $mapper->find(array('name'=>'foobar'));
         $this->assertEquals('2', $model5->id);
     }
 
@@ -73,7 +73,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $mapper->save($model);
         $mapper->save($model);
 
-        $iterator = $mapper->findMany($model, new Search());
+        $iterator = $mapper->findMany(array('name'=>'foobar'), new Search());
         $key = '';
         foreach ($iterator as $key => $mod) {}
         

@@ -30,7 +30,7 @@ class AccesStackTest extends \itbz\AstirMapper\MysqlTestCase
         // 'usr' should find rows 'useronly' and 'usrgrp'
         $mapper->setUser('usr', array('foo', 'bar'));
 
-        $iterator = $mapper->findMany(new \Model(), new Search());
+        $iterator = $mapper->findMany(array(), new Search());
         $found = '';
         foreach ($iterator as $key => $data)
         {
@@ -47,7 +47,7 @@ class AccesStackTest extends \itbz\AstirMapper\MysqlTestCase
     {
         // Unnamed user is blocked
         $mapper = $this->getMapper();
-        $mapper->findMany(new \Model(), new Search());
+        $mapper->findMany(array(), new Search());
     }
 
 
@@ -57,17 +57,15 @@ class AccesStackTest extends \itbz\AstirMapper\MysqlTestCase
         $mapper->setUser('usr', array('foo', 'bar'));
         $mapper->delete(new \Model());
 
-        $model = new \Model();
-        $model->name = "useronly";
-
-        $iterator = $mapper->findMany($model, new Search());
+        $where = array('name' => "useronly");
+        $iterator = $mapper->findMany($where, new Search());
         $count = 0;
         foreach ($iterator as $key => $data) $count++;
         $this->assertEquals(0, $count, 'useronly should be deleted');
 
         $mapper->setUser('', array('grp'));
 
-        $iterator = $mapper->findMany(new \Model(), new Search());
+        $iterator = $mapper->findMany(array(), new Search());
         $count = 0;
         foreach ($iterator as $key => $data) $count++;
         $this->assertEquals(1, $count, 'grp can read grponly');
@@ -147,7 +145,7 @@ class AccesStackTest extends \itbz\AstirMapper\MysqlTestCase
         $mapper->setUser('foobar');
 
         // Now only useronly, with owner foobar, should be readable
-        $iterator = $mapper->findMany(new \Model(), new Search());
+        $iterator = $mapper->findMany(array(), new Search());
         $found = '';
         foreach ($iterator as $key => $data)
         {

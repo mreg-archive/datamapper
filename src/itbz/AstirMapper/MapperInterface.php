@@ -29,53 +29,53 @@ interface MapperInterface
 
     /**
      *
-     * Persistently store record
+     * Persistently store model
      *
-     * @param ModelInterface $record
+     * @param ModelInterface $model
      *
      * @return int Number of affected rows
      *
      */
-    public function save(ModelInterface $record);
+    public function save(ModelInterface $model);
 
 
     /**
      *
-     * Delete record from persistent storage
+     * Delete model from persistent storage
      *
-     * @param ModelInterface $record
+     * @param ModelInterface $model
      *
 	 * @return int Number of affected rows
 	 *
      */
-    public function delete(ModelInterface $record);
+    public function delete(ModelInterface $model);
 
 
     /**
      *
-     * Find record based on current record data
+     * Read data from persistent storage
      *
-     * @param ModelInterface $record
+     * @param array $conditions
      *
      * @return ModelInterface
      *
-     * @throws NotFoundException if no record was found
+     * @throws NotFoundException if nothing was found
      *
      */
-    public function find(ModelInterface $record);
+    public function find(array $conditions);
 
 
     /**
      *
-     * Get iterator containing multiple racords based on search
+     * Get iterator containing multiple models based on search
      *
-     * @param ModelInterface $record
+     * @param array $conditions
      *
      * @param SearchInterface $search
      *
      * @return Iterator
      *
      */
-    public function findMany(ModelInterface $record, SearchInterface $search);
+    public function findMany(array $conditions, SearchInterface $search);
 
 }

@@ -77,17 +77,19 @@ class Mapper implements MapperInterface
      *
      * Get iterator containing multiple racords based on search
      *
-     * @param ModelInterface $model
+     * @param array $where
      *
      * @param SearchInterface $search
      *
      * @return \Iterator
      *
      */
-    public function findMany(ModelInterface $model, SearchInterface $search)
+    public function findMany(array $where, SearchInterface $search)
     {
-        $where = $this->getExprSet($model);
-        $stmt = $this->_table->select($search, $where);
+        $stmt = $this->_table->select(
+            $search,
+            $this->arrayToExprSet($where)
+        );
 
         return $this->getIterator($stmt);
     }
@@ -97,18 +99,18 @@ class Mapper implements MapperInterface
      *
      * Find models that match current model values.
      *
-     * @param ModelInterface $model
+     * @param array $where
      *
      * @return ModelInterface
      *
      * @throws NotFoundException if no model was found
      *
      */
-    public function find(ModelInterface $model)
+    public function find(array $where)
     {
         $search = new Search();
         $search->setLimit(1);
-        $iterator = $this->findMany($model, $search);
+        $iterator = $this->findMany($where, $search);
 
         // Return first object in iterator
         foreach ($iterator as $object) {
@@ -125,19 +127,16 @@ class Mapper implements MapperInterface
      *
      * Find model based on primary key
      *
-     * @param scalar $key
+     * @param mixed $key
      *
      * @return ModelInterface
      *
      */
     public function findByPk($key)
     {
-        assert('is_scalar($key)');
-        $model = clone $this->_prototype;
-        $data = array($this->_table->getPrimaryKey() => $key);
-        $model->load($data);
-
-        return $this->find($model);
+        return $this->find(
+            array($this->_table->getPrimaryKey() => $key)
+        );
     }
 
 
@@ -153,7 +152,7 @@ class Mapper implements MapperInterface
     public function delete(ModelInterface $model)
     {
         $pk = $this->_table->getPrimaryKey();
-        $where = $this->getExprSet($model, array($pk));
+        $where = $this->extract($model, array($pk));
         $stmt = $this->_table->delete($where);
 
         return $stmt->rowCount();
@@ -217,13 +216,26 @@ class Mapper implements MapperInterface
     public function getPk(ModelInterface $model)
     {
         $pkName = $this->_table->getPrimaryKey();
-        $exprSet = $this->getExprSet($model, array($pkName));
+        $exprSet = $this->extract($model, array($pkName));
         $pk = '';
         if ($exprSet->isExpression($pkName)) {
             $pk = $exprSet->getExpression($pkName)->getValue();
         }
         
         return $pk;
+    }
+
+
+    /**
+     *
+     * Get a new prototype clone
+     *
+     * @return ModelInterface
+     *
+     */
+    public function getModel()
+    {
+        return clone $this->_prototype;
     }
 
 
@@ -238,7 +250,7 @@ class Mapper implements MapperInterface
      */
     protected function insert(ModelInterface $model)
     {
-        $data = $this->getExprSet($model);
+        $data = $this->extract($model);
         $stmt = $this->_table->insert($data);
 
         return $stmt->rowCount();
@@ -256,9 +268,9 @@ class Mapper implements MapperInterface
      */
     protected function update(ModelInterface $model)
     {
-        $data = $this->getExprSet($model);
+        $data = $this->extract($model);
         $pk = $this->_table->getPrimaryKey();
-        $where = $this->getExprSet($model, array($pk));
+        $where = $this->extract($model, array($pk));
         $stmt = $this->_table->update($data, $where);
 
         return $stmt->rowCount();
@@ -286,79 +298,63 @@ class Mapper implements MapperInterface
 
     /**
      *
-     * Convert model to ExpressionSet
+     * Extract data from model
      *
-     * Model property names are converted to camel-case. If the requested param
-     * is 'fooBar' first a method called 'getFooBar()' is looked for. If it does
-     * not exist the property 'fooBar' is looked for. If property does not exist
-     * it is simply skipped.
+     * Property name is converted to a method call on model by prefixing name
+     * with 'get' and removing all non alpha-numeric characters. If method
+     * exists the return value is extracted. If not property is read directly
+     * from model.
      *
      * @param ModelInterface $model
      *
-     * @param array $props List of properties to read
+     * @param array $extract List of properties to extract. Defaults to native
+     * table column names.
      *
      * @return ExpressionSet
      *
      */
-    protected function getExprSet(ModelInterface $model, array $props = NULL)
+    protected function extract(ModelInterface $model, array $extract = NULL)
     {
-        if (!$props) {
-            $props = $this->_table->getNativeColumns();
+        if (!$extract) {
+            $extract = $this->_table->getNativeColumns();
         }
 
-        $exprSet = new ExpressionSet();
-        
-        foreach ($props as $prop) {
-            $method = $this->getCamelCase($prop, 'get');
-            $camelParam = $this->getCamelCase($prop);
-
+        $data = array();
+        foreach ($extract as $property) {
+            $method = 'get' . preg_replace('/[^0-9a-z]/i', '', $property);
             if (method_exists($model, $method)) {
-                $expr = $model->$method();
-            } elseif (property_exists($model, $camelParam)) {
-                $expr = $model->$camelParam;
-            } else {
-                continue;
+                $data[$property] = $model->$method();
+            } elseif (property_exists($model, $property)) {
+                $data[$property] = $model->$property;
             }
+        }
+        
+        return $this->arrayToExprSet($data);
+    }
 
+
+    /**
+     *
+     * Convert array to ExpressionSet
+     *
+     * @param array $data
+     *
+     * @return ExpressionSet
+     *
+     */
+    protected function arrayToExprSet(array $data)
+    {
+        $exprSet = new ExpressionSet();
+        foreach ($data as $name => $expr) {
             if (!$expr instanceof Expression) {
-                $expr = new Expression($prop, $expr);
+                $expr = new Expression($name, $expr);
             }
-            
             if (!$expr instanceof Ignore) {
                 $exprSet->addExpression($expr);
             }
         }
         
         return $exprSet;
-    }
-
-
-    /**
-     *
-     * Convert string to camel case
-     *
-     * Only the first letter if each word is converted. Else original casing
-     * is preserved. Underscore is treated as a word delimiter.
-     *
-     * @param string $str
-     *
-     * @param string $prefix
-     *
-     * @return string
-     *
-     */
-    private function getCamelCase($str, $prefix = '')
-    {
-        $words = explode('_', $str);
-        if ($prefix) {
-            array_unshift($words, $prefix);
-        }
-        $camel = lcfirst(array_shift($words));
-        while ($word = array_shift($words)) {
-            $camel .= ucfirst($word);
-        }
-        
-        return $camel;
     }
 
 }

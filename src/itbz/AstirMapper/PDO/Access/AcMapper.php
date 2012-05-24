@@ -95,7 +95,7 @@ class AcMapper extends Mapper implements AccessInterface
         }
 
         // Set new owner
-        $data = $this->getExprSet($model);
+        $data = $this->extract($model);
         $data->removeExpression(self::OWNER_FIELD);
         $data->addExpression(
             new Expression(self::OWNER_FIELD, $newOwner)
@@ -103,7 +103,7 @@ class AcMapper extends Mapper implements AccessInterface
 
         // Update model
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->getExprSet($model, $columns);
+        $where = $this->extract($model, $columns);
         $stmt = $this->_table->update($data, $where);
 
         return $stmt->rowCount();
@@ -135,14 +135,14 @@ class AcMapper extends Mapper implements AccessInterface
         }
 
         // Set new mode
-        $data = $this->getExprSet($model);
+        $data = $this->extract($model);
         $data->removeExpression(self::MODE_FIELD);
         $data->addExpression(
             new Expression(self::MODE_FIELD, $newMode)
         );
 
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->getExprSet($model, $columns);
+        $where = $this->extract($model, $columns);
 
         // Only owner and root can change mode
         if (!$this->_table->userIsRoot()) {
@@ -193,14 +193,14 @@ class AcMapper extends Mapper implements AccessInterface
         }
 
         // Set new group
-        $data = $this->getExprSet($model);
+        $data = $this->extract($model);
         $data->removeExpression(self::GROUP_FIELD);
         $data->addExpression(
             new Expression(self::GROUP_FIELD, $newGroup)
         );
 
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->getExprSet($model, $columns);
+        $where = $this->extract($model, $columns);
 
         // Only owner and root can change group
         if (!$this->_table->userIsRoot()) {

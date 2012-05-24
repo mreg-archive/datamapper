@@ -40,12 +40,16 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $stmt = $this->getMock(
             "\PDOStatement",
-            array('setFetchMode', 'fetch', 'execute')
+            array('setFetchMode', 'fetch', 'execute', 'rowCount')
         );
 
         $stmt->expects($this->once())
              ->method('fetch')
              ->will($this->returnValue($data));
+
+        $stmt->expects($this->any())
+             ->method('rowCount')
+             ->will($this->returnValue(1));
 
         return $stmt;
     }
@@ -59,7 +63,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             'name' => 'foobar'
         );
         
-        $table = $this->getSelectOnceTableMock(array_keys($data));
+        $table = $this->getSelectOnceTableMock(array_keys($data), $this->any());
 
         $search = new Search();
         $search->setLimit(1);
@@ -82,8 +86,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
               ->with($data);
 
         $mapper = new Mapper($table, clone $model);
-        $model->id = 1;
-        $returnModel = $mapper->find($model);
+        $returnModel = $mapper->find(array('id'=>1));
         
         // Must return a clone of the prototype model
         $this->assertInstanceOf('itbz\AstirMapper\ModelInterface', $returnModel);
@@ -104,7 +107,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             'name' => 'foobar'
         );
         
-        $table = $this->getSelectOnceTableMock(array_keys($data));
+        $table = $this->getSelectOnceTableMock(array_keys($data), $this->any());
 
         $table->expects($this->once())
               ->method('select')
@@ -112,11 +115,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $model = $this->getMockBuilder('itbz\AstirMapper\ModelInterface')
                       ->getMock();
-
-        // When searching by pk the first call to load must include only PK
-        $model->expects($this->at(0))
-              ->method('load')
-              ->with(array('id'=>'1'));
 
         $mapper = new Mapper($table, $model);
 
@@ -138,22 +136,28 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         
         $table = $this->getSelectOnceTableMock(array_keys($data));
 
+        $stmt = $this->getSelectOnceStmtMock($data);
+
         $table->expects($this->once())
               ->method('select')
-              ->will($this->returnValue($this->getSelectOnceStmtMock($data)));
+              ->will($this->returnValue($stmt));
+
+        $table->expects($this->once())
+              ->method('update')
+              ->will($this->returnValue($stmt));
 
         $model = $this->getMockBuilder('itbz\AstirMapper\ModelInterface')
                       ->setMethods(array('getName','load'))
                       ->getMock();
 
         // model->getName should be invoked to read name
-        $model->expects($this->once())
+        $model->expects($this->atLeastOnce())
               ->method('getName')
               ->will($this->returnValue($searchName));
 
         $mapper = new Mapper($table, clone $model);
 
-        $mapper->find($model);
+        $mapper->save($model);
     }
 
 
@@ -162,7 +166,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
      */
     function testNotFoundException()
     {
-        $table = $this->getSelectOnceTableMock(array('id'));
+        $table = $this->getSelectOnceTableMock(array('id'), $this->any());
 
         // Return statement with no data
         $table->expects($this->once())
@@ -174,7 +178,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $mapper = new Mapper($table, clone $model);
 
-        $mapper->find($model);
+        $mapper->find(array());
     }
 
 

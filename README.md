@@ -41,16 +41,12 @@ planed.
     // create mapper
     $mapper = new \itbz\AstirMapper\PDO\Mapper($table, $prototype);
 
-    // defined search values in a model object
-    $model = new MyModel();
-    $model->id = 1;
-    
-    // serch db for all rows matching model
-    $iterator = $mapper->findMany($model);
+    // select from db
+    $iterator = $mapper->findMany(array('name' => 'foobar'));
 
     // iterate over results
-    foreach ($iterator as $obj) {
-        // $obj is an instance of MyModel with data from database set
+    foreach ($iterator as $model) {
+        // $model is an instance of MyModel
     }
 
     // alter some values
