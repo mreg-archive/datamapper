@@ -22,50 +22,6 @@ use itbz\AstirMapper\SearchInterface;
 use itbz\AstirMapper\Exception\NotFoundException;
 use itbz\AstirMapper\Exception;
 use itbz\AstirMapper\PDO\Table\Table;
-use PDO;
-
-
-/*
-
-    låt routes.php vara en funktion som returnerar något
-        så att jag inte fyller upp global state med data...
-
-
-
-    $membersIterator = $mapper->findFromFaction($faction);
-
-    osv. jag kan nog fundera ut en massa mer hur detta ska fungera
-        vad jag annars vill göra med en member kan jaq se i Member.php
-            samt i views.php, member-funktionerna
-        
-
-    för adresser kan det se ut såhär
-        $mapper = new AddressMapper();
-        $address = $mapper->findByMember($member);        
-        $address = $mapper->findByFaction($faction);
-        osv...
-        Att spara adresser blir sedan ett arbete en adress i taget...
-        snyggt!!
-
-    
-    jag har kvar all funktionalitet jag skrivit i Astir
-        men jag bryter ut det till flera olika klasser
-
-        * spara/hämta hamnar i Mapper.php
-        * allt med att iterera i Record.php hamnar i en Iterator.php istället
-        * setId osv hamnar i varje Model istället
-        * getPhoneNumber osv. som ni är i Models hamnar i en egen Mapper
-        
-        * allting får helt enkelt sin egen plats i klass-strukturen
-            vilket helt klart blir en tydlig förbättring!!!!
-
-
-     börja med att implementera de är idéerna i wrapper
-        se sedan om jag kan gå vidare till de Records jag redan har...
-        jag kan fortfarande kalla dessa för Records, det är bara det att
-            de inte behöver ärva en massa skumma klasser längre...
-
-*/
 
 
 /**
