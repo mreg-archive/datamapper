@@ -64,8 +64,8 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $search = new Search();
         $search->setLimit(1);
 
-        $where = new AttributeContainer(
-            new Attribute('id', 1)
+        $where = new ExpressionSet(
+            new Expression('id', 1)
         );
 
         // Assert that select is called with correct params
@@ -207,9 +207,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // Assert that insert is called on table
         $table->expects($this->once())
               ->method('insert')
-              ->with(new AttributeContainer(
-                  new Attribute('id', 1),
-                  new Attribute('name', 'foobar')
+              ->with(new ExpressionSet(
+                  new Expression('id', 1),
+                  new Expression('name', 'foobar')
               ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
@@ -232,8 +232,8 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // Assert that insert is called on table
         $table->expects($this->once())
               ->method('insert')
-              ->with(new AttributeContainer(
-                  new Attribute('name', 'foobar')
+              ->with(new ExpressionSet(
+                  new Expression('name', 'foobar')
               ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
@@ -285,9 +285,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // Assert that update is called on table
         $table->expects($this->once())
               ->method('update')
-              ->with(new AttributeContainer(
-                  new Attribute('id', 1),
-                  new Attribute('name', 'new name')
+              ->with(new ExpressionSet(
+                  new Expression('id', 1),
+                  new Expression('name', 'new name')
               ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
@@ -311,8 +311,8 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $table->expects($this->once())
               ->method('delete')
               ->with(
-                  new AttributeContainer(
-                     new Attribute('id', 1)
+                  new ExpressionSet(
+                     new Expression('id', 1)
                   )
               )
               ->will($this->returnValue($this->getUpdateStmtMock(1)));

@@ -1,5 +1,5 @@
 <?php
-namespace itbz\AstirMapper\PDO;
+namespace itbz\AstirMapper;
 
 
 class DateTimeTest extends \PHPUnit_Framework_TestCase

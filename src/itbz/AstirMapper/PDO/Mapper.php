@@ -27,8 +27,10 @@ use PDO;
 
 /*
 
-    $mapper = new MemberMapper($authUser); 
-    // kan jag implementera rättigheter såhär??
+    låt routes.php vara en funktion som returnerar något
+        så att jag inte fyller upp global state med data...
+
+
 
     $membersIterator = $mapper->findFromFaction($faction);
 
@@ -128,7 +130,7 @@ class Mapper implements MapperInterface
      */
     public function findMany(ModelInterface $model, SearchInterface $search)
     {
-        $where = $this->getAttributes($model);
+        $where = $this->getExprSet($model);
         $stmt = $this->_table->select($search, $where);
 
         $iterator = new Iterator(
@@ -196,8 +198,8 @@ class Mapper implements MapperInterface
      */
     public function delete(ModelInterface $model)
     {
-        $columns = array($this->_table->getPrimaryKey());
-        $where = $this->getAttributes($model, $columns);
+        $pk = $this->_table->getPrimaryKey();
+        $where = $this->getExprSet($model, array($pk));
         $stmt = $this->_table->delete($where);
 
         return $stmt->rowCount();
@@ -261,10 +263,10 @@ class Mapper implements MapperInterface
     public function getPk(ModelInterface $model)
     {
         $pkName = $this->_table->getPrimaryKey();
-        $container = $this->getAttributes($model, array($pkName));
+        $exprSet = $this->getExprSet($model, array($pkName));
         $pk = '';
-        if ($container->exists($pkName)) {
-            $pk = $container->get($pkName)->getValue();
+        if ($exprSet->isExpression($pkName)) {
+            $pk = $exprSet->getExpression($pkName)->getValue();
         }
         
         return $pk;
@@ -282,7 +284,7 @@ class Mapper implements MapperInterface
      */
     protected function insert(ModelInterface $model)
     {
-        $data = $this->getAttributes($model);
+        $data = $this->getExprSet($model);
         $stmt = $this->_table->insert($data);
 
         return $stmt->rowCount();
@@ -300,9 +302,9 @@ class Mapper implements MapperInterface
      */
     protected function update(ModelInterface $model)
     {
-        $data = $this->getAttributes($model);
-        $columns = array($this->_table->getPrimaryKey());
-        $where = $this->getAttributes($model, $columns);
+        $data = $this->getExprSet($model);
+        $pk = $this->_table->getPrimaryKey();
+        $where = $this->getExprSet($model, array($pk));
         $stmt = $this->_table->update($data, $where);
 
         return $stmt->rowCount();
@@ -311,7 +313,7 @@ class Mapper implements MapperInterface
 
     /**
      *
-     * Convert model to an array of Attribute objects
+     * Convert model to ExpressionSet
      *
      * Model property names are converted to camel-case. If the requested param
      * is 'fooBar' first a method called 'getFooBar()' is looked for. If it does
@@ -322,37 +324,37 @@ class Mapper implements MapperInterface
      *
      * @param array $props List of properties to read
      *
-     * @return AttributeContainer
+     * @return ExpressionSet
      *
      */
-    protected function getAttributes(ModelInterface $model, array $props = NULL)
+    protected function getExprSet(ModelInterface $model, array $props = NULL)
     {
         if (!$props) {
             $props = $this->_table->getNativeColumns();
         }
 
-        $container = new AttributeContainer();
+        $exprSet = new ExpressionSet();
         
         foreach ($props as $prop) {
             $method = $this->getCamelCase($prop, 'get');
             $camelParam = $this->getCamelCase($prop);
 
             if (method_exists($model, $method)) {
-                $attr = $model->$method();
+                $expr = $model->$method();
             } elseif (property_exists($model, $camelParam)) {
-                $attr = $model->$camelParam;
+                $expr = $model->$camelParam;
             } else {
                 continue;
             }
 
-            if (!$attr instanceof Attribute) {
-                $attr = new Attribute($prop, $attr);
+            if (!$expr instanceof Expression) {
+                $expr = new Expression($prop, $expr);
             }
             
-            $container->addAttribute($attr);
+            $exprSet->addExpression($expr);
         }
         
-        return $container;
+        return $exprSet;
     }
 
 

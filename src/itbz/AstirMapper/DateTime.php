@@ -12,10 +12,8 @@
  *
  * @package AstirMapper
  *
- * @subpackage PDO
- *
  */
-namespace itbz\AstirMapper\PDO;
+namespace itbz\AstirMapper;
 
 
 /**
@@ -24,12 +22,9 @@ namespace itbz\AstirMapper\PDO;
  *
  * Wrapper around PHPs native DateTime class to enable auto-conversion. To avoid
  * that PHPs time zone capabilities conflict with time zoning in the database
- * times should be stored in integer columns. In MySQL this amounts to the
- * regular INT type.
+ * times should be stored as integers.
  *
  * @package AstirMapper
- *
- * @subpackage PDO
  *
  */
 class DateTime extends \DateTime

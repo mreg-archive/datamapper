@@ -6,7 +6,7 @@ class ModeTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\PdoException
+     * @expectedException itbz\AstirMapper\PDO\Access\Exception
      */
     function testActionException()
     {

@@ -1,9 +1,6 @@
 <?php
-namespace itbz\AstirMapper\tests;
-use itbz\AstirMapper\ModelInterface;
 
-
-class DataModel implements ModelInterface
+class Model implements \itbz\AstirMapper\ModelInterface
 {
     public function load(array $data)
     {

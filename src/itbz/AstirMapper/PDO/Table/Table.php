@@ -18,7 +18,7 @@
 namespace itbz\AstirMapper\PDO\Table;
 use itbz\AstirMapper\Exception\PdoException;
 use itbz\AstirMapper\PDO\Search;
-use itbz\AstirMapper\PDO\AttributeContainer;
+use itbz\AstirMapper\PDO\ExpressionSet;
 use PDO;
 use PDOStatement;
 
@@ -378,12 +378,12 @@ class Table
      *
      * @param Search $search
      *
-     * @param AttributeContainer $where
+     * @param ExpressionSet $where
      *
      * @return PDOStatement
      *
      */
-    public function select(Search $search, AttributeContainer $where = NULL)
+    public function select(Search $search, ExpressionSet $where = NULL)
     {
         $columns = $search->getColumns();
 
@@ -402,7 +402,7 @@ class Table
 
         // Set where
         if ($where) {
-            list($whereClause, $whereValues) = $where->getWhere();
+            list($whereClause, $whereValues) = $where->buildWhereClause();
         } else {
             $whereClause = '';
             $whereValues = array();
@@ -418,7 +418,7 @@ class Table
         $query = $base . $whereClause . $orderBy . ' ' . $search->getLimit();
         
         $stmt = $this->_pdo->prepare($query);
-        $stmt->execute(array_values($whereValues));
+        $stmt->execute($whereValues);
         
         return $stmt;
     }
@@ -428,23 +428,26 @@ class Table
      *
      * Insert values into db
      *
-     * @param AttributeContainer $data
+     * @param ExpressionSet $data
      *
      * @return PDOStatement
      *
      * @throws PdoException if data is empty
      *
      */
-    public function insert(AttributeContainer $data)
+    public function insert(ExpressionSet $data)
     {
         if ($data->isEmpty()) {
             $msg = "Unable to insert with no values";
             throw new PdoException($msg);
         }
-        list($columns, $values) = $data->getInsert($this->_pdo);
-        $query = "INSERT INTO `{$this->getName()}` ($columns) VALUES ($values)";
+        list($columns, $exprs, $values) = $data->buildDataList();
+        $query = "INSERT INTO `{$this->getName()}` ($columns) VALUES ($exprs)";
 
-        return $this->_pdo->query($query);
+        $stmt = $this->_pdo->prepare($query);
+        $stmt->execute($values);
+        
+        return $stmt;
     }
 
 
@@ -469,16 +472,16 @@ class Table
      *
      * Update db based on where clauses
      *
-     * @param AttributeContainer $data
+     * @param ExpressionSet $data
      *
-     * @param AttributeContainer $where
+     * @param ExpressionSet $where
      *
      * @return PDOStatement
      *
      * @throws PdoException if where or data is empty
      *
      */
-    public function update(AttributeContainer $data, AttributeContainer $where)
+    public function update(ExpressionSet $data, ExpressionSet $where)
     {
         if ($data->isEmpty()) {
             $msg = "Unable to update with no values";
@@ -488,11 +491,15 @@ class Table
             $msg = "Unable to update from empty where clause";
             throw new PdoException($msg);
         }
-        $writeValues = $data->getUpdate($this->_pdo);
-        list($whereClause, $whereValues) = $where->getWhere();
-        $query = "UPDATE `{$this->getName()}` SET $writeValues $whereClause";
+
+        list($set, $setValues) = $data->buildSetStatement();
+        list($whereClause, $whereValues) = $where->buildWhereClause();
+
+        $values = array_merge($setValues, $whereValues);
+
+        $query = "UPDATE `{$this->getName()}` $set $whereClause";
         $stmt = $this->_pdo->prepare($query);
-        $stmt->execute($whereValues);
+        $stmt->execute($values);
 
         return $stmt;
     }
@@ -502,20 +509,20 @@ class Table
      *
      * Delete records from db that matches where
      *
-     * @param AttributeContainer $where
+     * @param ExpressionSet $where
      *
      * @return PDOStatement
      *
      * @throws PdoException if where is empty
      *
      */
-    public function delete(AttributeContainer $where)
+    public function delete(ExpressionSet $where)
     {
         if ($where->isEmpty()) {
             $msg = "Unable to delete from empty where clause";
             throw new PdoException($msg);
         }
-        list($clause, $values) = $where->getWhere();
+        list($clause, $values) = $where->buildWhereClause();
         $query = "DELETE FROM `{$this->getName()}` $clause";
         $stmt = $this->_pdo->prepare($query);
         $stmt->execute($values);

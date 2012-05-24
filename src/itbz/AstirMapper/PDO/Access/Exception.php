@@ -12,21 +12,21 @@
  *
  * @package AstirMapper
  *
- * @subpackage Exception
+ * @subpackage PDO\Access
  *
  */
-namespace itbz\AstirMapper\Exception;
+namespace itbz\AstirMapper\PDO\Access;
 
 
 /**
  *
- * Access denied exception
+ * Base exception for the Access subpackage
  *
  * @package AstirMapper
  *
- * @subpackage Exception
+ * @subpackage PDO\Access
  *
  */
-class AccessDeniedException extends PdoException
+class Exception extends \itbz\AstirMapper\Exception
 {
 }

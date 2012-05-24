@@ -1,8 +1,8 @@
 <?php
 namespace itbz\AstirMapper\PDO\Table;
 use itbz\AstirMapper\PDO\Search;
-use itbz\AstirMapper\PDO\Attribute;
-use itbz\AstirMapper\PDO\AttributeContainer;
+use itbz\AstirMapper\PDO\Expression;
+use itbz\AstirMapper\PDO\ExpressionSet;
 use PDO;
 
 
@@ -137,16 +137,16 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $foo->insert(new AttributeContainer(
-            new Attribute('id', '1'),
-            new Attribute('foo1', 'data'),
-            new Attribute('foobar', 'a')
+        $foo->insert(new ExpressionSet(
+            new Expression('id', '1'),
+            new Expression('foo1', 'data'),
+            new Expression('foobar', 'a')
         ));
         
-        $foo->insert(new AttributeContainer(
-            new Attribute('id', '2'),
-            new Attribute('foo1', 'data'),
-            new Attribute('foobar', 'a')
+        $foo->insert(new ExpressionSet(
+            new Expression('id', '2'),
+            new Expression('foo1', 'data'),
+            new Expression('foobar', 'a')
         ));
         
         $this->assertEquals(2, $foo->lastInsertId());
@@ -167,7 +167,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     function testDeleteException()
     {
         $foo = new Table('foo', $this->getPdo());
-        $foo->delete(new AttributeContainer());
+        $foo->delete(new ExpressionSet());
     }
 
 
@@ -175,10 +175,10 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $foo->insert(new AttributeContainer(
-            new Attribute('id', '1'),
-            new Attribute('foo1', 'data'),
-            new Attribute('foobar', 'a')
+        $foo->insert(new ExpressionSet(
+            new Expression('id', '1'),
+            new Expression('foo1', 'data'),
+            new Expression('foobar', 'a')
         ));
 
         $stmt = $foo->select(new Search());  
@@ -186,8 +186,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
         while ( $row = $stmt->fetch() ) $rowCount++;
         $this->assertEquals(1, $rowCount);
 
-        $stmt = $foo->delete(new AttributeContainer(
-            new Attribute('id', 1)
+        $stmt = $foo->delete(new ExpressionSet(
+            new Expression('id', 1)
         ));
 
         $stmt = $foo->select(new Search());
@@ -203,7 +203,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     function testUpdateEmptyDataException()
     {
         $foo = new Table('foo', $this->getPdo());
-        $foo->update(new AttributeContainer(), new AttributeContainer());
+        $foo->update(new ExpressionSet(), new ExpressionSet());
     }
 
 
@@ -214,10 +214,10 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         $foo->update(
-            new AttributeContainer(
-                new Attribute('foo', 'bar')
+            new ExpressionSet(
+                new Expression('foo', 'bar')
             ),
-            new AttributeContainer()
+            new ExpressionSet()
         );
     }
 
@@ -228,7 +228,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     function testInsertEmptyValuesException()
     {
         $foo = new Table('foo', $this->getPdo());
-        $foo->insert(new AttributeContainer());
+        $foo->insert(new ExpressionSet());
     }
 
 
@@ -236,19 +236,19 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Table('foo', $this->getPdo());
         
-        $foo->insert(new AttributeContainer(
-            new Attribute('id', '1'),
-            new Attribute('foo1', 'data'),
-            new Attribute('foobar', 'a')
+        $foo->insert(new ExpressionSet(
+            new Expression('id', '1'),
+            new Expression('foo1', 'data'),
+            new Expression('foobar', 'a')
         ));
 
         $foo->update(
-            new AttributeContainer(
-                new Attribute('foo1', 'new'),
-                new Attribute('foobar', 'b')
+            new ExpressionSet(
+                new Expression('foo1', 'new'),
+                new Expression('foobar', 'b')
             ),
-            new AttributeContainer(
-                new Attribute('id', 1)
+            new ExpressionSet(
+                new Expression('id', 1)
             )
         );
 
@@ -272,33 +272,33 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $bar->addNaturalJoin($x);
         $foo->addNaturalJoin($bar);
 
-        $foo->insert(new AttributeContainer(
-            new Attribute('id', '1'),
-            new Attribute('foo1', 'foo-data'),
-            new Attribute('foobar', 'a')
+        $foo->insert(new ExpressionSet(
+            new Expression('id', '1'),
+            new Expression('foo1', 'foo-data'),
+            new Expression('foobar', 'a')
         ));
 
-        $foo->insert(new AttributeContainer(
-            new Attribute('id', '2'),
-            new Attribute('foo1', 'foo-data'),
-            new Attribute('foobar', 'b')
+        $foo->insert(new ExpressionSet(
+            new Expression('id', '2'),
+            new Expression('foo1', 'foo-data'),
+            new Expression('foobar', 'b')
         ));
 
-        $bar->insert(new AttributeContainer(
-            new Attribute('foobar', 'a'),
-            new Attribute('bar1', 'bar-data'),
-            new Attribute('barx', 'A')
+        $bar->insert(new ExpressionSet(
+            new Expression('foobar', 'a'),
+            new Expression('bar1', 'bar-data'),
+            new Expression('barx', 'A')
         ));
 
-        $bar->insert(new AttributeContainer(
-            new Attribute('foobar', 'b'),
-            new Attribute('bar1', 'bar-data'),
-            new Attribute('barx', 'B')
+        $bar->insert(new ExpressionSet(
+            new Expression('foobar', 'b'),
+            new Expression('bar1', 'bar-data'),
+            new Expression('barx', 'B')
         ));
 
-        $x->insert(new AttributeContainer(
-            new Attribute('barx', 'A'),
-            new Attribute('x1', 'x-data')
+        $x->insert(new ExpressionSet(
+            new Expression('barx', 'A'),
+            new Expression('x1', 'x-data')
         ));
 
         return array($foo, $bar, $x);
@@ -309,8 +309,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         list($foo, $bar, $x) = $this->getTables();
 
-        $stmt = $foo->select(new Search(), new AttributeContainer(
-            new Attribute('id', 1)
+        $stmt = $foo->select(new Search(), new ExpressionSet(
+            new Expression('id', 1)
         ));
         $row = $stmt->fetch();
         $this->assertEquals('1', $row['id']);
@@ -339,8 +339,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
         while ( $row = $stmt->fetch() ) $rowCount++;
         $this->assertEquals(1, $rowCount);
 
-        $stmt = $foo->select(new Search(), new AttributeContainer(
-            new Attribute('id', 2)
+        $stmt = $foo->select(new Search(), new ExpressionSet(
+            new Expression('id', 2)
         ));
         $rowCount = 0;
         while ( $row = $stmt->fetch() ) $rowCount++;
@@ -354,8 +354,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
         // Assert selecting only some columns
         $search = new Search();
         $search->addColumn('foo1');
-        $stmt = $foo->select($search, new AttributeContainer(
-            new Attribute('id', 2)
+        $stmt = $foo->select($search, new ExpressionSet(
+            new Expression('id', 2)
         ));
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $data = array('foo1'=>'foo-data');

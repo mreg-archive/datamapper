@@ -18,9 +18,8 @@
 namespace itbz\AstirMapper\PDO\Access;
 use itbz\AstirMapper\PDO\Table\MysqlTable;
 use itbz\AstirMapper\PDO\Search;
-use itbz\AstirMapper\PDO\AttributeContainer;
-use itbz\AstirMapper\PDO\Attribute;
-use itbz\AstirMapper\Exception\AccessDeniedException;
+use itbz\AstirMapper\PDO\ExpressionSet;
+use itbz\AstirMapper\PDO\Expression;
 use PDO;
 use PDOStatement;
 
@@ -127,14 +126,14 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param Search $search
      *
-     * @param AttributeContainer $where
+     * @param ExpressionSet $where
      *
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
      *
      */
-    public function select(Search $search, AttributeContainer $where = NULL)
+    public function select(Search $search, ExpressionSet $where = NULL)
     {
         if (!$this->isAllowedExecute()) {
             $msg = "Access denied at table '{$this->getName()}'";
@@ -142,11 +141,11 @@ class AcTable extends MysqlTable implements AccessInterface
         }
 
         if (!$where) {
-            $where = new AttributeContainer();
+            $where = new ExpressionSet();
         }
 
         // Add mode constraint to where clause
-        $where->addAttribute(
+        $where->addExpression(
             new Mode(
                 'r',
                 $this->getName(),
@@ -168,14 +167,14 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * Delete records from db that matches where
      *
-     * @param AttributeContainer $where
+     * @param ExpressionSet $where
      *
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
      *
      */
-    public function delete(AttributeContainer $where)
+    public function delete(ExpressionSet $where)
     {
         if (!$this->isAllowedWrite()) {
             $msg = "Access denied at table '{$this->getName()}'";
@@ -183,7 +182,7 @@ class AcTable extends MysqlTable implements AccessInterface
         }
 
         // Add mode constraint to where clause
-        $where->addAttribute(
+        $where->addExpression(
             new Mode(
                 'w',
                 $this->getName(),
@@ -204,14 +203,14 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * Insert values into db
      *
-     * @param AttributeContainer $data
+     * @param ExpressionSet $data
      *
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
      *
      */
-    public function insert(AttributeContainer $data)
+    public function insert(ExpressionSet $data)
     {
         if (!$this->isAllowedWrite()) {
             $msg = "Access denied at table '{$this->getName()}'";
@@ -226,9 +225,9 @@ class AcTable extends MysqlTable implements AccessInterface
         );
 
         foreach ($defaults as $key => $value) {
-            if (!$data->exists($key)) {
-                $data->addAttribute(
-                    new Attribute($key, $value)
+            if (!$data->isExpression($key)) {
+                $data->addExpression(
+                    new Expression($key, $value)
                 );
             }
         }
@@ -241,16 +240,16 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * Update db based on where clauses
      *
-     * @param AttributeContainer $data
+     * @param ExpressionSet $data
      *
-     * @param AttributeContainer $where
+     * @param ExpressionSet $where
      *
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
      *
      */
-    public function update(AttributeContainer $data, AttributeContainer $where)
+    public function update(ExpressionSet $data, ExpressionSet $where)
     {
         if (!$this->isAllowedExecute()) {
             $msg = "Access denied at table '{$this->getName()}'";
@@ -258,7 +257,7 @@ class AcTable extends MysqlTable implements AccessInterface
         }
 
         // Add mode constraint to where clause
-        $where->addAttribute(
+        $where->addExpression(
             new Mode(
                 'w',
                 $this->getName(),
@@ -465,7 +464,7 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param PDOStatement $stmt The statement to evaluate
      *
-     * @param AttributeContainer $where Where clause used when creating
+     * @param ExpressionSet $where Where clause used when creating
      * statement
      *
      * @param Search $search Search clause used when creating statement, if any
@@ -479,7 +478,7 @@ class AcTable extends MysqlTable implements AccessInterface
     private function forwardValidStmt(
         $verb,
         PDOStatement $stmt,
-        AttributeContainer $where,
+        ExpressionSet $where,
         Search $search = NULL
     )
     {
@@ -489,14 +488,14 @@ class AcTable extends MysqlTable implements AccessInterface
             if (!$search) {
                 $search = new Search();
             }
-            $where->popAttribute();
+            $where->popExpression();
             $fullAccessStmt = parent::select($search, $where);
             if ($fullAccessStmt->rowCount()) {
                 // Access restricted, build exception message
                 $pk = $this->getPrimaryKey();
                 $row = '';
-                if ($where->exists($pk)) {
-                    $row = "at row '{$where->get($pk)->getValue()}'";
+                if ($where->isExpression($pk)) {
+                    $row = "at row '{$where->getExpression($pk)->getValue()}'";
                 }
                 $msg = "Access denied $verb table '{$this->getName()}' $row";
                 throw new AccessDeniedException($msg);

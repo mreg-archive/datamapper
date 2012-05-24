@@ -2,8 +2,8 @@
 namespace itbz\AstirMapper\PDO;
 use itbz\AstirMapper\ModelInterface;
 use PDO;
-use itbz\AstirMapper\tests\DataModel;
 use itbz\AstirMapper\PDO\Table\SqliteTable;
+use itbz\AstirMapper\DateTime;
 
 
 /*
@@ -31,7 +31,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
     
     function getMapper()
     {
-        return new Mapper($this->getTable(), new DataModel());
+        return new Mapper($this->getTable(), new \Model());
     }
 
 
@@ -40,7 +40,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $mapper = $this->getMapper();
         
         // Insert two rows
-        $model1 = new DataModel();
+        $model1 = new \Model();
         $model1->name = "foobar";
         $mapper->save($model1);
         $mapper->save($model1);
@@ -54,7 +54,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1', $model3->id);
 
         // Delete primary key == 1
-        $model4 = new DataModel();
+        $model4 = new \Model();
         $model4->id = 1;
         $mapper->delete($model4);
 
@@ -67,7 +67,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
     function testFindMany()
     {
         $mapper = $this->getMapper();
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = "foobar";
         $mapper->save($model);
         $mapper->save($model);
@@ -84,7 +84,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
     function testInsertBool()
     {
         $mapper = $this->getMapper();
-        $model = new DataModel();
+        $model = new \Model();
 
         $model->name = FALSE;
         $mapper->save($model);
@@ -105,7 +105,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
     function testInsertNull()
     {
         $mapper = $this->getMapper();
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = NULL;
         $mapper->save($model);
 
@@ -118,7 +118,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
     {
         $d = new DateTime('2012-01-02');
         $mapper = $this->getMapper();
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = $d;
         $mapper->save($model);
 

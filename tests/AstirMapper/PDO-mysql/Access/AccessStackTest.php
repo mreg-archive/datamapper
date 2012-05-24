@@ -1,61 +1,24 @@
 <?php
 namespace itbz\AstirMapper\PDO\Access;
-use PDO;
-use itbz\AstirMapper\tests\DataModel;
 use itbz\AstirMapper\PDO\Search;
 
 
-/**
- * Database connection constants are definied in bootstrap.php
- */
-class AccesStackTest extends \PHPUnit_Framework_TestCase
+class AccesStackTest extends \itbz\AstirMapper\MysqlTestCase
 {
-
-    static function setUpBeforeClass()
-    {
-        $pdo = new PDO('mysql:host=localhost', DB_USER, DB_PSWD);
-        $pdo->query('CREATE DATABASE ' . DB_NAME);
-        $pathToSql = realpath(__DIR__ . "/../../../../src/itbz/AstirMapper/PDO/Access/sql/access-mysql.sql");
-        $command = "mysql -u" . DB_USER . " -p" . DB_PSWD . ' ' . DB_NAME . " < " . $pathToSql;
-        exec($command);
-    }
-
-    static function tearDownAfterClass()
-    {
-        $pdo = new PDO('mysql:host=localhost', DB_USER, DB_PSWD);
-        $pdo->query('DROP DATABASE ' . DB_NAME);
-    }
-
 
     function setUp()
     {
-        $pdo = $this->getPdo();
-        $pdo->query('CREATE TABLE data (name VARCHAR(10) PRIMARY KEY, data VARCHAR(10), owner VARCHAR(10), `group` VARCHAR(10), mode SMALLINT) ENGINE = MEMORY');
+        $pdo = parent::setUp();
         $pdo->query("INSERT INTO data (name, data, owner, `group`, mode) VALUES ('useronly', 'test', 'usr', 'grp', 448)");
         $pdo->query("INSERT INTO data (name, data, owner, `group`, mode) VALUES ('grponly', 'test', 'usr', 'grp', 56)");
         $pdo->query("INSERT INTO data (name, data, owner, `group`, mode) VALUES ('usrgrp', 'test', 'usr', 'grp', 504)");
     }
 
 
-    function tearDown()
-    {
-        $pdo = $this->getPdo();
-        $pdo->query('DROP TABLE data');
-    }
-
-
-    function getPdo()
-    {
-        $pdo = new PDO('mysql:host=localhost;dbname=' . DB_NAME, DB_USER, DB_PSWD);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return  $pdo;
-    }
-
-
     function getMapper()
     {
         $table = new AcTable('data', $this->getPdo(), '', '', 0777);
-        $mapper = new AcMapper($table, new DataModel());
+        $mapper = new AcMapper($table, new \Model());
         return $mapper;
     }
 
@@ -67,7 +30,7 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
         // 'usr' should find rows 'useronly' and 'usrgrp'
         $mapper->setUser('usr', array('foo', 'bar'));
 
-        $iterator = $mapper->findMany(new DataModel(), new Search());
+        $iterator = $mapper->findMany(new \Model(), new Search());
         $found = '';
         foreach ($iterator as $key => $data)
         {
@@ -78,13 +41,13 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\AccessDeniedException
+     * @expectedException itbz\AstirMapper\PDO\Access\AccessDeniedException
      */
     function testRowAccessException()
     {
         // Unnamed user is blocked
         $mapper = $this->getMapper();
-        $mapper->findMany(new DataModel(), new Search());
+        $mapper->findMany(new \Model(), new Search());
     }
 
 
@@ -92,9 +55,9 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
     {
         $mapper = $this->getMapper();
         $mapper->setUser('usr', array('foo', 'bar'));
-        $mapper->delete(new DataModel());
+        $mapper->delete(new \Model());
 
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = "useronly";
 
         $iterator = $mapper->findMany($model, new Search());
@@ -104,7 +67,7 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
 
         $mapper->setUser('', array('grp'));
 
-        $iterator = $mapper->findMany(new DataModel(), new Search());
+        $iterator = $mapper->findMany(new \Model(), new Search());
         $count = 0;
         foreach ($iterator as $key => $data) $count++;
         $this->assertEquals(1, $count, 'grp can read grponly');
@@ -112,12 +75,12 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\AccessDeniedException
+     * @expectedException itbz\AstirMapper\PDO\Access\AccessDeniedException
      */
     function testRowDeleteException()
     {
         $mapper = $this->getMapper();
-        $mapper->delete(new DataModel());
+        $mapper->delete(new \Model());
     }
 
 
@@ -126,7 +89,7 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
         $mapper = $this->getMapper();
         $mapper->setUser('foo', array('bar'));
 
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = 'foobar';
         $mapper->save($model);
         
@@ -141,7 +104,7 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
         $mapper = $this->getMapper();
         $mapper->setUser('usr', array('foo', 'bar'));
 
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = "useronly";
         $model->data = "updated";
         $mapper->save($model);
@@ -152,20 +115,20 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\AccessDeniedException
+     * @expectedException itbz\AstirMapper\PDO\Access\AccessDeniedException
      */
     function testRowUpdateException()
     {
         $mapper = $this->getMapper();
         $mapper->setUser('usr', array('grp'));
         
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = "foobar";
         $model->mode = 04;
         $mapper->save($model);
 
         $mapper->setUser('');
-        $update = new DataModel();
+        $update = new \Model();
         $update->name = "foobar";
         $update->data = "updated";
         $mapper->save($update);
@@ -177,14 +140,14 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
         $mapper = $this->getMapper();
         $mapper->setUser('root');
 
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = "useronly";
         $mapper->chown($model, 'foobar');
 
         $mapper->setUser('foobar');
 
         // Now only useronly, with owner foobar, should be readable
-        $iterator = $mapper->findMany(new DataModel(), new Search());
+        $iterator = $mapper->findMany(new \Model(), new Search());
         $found = '';
         foreach ($iterator as $key => $data)
         {
@@ -199,7 +162,7 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
         $mapper = $this->getMapper();
         $mapper->setUser('non-root');
 
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = "useronly";
 
         // Chmod does nothing as current user does not own
@@ -223,10 +186,8 @@ class AccesStackTest extends \PHPUnit_Framework_TestCase
         $mapper = $this->getMapper();
         $mapper->setUser('non-root', array('newgroup'));
 
-        $model = new DataModel();
+        $model = new \Model();
         $model->name = "useronly";
-
-        return;
 
         // Chmod does nothing as current user does not own
         $nRows = $mapper->chgrp($model, 'newgroup');

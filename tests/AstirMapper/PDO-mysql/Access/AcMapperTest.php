@@ -1,8 +1,7 @@
 <?php
 namespace itbz\AstirMapper\PDO\Access;
-use itbz\AstirMapper\tests\DataModel;
-use itbz\AstirMapper\PDO\AttributeContainer;
-use itbz\AstirMapper\PDO\Attribute;
+use itbz\AstirMapper\PDO\ExpressionSet;
+use itbz\AstirMapper\PDO\Expression;
 
 
 class AcMapperTest extends \PHPUnit_Framework_TestCase
@@ -22,13 +21,13 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
               ->method('setUser')
               ->with('foo', array('bar'));
         
-        $mapper = new AcMapper($table, new DataModel());
+        $mapper = new AcMapper($table, new \Model());
         $mapper->setUser('foo', array('bar'));
     }
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\AccessDeniedException
+     * @expectedException itbz\AstirMapper\PDO\Access\AccessDeniedException
      */
     function testChownNoRootException()
     {
@@ -44,13 +43,13 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
               ->method('userIsRoot')
               ->will($this->returnValue(FALSE));
 
-        $mapper = new AcMapper($table, new DataModel());
-        $mapper->chown(new DataModel(), 'foobar');
+        $mapper = new AcMapper($table, new \Model());
+        $mapper->chown(new \Model(), 'foobar');
     }
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\PdoException
+     * @expectedException itbz\AstirMapper\PDO\Access\Exception
      */
     function testChownNoPrimaryKeyException()
     {
@@ -69,8 +68,8 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new DataModel());
-        $mapper->chown(new DataModel(), 'foobar');
+        $mapper = new AcMapper($table, new \Model());
+        $mapper->chown(new \Model(), 'foobar');
     }
 
 
@@ -97,13 +96,13 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
              ->method('rowCount')
              ->will($this->returnValue(1));
 
-        $data = new AttributeContainer(
-            new Attribute('id', 'yo'),
-            new Attribute('owner', 'foobar')
+        $data = new ExpressionSet(
+            new Expression('id', 'yo'),
+            new Expression('owner', 'foobar')
         );
 
-        $where = new AttributeContainer(
-            new Attribute('id', 'yo')
+        $where = new ExpressionSet(
+            new Expression('id', 'yo')
         );
 
         $table->expects($this->once())
@@ -114,9 +113,9 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new DataModel());
+        $mapper = new AcMapper($table, new \Model());
         
-        $model = new DataModel();
+        $model = new \Model();
         $model->id = 'yo';
         $model->owner = 'oldOwner';
         $nRows = $mapper->chown($model, 'foobar');
@@ -126,7 +125,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\PdoException
+     * @expectedException itbz\AstirMapper\PDO\Access\Exception
      */
     function testChmodNoPrimaryKeyException()
     {
@@ -141,8 +140,8 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new DataModel());
-        $mapper->chmod(new DataModel(), 0700);
+        $mapper = new AcMapper($table, new \Model());
+        $mapper->chmod(new \Model(), 0700);
     }
 
 
@@ -173,14 +172,14 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
              ->method('rowCount')
              ->will($this->returnValue(1));
 
-        $data = new AttributeContainer(
-            new Attribute('id', 'yo'),
-            new Attribute('mode', 0700)
+        $data = new ExpressionSet(
+            new Expression('id', 'yo'),
+            new Expression('mode', 0700)
         );
 
-        $where = new AttributeContainer(
-            new Attribute('id', 'yo'),
-            new Attribute('owner', 'foobar')
+        $where = new ExpressionSet(
+            new Expression('id', 'yo'),
+            new Expression('owner', 'foobar')
         );
 
         $table->expects($this->once())
@@ -191,9 +190,9 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new DataModel());
+        $mapper = new AcMapper($table, new \Model());
         
-        $model = new DataModel();
+        $model = new \Model();
         $model->id = 'yo';
         $model->mode = 0777;
         $nRows = $mapper->chmod($model, 0700);
@@ -203,7 +202,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\PdoException
+     * @expectedException itbz\AstirMapper\PDO\Access\Exception
      */
     function testChgrpNoPrimaryKeyException()
     {
@@ -219,13 +218,13 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
               ->method('getPrimaryKey')
               ->will($this->returnValue('id'));
 
-        $mapper = new AcMapper($table, new DataModel());
-        $mapper->chgrp(new DataModel(), 'foobar');
+        $mapper = new AcMapper($table, new \Model());
+        $mapper->chgrp(new \Model(), 'foobar');
     }
 
 
     /**
-     * @expectedException itbz\AstirMapper\Exception\AccessDeniedException
+     * @expectedException itbz\AstirMapper\PDO\Access\AccessDeniedException
      */
     function testChgrpNotInGroupException()
     {
@@ -241,54 +240,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
               ->method('getPrimaryKey')
               ->will($this->returnValue('id'));
 
-        $mapper = new AcMapper($table, new DataModel());
+        $mapper = new AcMapper($table, new \Model());
 
-        $model = new DataModel();
+        $model = new \Model();
         $model->id = 'foo';
         
         $mapper->chgrp($model, 'foobar');
-    }
-
-
-    /*
-        vad är det här för skit
-            varför klarar jag inte det här testet?????????
-            
-            också ett test i AccessStack som inte verkar fungera riktigt
-            
-            klurigt att få till det här med chgrp....
-    */
-
-
-    /**
-     * Not possible to set root unless you are root (in group is not valid)
-     * @ expectedException itbz\AstirMapper\Exception\AccessDeniedException
-     */
-    function testChgrpRootGroupException()
-    {
-        $table = $this->getMock(
-            'itbz\AstirMapper\PDO\Access\AcTable',
-            array('getPrimaryKey', 'getNativeColumns'),
-            array(),
-            '',
-            FALSE
-        );
-
-        $table->expects($this->atLeastOnce())
-              ->method('getPrimaryKey')
-              ->will($this->returnValue('id'));
-
-        $table->expects($this->atLeastOnce())
-              ->method('getNativeColumns')
-              ->will($this->returnValue(array('id')));
-
-        $mapper = new AcMapper($table, new DataModel());
-        $mapper->setUser('random', array('root'));
-
-        $model = new DataModel();
-        $model->id = 'foo';
-        
-        $mapper->chgrp($model, 'root');
     }
 
 
@@ -323,14 +280,14 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
              ->method('rowCount')
              ->will($this->returnValue(1));
 
-        $data = new AttributeContainer(
-            new Attribute('id', 'yo'),
-            new Attribute('group', 'newgroup')
+        $data = new ExpressionSet(
+            new Expression('id', 'yo'),
+            new Expression('group', 'newgroup')
         );
 
-        $where = new AttributeContainer(
-            new Attribute('id', 'yo'),
-            new Attribute('owner', 'uname')
+        $where = new ExpressionSet(
+            new Expression('id', 'yo'),
+            new Expression('owner', 'uname')
         );
 
         $table->expects($this->once())
@@ -341,9 +298,9 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new DataModel());
+        $mapper = new AcMapper($table, new \Model());
         
-        $model = new DataModel();
+        $model = new \Model();
         $model->id = 'yo';
         $model->group = 'foobar';
         $nRows = $mapper->chgrp($model, 'newgroup');

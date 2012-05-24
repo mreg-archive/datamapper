@@ -16,20 +16,19 @@
  *
  */
 namespace itbz\AstirMapper\PDO\Access;
-use itbz\AstirMapper\PDO\Attribute;
-use itbz\AstirMapper\Exception\PdoException;
+use itbz\AstirMapper\PDO\Expression;
 
 
 /**
  *
- * Attribute for row based access control
+ * Expression for row based access control
  *
  * @package AstirMapper
  *
  * @subpackage PDO\Access
  *
  */
-class Mode extends Attribute implements AccessInterface
+class Mode extends Expression implements AccessInterface
 {
 
     /**
@@ -44,7 +43,7 @@ class Mode extends Attribute implements AccessInterface
      *
      * @param array $ugroups List of groups user belongs to
      *
-     * @throws PdoException if action is invalid
+     * @throws Exception if action is invalid
      *
      */
     public function __construct($action, $table, $uname, array $ugroups)
@@ -55,7 +54,7 @@ class Mode extends Attribute implements AccessInterface
 
         if (!in_array($action, array('r', 'w', 'x'))) {
             $msg = "Invalid action '$action'. Use 'r', 'w' or 'x'.";
-            throw new PdoException($msg);
+            throw new Exception($msg);
         }
 
         $ugroups = implode(',', $ugroups);

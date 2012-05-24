@@ -20,7 +20,7 @@ namespace itbz\AstirMapper\PDO\Access;
 
 /**
  *
- * Access control flags
+ * Access control flags and names of access fields
  *
  * @package AstirMapper
  *

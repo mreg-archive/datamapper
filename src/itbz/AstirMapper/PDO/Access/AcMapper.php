@@ -18,9 +18,7 @@
 namespace itbz\AstirMapper\PDO\Access;
 use itbz\AstirMapper\ModelInterface;
 use itbz\AstirMapper\PDO\Mapper;
-use itbz\AstirMapper\PDO\Attribute;
-use itbz\AstirMapper\Exception\AccessDeniedException;
-use itbz\AstirMapper\Exception\PdoException;
+use itbz\AstirMapper\PDO\Expression;
 
 
 /**
@@ -80,7 +78,7 @@ class AcMapper extends Mapper implements AccessInterface
      *
      * @throws AccessDeniedException if user is not root
      *
-     * @throws PdoException if primary key model is not set
+     * @throws Exception if primary key model is not set
      *
      */
     public function chown(ModelInterface $model, $newOwner)
@@ -93,19 +91,19 @@ class AcMapper extends Mapper implements AccessInterface
         }
         if (!$this->getPk($model)) {
             $msg = "Unable to change owner, primary key not set.";
-            throw new PdoException($msg);
+            throw new Exception($msg);
         }
 
         // Set new owner
-        $data = $this->getAttributes($model);
-        $data->remove(self::OWNER_FIELD);
-        $data->addAttribute(
-            new Attribute(self::OWNER_FIELD, $newOwner)
+        $data = $this->getExprSet($model);
+        $data->removeExpression(self::OWNER_FIELD);
+        $data->addExpression(
+            new Expression(self::OWNER_FIELD, $newOwner)
         );
 
         // Update model
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->getAttributes($model, $columns);
+        $where = $this->getExprSet($model, $columns);
         $stmt = $this->_table->update($data, $where);
 
         return $stmt->rowCount();
@@ -124,7 +122,7 @@ class AcMapper extends Mapper implements AccessInterface
      *
      * @return int Number of affected rows
      *
-     * @throws PdoException if primary key model is not set
+     * @throws Exception if primary key model is not set
      *
      */
     public function chmod(ModelInterface $model, $newMode)
@@ -133,24 +131,24 @@ class AcMapper extends Mapper implements AccessInterface
 
         if (!$this->getPk($model)) {
             $msg = "Unable to change access mode, primary key not set.";
-            throw new PdoException($msg);
+            throw new Exception($msg);
         }
 
         // Set new mode
-        $data = $this->getAttributes($model);
-        $data->remove(self::MODE_FIELD);
-        $data->addAttribute(
-            new Attribute(self::MODE_FIELD, $newMode)
+        $data = $this->getExprSet($model);
+        $data->removeExpression(self::MODE_FIELD);
+        $data->addExpression(
+            new Expression(self::MODE_FIELD, $newMode)
         );
 
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->getAttributes($model, $columns);
+        $where = $this->getExprSet($model, $columns);
 
         // Only owner and root can change mode
         if (!$this->_table->userIsRoot()) {
             $uname = $this->_table->getUser();
-            $where->addAttribute(
-                new Attribute(self::OWNER_FIELD, $uname)
+            $where->addExpression(
+                new Expression(self::OWNER_FIELD, $uname)
             );
         }
 
@@ -172,7 +170,7 @@ class AcMapper extends Mapper implements AccessInterface
      *
      * @return int Number of affected rows
      *
-     * @throws PdoException if primary key model is not set
+     * @throws Exception if primary key model is not set
      *
      * @throws AccessDeniedException if is not a member of the new group
      *
@@ -183,39 +181,32 @@ class AcMapper extends Mapper implements AccessInterface
 
         if (!$this->getPk($model)) {
             $msg = "Unable to change group, primary key not set.";
-            throw new PdoException($msg);
-        }
-
-        // Remove 'root' from the list of groups
-        $ugroups = $this->_table->getUserGroups();
-        $index = array_search('root', $ugroups);
-        if ( $index !== FALSE ) {
-            unset($ugroups[$index]);
+            throw new Exception($msg);
         }
 
         if (
             !$this->_table->userIsRoot()
-            && !in_array($newGroup, $ugroups)
+            && !in_array($newGroup, $this->_table->getUserGroups())
         ) {
             $msg = "Unable to set group '$newGroup', you are not a member.";
             throw new AccessDeniedException($msg);
         }
 
         // Set new group
-        $data = $this->getAttributes($model);
-        $data->remove(self::GROUP_FIELD);
-        $data->addAttribute(
-            new Attribute(self::GROUP_FIELD, $newGroup)
+        $data = $this->getExprSet($model);
+        $data->removeExpression(self::GROUP_FIELD);
+        $data->addExpression(
+            new Expression(self::GROUP_FIELD, $newGroup)
         );
 
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->getAttributes($model, $columns);
+        $where = $this->getExprSet($model, $columns);
 
         // Only owner and root can change group
         if (!$this->_table->userIsRoot()) {
             $uname = $this->_table->getUser();
-            $where->addAttribute(
-                new Attribute(self::OWNER_FIELD, $uname)
+            $where->addExpression(
+                new Expression(self::OWNER_FIELD, $uname)
             );
         }
 

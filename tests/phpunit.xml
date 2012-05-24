@@ -1,7 +1,12 @@
-<phpunit bootstrap="bootstrap.php" backupGlobals="false" backupStaticAttributes="false">
+<phpunit bootstrap="bootstrap.php">
     <testsuites>
         <testsuite>
             <directory>./AstirMapper</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <const name="DB_USER" value="root"/>
+        <const name="DB_PSWD" value="platon68"/>
+        <const name="DB_NAME" value="testing123123123132"/>
+    </php>
 </phpunit>

@@ -1,7 +1,6 @@
 <?php
 namespace itbz\AstirMapper\PDO;
 use PDO;
-use itbz\AstirMapper\tests\DataModel;
 
 
 class IteratorTest extends \PHPUnit_Framework_TestCase
@@ -15,31 +14,46 @@ class IteratorTest extends \PHPUnit_Framework_TestCase
         $pdo->query("INSERT INTO data VALUES (1, 'foo')");
         $pdo->query("INSERT INTO data VALUES (2, 'bar')");
         
-        $stmt = $pdo->query('SELECT * FROM data');
-
-        return  $stmt;
+        return $pdo->query('SELECT * FROM data');
     }
 
 
     function testIterator()
     {
-        $iterator = new Iterator($this->getStmt(), 'id', new DataModel());
+        $model = $this->getMock(
+            '\itbz\AstirMapper\ModelInterface',
+            array('load')
+        );
 
-        $key = '';
-        $model = '';
+        $model->expects($this->exactly(4))
+              ->method('load');
+
+        $model->expects($this->at(0))
+              ->method('load')
+              ->with(array('id' => '1', 'name' => 'foo'));
+
+        $model->expects($this->at(1))
+              ->method('load')
+              ->with(array('id' => '2', 'name' => 'bar'));
+
+        $model->expects($this->at(2))
+              ->method('load')
+              ->with(array('id' => '1', 'name' => 'foo'));
+
+        $model->expects($this->at(3))
+              ->method('load')
+              ->with(array('id' => '2', 'name' => 'bar'));
+
+        $iterator = new Iterator($this->getStmt(), 'id', $model);
+
+        // Iterating over iterator yields two calls to model::load()
         foreach ($iterator as $key => $model) {
+            $this->assertInstanceOf('itbz\AstirMapper\ModelInterface', $model);
+            $this->assertTrue(is_numeric($key));
         }
 
-        $this->assertEquals('2', $key);
-        $this->assertInstanceOf('itbz\AstirMapper\ModelInterface', $model);
-        $this->assertEquals('bar', $model->name);
-
-        foreach ($iterator as $key => $model) {
-            break;
-        }
-
-        $this->assertEquals('1', $key);
-        $this->assertEquals('foo', $model->name);
+        // Re-iterating yields two more..
+        foreach ($iterator as $key => $model) {}
     }
 
 }
