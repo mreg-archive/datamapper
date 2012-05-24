@@ -81,7 +81,7 @@ class Mapper implements MapperInterface
      *
      * @param SearchInterface $search
      *
-     * @return Iterator
+     * @return \Iterator
      *
      */
     public function findMany(ModelInterface $model, SearchInterface $search)
@@ -89,13 +89,7 @@ class Mapper implements MapperInterface
         $where = $this->getExprSet($model);
         $stmt = $this->_table->select($search, $where);
 
-        $iterator = new Iterator(
-            $stmt,
-            $this->_table->getPrimaryKey(),
-            $this->_prototype
-        );
-
-        return $iterator;
+        return $this->getIterator($stmt);
     }
 
 
@@ -264,6 +258,25 @@ class Mapper implements MapperInterface
         $stmt = $this->_table->update($data, $where);
 
         return $stmt->rowCount();
+    }
+
+
+    /**
+     *
+     * Get iterator for PDOStatement
+     *
+     * @param \PDOStatement $stmt
+     *
+     * @return \Iterator
+     *
+     */
+    protected function getIterator(\PDOStatement $stmt)
+    {
+        return new Iterator(
+            $stmt,
+            $this->_table->getPrimaryKey(),
+            $this->_prototype
+        );
     }
 
 
