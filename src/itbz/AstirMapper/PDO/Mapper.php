@@ -109,11 +109,15 @@ class Mapper implements MapperInterface
         $search = new Search();
         $search->setLimit(1);
         $iterator = $this->findMany($model, $search);
-        if (!$iterator->valid()) {
-            throw new NotFoundException("No matching records found");        
+
+        // Return first object in iterator
+        foreach ($iterator as $object) {
+            
+            return $object;
         }
 
-        return $iterator->current();
+        // This only happens if iterator is empty
+        throw new NotFoundException("No matching records found");        
     }
 
 
