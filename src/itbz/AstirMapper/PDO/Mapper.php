@@ -320,7 +320,9 @@ class Mapper implements MapperInterface
                 $expr = new Expression($prop, $expr);
             }
             
-            $exprSet->addExpression($expr);
+            if (!$expr instanceof Ignore) {
+                $exprSet->addExpression($expr);
+            }
         }
         
         return $exprSet;
