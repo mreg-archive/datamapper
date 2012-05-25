@@ -340,11 +340,11 @@ class Table
      *
      * @param Search $search
      *
-     * @param ExpressionSet $where
+     * @param ExpressionSet $conditions
      *
      * @return PDOStatement
      */
-    public function select(Search $search, ExpressionSet $where = NULL)
+    public function select(Search $search, ExpressionSet $conditions = NULL)
     {
         $columns = $search->getColumns();
 
@@ -362,10 +362,10 @@ class Table
         $base = "SELECT $select FROM " . $this->getTableIdentifier();
 
         // Set where
-        if ($where) {
-            list($whereClause, $whereValues) = $where->buildWhereClause();
+        if ($conditions) {
+            list($where, $whereValues) = $conditions->buildWhereClause();
         } else {
-            $whereClause = '';
+            $where = '';
             $whereValues = array();
         }
 
@@ -376,7 +376,7 @@ class Table
             $orderBy .= " {$search->getDirection()}";
         }
 
-        $query = $base . $whereClause . $orderBy . ' ' . $search->getLimit();
+        $query = $base . $where . $orderBy . ' ' . $search->getLimit();
         
         $stmt = $this->_pdo->prepare($query);
         $stmt->execute($whereValues);
@@ -426,33 +426,33 @@ class Table
 
 
     /**
-     * Update db based on where clauses
+     * Update db based on conditions
      *
      * @param ExpressionSet $data
      *
-     * @param ExpressionSet $where
+     * @param ExpressionSet $conditions
      *
      * @return PDOStatement
      *
-     * @throws PdoException if where or data is empty
+     * @throws PdoException if conditions or data are empty
      */
-    public function update(ExpressionSet $data, ExpressionSet $where)
+    public function update(ExpressionSet $data, ExpressionSet $conditions)
     {
         if ($data->isEmpty()) {
             $msg = "Unable to update with no values";
             throw new PdoException($msg);
         }
-        if ($where->isEmpty()) {
+        if ($conditions->isEmpty()) {
             $msg = "Unable to update from empty where clause";
             throw new PdoException($msg);
         }
 
         list($set, $setValues) = $data->buildSetStatement();
-        list($whereClause, $whereValues) = $where->buildWhereClause();
+        list($where, $whereValues) = $conditions->buildWhereClause();
 
         $values = array_merge($setValues, $whereValues);
 
-        $query = "UPDATE `{$this->getName()}` $set $whereClause";
+        $query = "UPDATE `{$this->getName()}` $set $where";
         $stmt = $this->_pdo->prepare($query);
         $stmt->execute($values);
 
@@ -461,22 +461,22 @@ class Table
 
 
     /**
-     * Delete records from db that matches where
+     * Delete records from db that matches conditions
      *
-     * @param ExpressionSet $where
+     * @param ExpressionSet $conditions
      *
      * @return PDOStatement
      *
-     * @throws PdoException if where is empty
+     * @throws PdoException if conditions are empty
      */
-    public function delete(ExpressionSet $where)
+    public function delete(ExpressionSet $conditions)
     {
-        if ($where->isEmpty()) {
+        if ($conditions->isEmpty()) {
             $msg = "Unable to delete from empty where clause";
             throw new PdoException($msg);
         }
-        list($clause, $values) = $where->buildWhereClause();
-        $query = "DELETE FROM `{$this->getName()}` $clause";
+        list($where, $values) = $conditions->buildWhereClause();
+        $query = "DELETE FROM `{$this->getName()}` $where";
         $stmt = $this->_pdo->prepare($query);
         $stmt->execute($values);
 

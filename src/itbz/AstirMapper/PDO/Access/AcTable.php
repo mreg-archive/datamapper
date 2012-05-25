@@ -109,25 +109,25 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param Search $search
      *
-     * @param ExpressionSet $where
+     * @param ExpressionSet $conditions
      *
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
      */
-    public function select(Search $search, ExpressionSet $where = NULL)
+    public function select(Search $search, ExpressionSet $conditions = NULL)
     {
         if (!$this->isAllowedExecute()) {
             $msg = "Access denied at table '{$this->getName()}'";
             throw new AccessDeniedException($msg);
         }
 
-        if (!$where) {
-            $where = new ExpressionSet();
+        if (!$conditions) {
+            $conditions = new ExpressionSet();
         }
 
-        // Add mode constraint to where clause
-        $where->addExpression(
+        // Add mode constraint to conditions
+        $conditions->addExpression(
             new Mode(
                 'r',
                 $this->getName(),
@@ -138,31 +138,31 @@ class AcTable extends MysqlTable implements AccessInterface
 
         return $this->forwardValidStmt(
             'selecting from',
-            parent::select($search, $where),
-            $where,
+            parent::select($search, $conditions),
+            $conditions,
             $search
         );
     }
 
 
     /**
-     * Delete records from db that matches where
+     * Delete records from db that matches conditions
      *
-     * @param ExpressionSet $where
+     * @param ExpressionSet $conditions
      *
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
      */
-    public function delete(ExpressionSet $where)
+    public function delete(ExpressionSet $conditions)
     {
         if (!$this->isAllowedWrite()) {
             $msg = "Access denied at table '{$this->getName()}'";
             throw new AccessDeniedException($msg);
         }
 
-        // Add mode constraint to where clause
-        $where->addExpression(
+        // Add mode constraint to conditions
+        $conditions->addExpression(
             new Mode(
                 'w',
                 $this->getName(),
@@ -173,8 +173,8 @@ class AcTable extends MysqlTable implements AccessInterface
 
         return $this->forwardValidStmt(
             'deleting',
-            parent::delete($where),
-            $where
+            parent::delete($conditions),
+            $conditions
         );
     }
 
@@ -215,25 +215,25 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     * Update db based on where clauses
+     * Update db based on conditions
      *
      * @param ExpressionSet $data
      *
-     * @param ExpressionSet $where
+     * @param ExpressionSet $conditions
      *
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
      */
-    public function update(ExpressionSet $data, ExpressionSet $where)
+    public function update(ExpressionSet $data, ExpressionSet $conditions)
     {
         if (!$this->isAllowedExecute()) {
             $msg = "Access denied at table '{$this->getName()}'";
             throw new AccessDeniedException($msg);
         }
 
-        // Add mode constraint to where clause
-        $where->addExpression(
+        // Add mode constraint to conditions
+        $conditions->addExpression(
             new Mode(
                 'w',
                 $this->getName(),
@@ -244,8 +244,8 @@ class AcTable extends MysqlTable implements AccessInterface
 
         return $this->forwardValidStmt(
             'updating',
-            parent::update($data, $where),
-            $where
+            parent::update($data, $conditions),
+            $conditions
         );
     }
 
@@ -421,8 +421,7 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param PDOStatement $stmt The statement to evaluate
      *
-     * @param ExpressionSet $where Where clause used when creating
-     * statement
+     * @param ExpressionSet $conditions Conditions used when creating statement
      *
      * @param Search $search Search clause used when creating statement, if any
      *
@@ -434,7 +433,7 @@ class AcTable extends MysqlTable implements AccessInterface
     private function forwardValidStmt(
         $verb,
         PDOStatement $stmt,
-        ExpressionSet $where,
+        ExpressionSet $conditions,
         Search $search = NULL
     )
     {
@@ -444,14 +443,15 @@ class AcTable extends MysqlTable implements AccessInterface
             if (!$search) {
                 $search = new Search();
             }
-            $where->popExpression();
-            $fullAccessStmt = parent::select($search, $where);
+            $conditions->popExpression();
+            $fullAccessStmt = parent::select($search, $conditions);
             if ($fullAccessStmt->rowCount()) {
                 // Access restricted, build exception message
                 $pk = $this->getPrimaryKey();
                 $row = '';
-                if ($where->isExpression($pk)) {
-                    $row = "at row '{$where->getExpression($pk)->getValue()}'";
+                if ($conditions->isExpression($pk)) {
+                    $row = $conditions->getExpression($pk)->getValue();
+                    $row = "at row '$row'";
                 }
                 $msg = "Access denied $verb table '{$this->getName()}' $row";
                 throw new AccessDeniedException($msg);

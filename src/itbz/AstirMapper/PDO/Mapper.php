@@ -67,17 +67,17 @@ class Mapper implements MapperInterface
     /**
      * Get iterator containing multiple racords based on search
      *
-     * @param array $where
+     * @param array $conditions
      *
      * @param SearchInterface $search
      *
      * @return \Iterator
      */
-    public function findMany(array $where, SearchInterface $search)
+    public function findMany(array $conditions, SearchInterface $search)
     {
         $stmt = $this->_table->select(
             $search,
-            $this->arrayToExprSet($where)
+            $this->arrayToExprSet($conditions)
         );
 
         return $this->getIterator($stmt);
@@ -87,17 +87,17 @@ class Mapper implements MapperInterface
     /**
      * Find models that match current model values.
      *
-     * @param array $where
+     * @param array $conditions
      *
      * @return ModelInterface
      *
      * @throws NotFoundException if no model was found
      */
-    public function find(array $where)
+    public function find(array $conditions)
     {
         $search = new Search();
         $search->setLimit(1);
-        $iterator = $this->findMany($where, $search);
+        $iterator = $this->findMany($conditions, $search);
 
         // Return first object in iterator
         foreach ($iterator as $object) {
@@ -135,8 +135,8 @@ class Mapper implements MapperInterface
     public function delete(ModelInterface $model)
     {
         $pk = $this->_table->getPrimaryKey();
-        $where = $this->extract($model, array($pk));
-        $stmt = $this->_table->delete($where);
+        $conditions = $this->extract($model, array($pk));
+        $stmt = $this->_table->delete($conditions);
 
         return $stmt->rowCount();
     }
@@ -232,7 +232,7 @@ class Mapper implements MapperInterface
 
 
     /**
-     * Update db using primary key as where clause.
+     * Update db using primary key as conditions clause.
      *
      * @param ModelInterface $model
      *
@@ -242,8 +242,8 @@ class Mapper implements MapperInterface
     {
         $data = $this->extract($model);
         $pk = $this->_table->getPrimaryKey();
-        $where = $this->extract($model, array($pk));
-        $stmt = $this->_table->update($data, $where);
+        $conditions = $this->extract($model, array($pk));
+        $stmt = $this->_table->update($data, $conditions);
 
         return $stmt->rowCount();
     }

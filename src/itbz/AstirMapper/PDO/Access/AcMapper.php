@@ -95,8 +95,8 @@ class AcMapper extends Mapper implements AccessInterface
 
         // Update model
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->extract($model, $columns);
-        $stmt = $this->_table->update($data, $where);
+        $conditions = $this->extract($model, $columns);
+        $stmt = $this->_table->update($data, $conditions);
 
         return $stmt->rowCount();
     }
@@ -132,17 +132,17 @@ class AcMapper extends Mapper implements AccessInterface
         );
 
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->extract($model, $columns);
+        $conditions = $this->extract($model, $columns);
 
         // Only owner and root can change mode
         if (!$this->_table->userIsRoot()) {
             $uname = $this->_table->getUser();
-            $where->addExpression(
+            $conditions->addExpression(
                 new Expression(self::OWNER_FIELD, $uname)
             );
         }
 
-        $stmt = $this->_table->update($data, $where);
+        $stmt = $this->_table->update($data, $conditions);
 
         return $stmt->rowCount();
     }
@@ -188,17 +188,17 @@ class AcMapper extends Mapper implements AccessInterface
         );
 
         $columns = array($this->_table->getPrimaryKey());
-        $where = $this->extract($model, $columns);
+        $conditions = $this->extract($model, $columns);
 
         // Only owner and root can change group
         if (!$this->_table->userIsRoot()) {
             $uname = $this->_table->getUser();
-            $where->addExpression(
+            $conditions->addExpression(
                 new Expression(self::OWNER_FIELD, $uname)
             );
         }
 
-        $stmt = $this->_table->update($data, $where);
+        $stmt = $this->_table->update($data, $conditions);
 
         return $stmt->rowCount();
     }
