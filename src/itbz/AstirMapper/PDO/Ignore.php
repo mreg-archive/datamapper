@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,27 +12,22 @@
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 namespace itbz\AstirMapper\PDO;
 
 
 /**
- *
  * Meta expression that will be ignored when building expression sets
  *
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 class Ignore extends Expression
 {
 
     /**
-     *
      * Empty constructor
-     *
      */
     public function __construct()
     {

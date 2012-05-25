@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,7 +12,6 @@
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 namespace itbz\AstirMapper\PDO;
 use itbz\AstirMapper\ModelInterface;
@@ -22,7 +20,6 @@ use PDOStatement;
 
 
 /**
- *
  * Iterates over rows in a PDOStatement returning Model instances
  *
  * PDOStatements are iterable as is. This class adds support for rewinds and
@@ -31,63 +28,51 @@ use PDOStatement;
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 class Iterator implements \Iterator
 {
 
     /**
-     *
      * PDO statement to iterate
      *
-     * @var PDOStatement $_stmt
-     *
+     * @var PDOStatement
      */
     private $_stmt;
 
 
     /**
-     *
      * True if PDOStatement points to the first row in result set
      *
-     * @var bool $_firstRow
-     *
+     * @var bool
      */
     private $_firstRow;
 
 
     /**
-     *
      * Current row
      *
-     * @var array $_row
-     *
+     * @var array
      */
     private $_row;
 
 
     /**
-     *
      * Name of row key
      *
-     * @var string $_key
-     *
+     * @var string
      */
     private $_key;
 
 
     /**
-     *
      * Prototype model that will be cloned on current
      *
-     * @var ModelInterface $_prototype
-     *
+     * @var ModelInterface
      */
     private $_prototype;
 
 
     /**
-     *
      * Construct and inject PDOStatement instance
      *
      * @param PDOStatement $stmt
@@ -95,7 +80,6 @@ class Iterator implements \Iterator
      * @param string $key Name of column to use as key
      *
      * @param ModelInterface $proto Prototype model to clone on current
-     *
      */
     public function __construct(PDOStatement $stmt, $key, ModelInterface $proto)
     {
@@ -111,9 +95,9 @@ class Iterator implements \Iterator
 
 
     /**
-     *
      * Re-execute PDOStatement to enable a new execution
      *
+     * @return void
      */
     public function rewind()
     {
@@ -125,9 +109,9 @@ class Iterator implements \Iterator
 
 
     /**
-     *
      * Load next row from PDOStatement
      *
+     * @return void
      */
     public function next()
     {
@@ -137,11 +121,9 @@ class Iterator implements \Iterator
 
 
     /**
-     *
      * Return current row
      *
      * @return ModelInterface
-     *
      */
     public function current()
     {
@@ -153,11 +135,9 @@ class Iterator implements \Iterator
 
 
     /**
-     *
      * Return current id
      *
      * @return scalar
-     *
      */
     public function key()
     {
@@ -171,11 +151,9 @@ class Iterator implements \Iterator
 
 
     /**
-     *
      * Check if current row is valid
      *
      * @return bool
-     *
      */
     public function valid()
     {

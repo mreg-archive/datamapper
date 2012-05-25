@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,13 +12,11 @@
  * @package AstirMapper
  *
  * @subpackage PDO\Table
- *
  */
 namespace itbz\AstirMapper\PDO\Table;
 
 
 /**
- *
  * PDO table for use with MySQL
  *
  * Extends Table by adding MySQL reverse engineering capabilities. If you do
@@ -29,17 +26,14 @@ namespace itbz\AstirMapper\PDO\Table;
  * @package AstirMapper
  *
  * @subpackage PDO\Table
- *
  */
 class MysqlTable extends Table
 {
 
     /**
-     *
      * Reverse engineer structure of database table
      *
      * @return array Array of column names native to table
-     *
      */
     public function reverseEngineerColumns()
     {
@@ -55,11 +49,9 @@ class MysqlTable extends Table
 
 
     /**
-     *
      * Reverse engineer primary key of database table
      *
      * @return string
-     *
      */
     public function reverseEngineerPK()
     {

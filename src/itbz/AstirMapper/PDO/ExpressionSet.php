@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,37 +12,30 @@
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 namespace itbz\AstirMapper\PDO;
 
 
 /**
- *
  * Internal class for organizing expressions into substatements
  *
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 class ExpressionSet
 {
 
     /**
-     *
      * Array of Expressions
      *
-     * @var array $_expressions
-     *
+     * @var array
      */
     private $_expressions = array();
 
 
     /**
-     *
      * Add any number of expressions at construct
-     *
      */
     public function __construct()
     {
@@ -54,11 +46,9 @@ class ExpressionSet
 
 
     /**
-     *
      * Check if container is empty
      *
      * @return bool
-     *
      */
     public function isEmpty()
     {
@@ -67,11 +57,11 @@ class ExpressionSet
 
 
     /**
-     *
      * Add Expression to collection
      *
      * @param Expression $expr
      *
+     * @return void
      */
     public function addExpression(Expression $expr)
     {
@@ -81,11 +71,9 @@ class ExpressionSet
 
 
     /**
-     *
      * Remove the most recently added expression
      *
      * @return Expression
-     *
      */
     public function popExpression()
     {
@@ -94,11 +82,11 @@ class ExpressionSet
 
 
     /**
-     *
      * Remove expression by name
      *
      * @param string $name
      *
+     * @return void
      */
     public function removeExpression($name)
     {
@@ -107,13 +95,11 @@ class ExpressionSet
 
 
     /**
-     *
      * Check if expression exists
      *
      * @param string $name
      *
      * @return bool
-     *
      */
     public function isExpression($name)
     {
@@ -122,13 +108,11 @@ class ExpressionSet
 
     
     /**
-     *
      * Get expression by name
      *
      * @param string $name
      *
      * @return Expression If no expression is found FALSE is returned
-     *
      */
     public function getExpression($name)
     {
@@ -142,7 +126,6 @@ class ExpressionSet
 
 
     /**
-     *
      * Build where clause from expressions
      *
      * Returns an array with two indices. The first value is a string of
@@ -151,7 +134,6 @@ class ExpressionSet
      * array is empty if no parameters needs to be replaced.
      *
      * @return array
-     *
      */
     public function buildWhereClause()
     {
@@ -186,7 +168,6 @@ class ExpressionSet
 
 
     /**
-     *
      * Build set statement from expressions
      *
      * Returns an array with two indices. The first value is a string of
@@ -195,7 +176,6 @@ class ExpressionSet
      * empty if no parameters needs to be replaced.
      *
      * @return array
-     *
      */
     public function buildSetStatement()
     {
@@ -230,7 +210,6 @@ class ExpressionSet
 
 
     /**
-     *
      * Build a data list from expressions
      *
      * Returns an array with three indices. The first is a string of comma
@@ -240,7 +219,6 @@ class ExpressionSet
      * parameters needs to be replaced.
      *
      * @return array
-     *
      */
     public function buildDataList()
     {

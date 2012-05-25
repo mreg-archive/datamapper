@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,27 +12,23 @@
  * @package AstirMapper
  *
  * @subpackage PDO\Access
- *
  */
 namespace itbz\AstirMapper\PDO\Access;
 use itbz\AstirMapper\PDO\Expression;
 
 
 /**
- *
  * Expression for row based access control
  *
  * @package AstirMapper
  *
  * @subpackage PDO\Access
- *
  */
 class Mode extends Expression implements AccessInterface
 {
 
     /**
-     *
-     * Consruct and set mode
+     * Create access constraint
      *
      * @param string $action 'r' for read, 'w' for write or 'x' for execute
      *
@@ -44,7 +39,6 @@ class Mode extends Expression implements AccessInterface
      * @param array $ugroups List of groups user belongs to
      *
      * @throws Exception if action is invalid
-     *
      */
     public function __construct($action, $table, $uname, array $ugroups)
     {

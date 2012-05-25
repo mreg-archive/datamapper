@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,7 +12,6 @@
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 namespace itbz\AstirMapper\PDO;
 use itbz\AstirMapper\MapperInterface;
@@ -22,49 +20,42 @@ use itbz\AstirMapper\SearchInterface;
 use itbz\AstirMapper\Exception\NotFoundException;
 use itbz\AstirMapper\Exception;
 use itbz\AstirMapper\PDO\Table\Table;
+use PDOStatement;
 
 
 /**
- *
  * PDO mapper object
  *
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 class Mapper implements MapperInterface
 {
 
     /**
-     *
      * Table objet to interact with
      *
-     * @var Table $_table
-     *
+     * @var Table
      */
     protected $_table;
 
 
     /**
-     *
      * Prototype model that will be cloned on object creation
      *
-     * @var ModelInterface $_prototype
-     *
+     * @var ModelInterface
      */
     private $_prototype;
 
 
     /**
-     *
      * Construct and inject table instance
      *
      * @param Table $table
      *
      * @param ModelInterface $prototype Prototype model that will be cloned when
      * mapper needs a new return object.
-     *
      */
     public function __construct(Table $table, ModelInterface $prototype)
     {
@@ -74,7 +65,6 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Get iterator containing multiple racords based on search
      *
      * @param array $where
@@ -82,7 +72,6 @@ class Mapper implements MapperInterface
      * @param SearchInterface $search
      *
      * @return \Iterator
-     *
      */
     public function findMany(array $where, SearchInterface $search)
     {
@@ -96,7 +85,6 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Find models that match current model values.
      *
      * @param array $where
@@ -104,7 +92,6 @@ class Mapper implements MapperInterface
      * @return ModelInterface
      *
      * @throws NotFoundException if no model was found
-     *
      */
     public function find(array $where)
     {
@@ -124,13 +111,11 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Find model based on primary key
      *
      * @param mixed $key
      *
      * @return ModelInterface
-     *
      */
     public function findByPk($key)
     {
@@ -141,13 +126,11 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Delete model from persistent storage
      *
      * @param ModelInterface $model
      *
      * @return int Number of affected rows
-     *
      */
     public function delete(ModelInterface $model)
     {
@@ -160,7 +143,6 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Persistently store model
      *
      * If model contains a primary key and that key exists in the database
@@ -169,7 +151,6 @@ class Mapper implements MapperInterface
      * @param ModelInterface $model
      *
      * @return int Number of affected rows
-     *
      */
     public function save(ModelInterface $model)
     {
@@ -189,7 +170,6 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Get the ID of the last inserted row.
      *
      * The return value will only be meaningful on tables with an auto-increment
@@ -205,13 +185,11 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Get primary key from model
      *
      * @param ModelInterface $model
      *
      * @return string Empty string if no key was found
-     *
      */
     public function getPk(ModelInterface $model)
     {
@@ -227,11 +205,9 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Get a new prototype clone
      *
      * @return ModelInterface
-     *
      */
     public function getModel()
     {
@@ -240,13 +216,11 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Insert model into db
      *
      * @param ModelInterface $model
      *
      * @return int Number of affected rows
-     *
      */
     protected function insert(ModelInterface $model)
     {
@@ -258,13 +232,11 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Update db using primary key as where clause.
      *
      * @param ModelInterface $model
      *
      * @return int Number of affected rows
-     *
      */
     protected function update(ModelInterface $model)
     {
@@ -278,15 +250,13 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Get iterator for PDOStatement
      *
-     * @param \PDOStatement $stmt
+     * @param PDOStatement $stmt
      *
      * @return \Iterator
-     *
      */
-    protected function getIterator(\PDOStatement $stmt)
+    protected function getIterator(PDOStatement $stmt)
     {
         return new Iterator(
             $stmt,
@@ -297,7 +267,6 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Extract data from model
      *
      * Property name is converted to a method call on model by prefixing name
@@ -311,7 +280,6 @@ class Mapper implements MapperInterface
      * table column names.
      *
      * @return ExpressionSet
-     *
      */
     protected function extract(ModelInterface $model, array $extract = NULL)
     {
@@ -334,13 +302,11 @@ class Mapper implements MapperInterface
 
 
     /**
-     *
      * Convert array to ExpressionSet
      *
      * @param array $data
      *
      * @return ExpressionSet
-     *
      */
     protected function arrayToExprSet(array $data)
     {

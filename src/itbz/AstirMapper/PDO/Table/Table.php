@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,7 +12,6 @@
  * @package AstirMapper
  *
  * @subpackage PDO\Table
- *
  */
 namespace itbz\AstirMapper\PDO\Table;
 use itbz\AstirMapper\Exception\PdoException;
@@ -24,7 +22,6 @@ use PDOStatement;
 
 
 /**
- *
  * PDO table for use by PDO models
  *
  * NOTE: Expects all database tables to have primary keys definied over only
@@ -34,80 +31,67 @@ use PDOStatement;
  * @package AstirMapper
  *
  * @subpackage PDO\Table
- *
  */
 class Table
 {
 
     /**
-     *
      * PDO instance used
      *
-     * @var PDO $_pdo
-     *
+     * @var PDO
      */
     protected $_pdo;
 
 
     /**
-     *
      * Name of database table
      *
-     * @var string $_name
-     *
+     * @var string
      */
     private $_name;
     
 
     /**
-     *
      * Name of primary key
      *
-     * @var string $_primaryKey
-     *
+     * @var string
      */
     private $_primaryKey;
     
 
     /**
-     *
      * Array of columns in table
      *
-     * @var string $_nativeColumns
-     *
+     * @var string
      */
     private $_nativeColumns;
 
 
     /**
+     * Associative array of column names
      *
-     * Associative array of columns in both native and joined tables. Column
-     * names as keys. Column identfiers (`table`.`column`) as values.
+     * Includes columns in both native and joined tables. Names as keys,
+     * identfiers (`table`.`column`) as values.
      *
-     * @var string $_columns
-     *
+     * @var string
      */
     private $_columns;
 
 
     /**
-     *
      * Array of naturally joined Tables
      *
-     * @var array $naturalJoins
-     *
+     * @var array
      */
     private $_naturalJoins = array();
 
 
     /**
-     *
      * PDO table for use by PDO models 
      *
      * @param string $name Name of database table
      *
      * @param PDO $pdo PDO object for interacting with database
-     *
      */
     public function __construct($name, PDO $pdo)
     {
@@ -118,11 +102,9 @@ class Table
 
 
     /**
-     *
      * Get name of table
      *
      * @return string
-     *
      */ 
     public function getName()
     {
@@ -131,11 +113,9 @@ class Table
 
 
     /**
-     *
      * Get identifier of base and joined tables
      *
      * @return string
-     *
      */
     public function getTableIdentifier()
     {
@@ -149,13 +129,14 @@ class Table
 
 
     /**
-     *
      * Set primary key of table
      *
      * If this method is not called primary key will be reverse engineered
      * as necessary.
      *
      * @param string $key
+     *
+     * @return void
      *
      * @throws PdoException if key is not a native column in table
      *
@@ -173,11 +154,9 @@ class Table
 
 
     /**
-     *
      * Get primary key for this table
      *
      * @return string
-     *
      */
     public function getPrimaryKey()
     {
@@ -190,7 +169,6 @@ class Table
 
 
     /**
-     *
      * Set native column names of table.
      *
      * If this method is not called native columns will be reverse engineered
@@ -198,6 +176,7 @@ class Table
      *
      * @param array $columns
      *
+     * @return void
      */
     public function setColumns(array $columns)
     {
@@ -206,11 +185,9 @@ class Table
 
 
     /**
-     *
      * Get array of columns native to this table
      *
      * @return array
-     *
      */
     public function getNativeColumns()
     {
@@ -223,13 +200,11 @@ class Table
 
 
     /**
-     *
      * Get associative array of columns in native and joined tables
      *
      * Column names as keys. Column identfiers (`table`.`column`) as values.
      *
      * @return array
-     *
      */
     public function getColumns()
     {
@@ -253,13 +228,11 @@ class Table
 
 
     /**
-     *
      * Check if column is native to table
      *
      * @param string $colname
      *
      * @return bool
-     *
      */
     public function isNativeColumn($colname)
     {
@@ -271,13 +244,11 @@ class Table
 
 
     /**
-     *
      * Check if column exist in native or joined table
      *
      * @param string $colname
      *
      * @return bool
-     *
      */
     public function isColumn($colname)
     {
@@ -289,7 +260,6 @@ class Table
 
 
     /**
-     *
      * Get full column identifier for column name
      *
      * @param string $colname Use regular column name with no backticks
@@ -297,7 +267,6 @@ class Table
      * @return string
      *
      * @throw PdoException if column does not exist
-     *
      */
     public function getColumnIdentifier($colname)
     {
@@ -312,11 +281,11 @@ class Table
 
 
     /**
-     *
      * Add a naturally joined table
      *
      * @param Table $table
      *
+     * @return void
      */
     public function addNaturalJoin(Table $table)
     {
@@ -326,11 +295,9 @@ class Table
 
 
     /**
-     *
      * Get array of joined Table objects
      *
      * @return array
-     *
      */
     public function getJoins()
     {
@@ -339,14 +306,12 @@ class Table
 
 
     /**
-     *
      * Reverse engineer structure of database table
      *
      * Defaults to an empty array. Override to implement real DB reverse
      * enginerring.
      *
      * @return array Array of column names native to table
-     *
      */
     public function reverseEngineerColumns()
     {
@@ -355,14 +320,12 @@ class Table
 
 
     /**
-     *
      * Reverse engineer primary key of database table
      *
      * Defaults to the first item in the native columns array. Override
      * to implement real DB reverse engineering
      *
      * @return string
-     *
      */
     public function reverseEngineerPK()
     {
@@ -373,7 +336,6 @@ class Table
 
 
     /**
-     *
      * Select rows from db
      *
      * @param Search $search
@@ -381,7 +343,6 @@ class Table
      * @param ExpressionSet $where
      *
      * @return PDOStatement
-     *
      */
     public function select(Search $search, ExpressionSet $where = NULL)
     {
@@ -425,7 +386,6 @@ class Table
 
 
     /**
-     *
      * Insert values into db
      *
      * @param ExpressionSet $data
@@ -433,7 +393,6 @@ class Table
      * @return PDOStatement
      *
      * @throws PdoException if data is empty
-     *
      */
     public function insert(ExpressionSet $data)
     {
@@ -452,7 +411,6 @@ class Table
 
 
     /**
-     *
      * Get the ID of the last inserted row.
      *
      * The return value will only be meaningful on tables with an auto-increment
@@ -460,7 +418,6 @@ class Table
      * called directly after a database insert.
      *
      * @return int
-     *
      */
     public function lastInsertId()
     {
@@ -469,7 +426,6 @@ class Table
 
 
     /**
-     *
      * Update db based on where clauses
      *
      * @param ExpressionSet $data
@@ -479,7 +435,6 @@ class Table
      * @return PDOStatement
      *
      * @throws PdoException if where or data is empty
-     *
      */
     public function update(ExpressionSet $data, ExpressionSet $where)
     {
@@ -506,7 +461,6 @@ class Table
 
 
     /**
-     *
      * Delete records from db that matches where
      *
      * @param ExpressionSet $where
@@ -514,7 +468,6 @@ class Table
      * @return PDOStatement
      *
      * @throws PdoException if where is empty
-     *
      */
     public function delete(ExpressionSet $where)
     {

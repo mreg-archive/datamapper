@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,78 +12,65 @@
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 namespace itbz\AstirMapper\PDO;
 use itbz\AstirMapper\SearchInterface;
 
 
 /**
- *
  * PDO search object
  *
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 class Search implements SearchInterface
 {
 
     /**
-     *
      * Order by direction
      *
-     * @var string $_dir
-     *
+     * @var string
      */
     private $_dir = 'ASC';
 
 
     /**
-     *
      * Order by column
      *
-     * @var string $_orderBy
-     *
+     * @var string
      */
     private $_orderBy = '';
 
 
     /**
-     *
      * Return set start index
      *
-     * @var int $_startIndex
-     *
+     * @var int
      */
     private $_startIndex;
     
 
     /**
-     *
      * Return set limit
      *
-     * @var int $_limit
-     *
+     * @var int
      */    
     private $_limit;
 
 
     /**
-     *
      * List of columns to select
      *
-     * @var array $_columns
-     *
+     * @var array
      */
     private $_columns = array();
 
     
     /**
-     *
      * Set order by direction to ascending
      *
+     * @return void
      */
     public function setAsc()
     {
@@ -93,9 +79,9 @@ class Search implements SearchInterface
 
 
     /**
-     *
      * Set order by direction to descending
      *
+     * @return void
      */
     public function setDesc()
     {
@@ -104,11 +90,9 @@ class Search implements SearchInterface
     
     
     /**
-     *
      * Get order by direction
      *
      * @return string
-     *
      */
     public function getDirection()
     {
@@ -117,11 +101,11 @@ class Search implements SearchInterface
 
 
     /**
-     *
      * Set order by column
      *
      * @param string $orderBy
      *
+     * @return void
      */
     public function setOrderBy($orderBy)
     {
@@ -131,11 +115,9 @@ class Search implements SearchInterface
     
     
     /**
-     *
      * Get order by column
      *
      * @return string
-     *
      */
     public function getOrderBy()
     {
@@ -144,11 +126,11 @@ class Search implements SearchInterface
     
 
     /**
-     *
      * Set result set start index
      *
      * @param int $startIndex
      *
+     * @return void
      */
     public function setStartIndex($startIndex)
     {
@@ -159,11 +141,11 @@ class Search implements SearchInterface
     
 
     /**
-     *
      * Set result set limit
      *
      * @param int $limit
      *
+     * @return void
      */    
     public function setLimit($limit)
     {
@@ -174,11 +156,11 @@ class Search implements SearchInterface
     
 
     /**
-     *
      * Get sql limit clause
      *
      * @return string
      *
+     * @return void
      */    
     public function getLimit()
     {
@@ -193,11 +175,11 @@ class Search implements SearchInterface
 
 
     /**
-     *
      * Add select column
      *
      * @param string $column
      *
+     * @return void
      */
     public function addColumn($column)
     {
@@ -207,11 +189,9 @@ class Search implements SearchInterface
 
 
     /**
-     *
      * Get select columns
      *
      * @return array
-     *
      */
     public function getColumns()
     {

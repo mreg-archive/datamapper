@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,19 +12,16 @@
  * @package AstirMapper
  *
  * @subpackage PDO\Access
- *
  */
 namespace itbz\AstirMapper\PDO\Access;
 
 
 /**
- *
  * Access denied exception
  *
  * @package AstirMapper
  *
  * @subpackage PDO\Access
- *
  */
 class AccessDeniedException extends Exception
 {

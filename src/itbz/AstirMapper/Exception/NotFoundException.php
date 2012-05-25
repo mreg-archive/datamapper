@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,21 +12,17 @@
  * @package AstirMapper
  *
  * @subpackage Exception
- *
  */
 namespace itbz\AstirMapper\Exception;
-use itbz\AstirMapper\Exception;
 
 
 /**
- *
  * Data not found exception
  *
  * @package AstirMapper
  *
  * @subpackage Exception
- *
  */
-class NotFoundException extends Exception
+class NotFoundException extends \itbz\AstirMapper\Exception
 {
 }

@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,7 +12,6 @@
  * @package AstirMapper
  *
  * @subpackage PDO\Access
- *
  */
 namespace itbz\AstirMapper\PDO\Access;
 use itbz\AstirMapper\PDO\Table\MysqlTable;
@@ -25,69 +23,56 @@ use PDOStatement;
 
 
 /**
- *
  * PDO access control table object
  *
  * @package AstirMapper
  *
  * @subpackage PDO\Access
- *
  */
 class AcTable extends MysqlTable implements AccessInterface
 {
 
     /**
-     *
      * Name of owner of table
      *
-     * @var string $owner
-     *
+     * @var string
      */
     private $_owner;
 
 
     /**
-     *
      * Name of group of table
      *
-     * @var string $_group
-     *
+     * @var string
      */
     private $_group;
 
 
     /**
-     *
      * Access mode of table
      *
-     * @var int $_mode
-     *
+     * @var int
      */
     private $_mode;
 
 
     /**
-     *
      * Name of user
      *
-     * @var string $_uname
-     *
+     * @var string
      */
     private $_uname = '';
     
 
     /**
-     *
      * List of groups user belongs to
      *
-     * @var array $_ugroups
-     *
+     * @var array
      */
     private $_ugroups = array();
 
 
     /**
-     *
      * Set access restrictions for table
      *
      * Use access flags to set mode. AcTable::OWNER_ALL|AcTable::GROUP_ALL
@@ -104,7 +89,6 @@ class AcTable extends MysqlTable implements AccessInterface
      * @param string $group Name of group of table
      *
      * @param int $mode Access mode of table
-     *
      */
     public function __construct($name, PDO $pdo, $owner, $group, $mode = 0770)
     {
@@ -121,7 +105,6 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Select rows from db
      *
      * @param Search $search
@@ -131,7 +114,6 @@ class AcTable extends MysqlTable implements AccessInterface
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
-     *
      */
     public function select(Search $search, ExpressionSet $where = NULL)
     {
@@ -164,7 +146,6 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Delete records from db that matches where
      *
      * @param ExpressionSet $where
@@ -172,7 +153,6 @@ class AcTable extends MysqlTable implements AccessInterface
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
-     *
      */
     public function delete(ExpressionSet $where)
     {
@@ -200,7 +180,6 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Insert values into db
      *
      * @param ExpressionSet $data
@@ -208,7 +187,6 @@ class AcTable extends MysqlTable implements AccessInterface
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
-     *
      */
     public function insert(ExpressionSet $data)
     {
@@ -237,7 +215,6 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Update db based on where clauses
      *
      * @param ExpressionSet $data
@@ -247,7 +224,6 @@ class AcTable extends MysqlTable implements AccessInterface
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
-     *
      */
     public function update(ExpressionSet $data, ExpressionSet $where)
     {
@@ -275,11 +251,9 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Check if user is allowed to read table
      *
      * @return bool
-     *
      */
     public function isAllowedRead()
     {
@@ -288,11 +262,9 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Check if user is allowed to write to table
      *
      * @return bool
-     *
      */
     public function isAllowedWrite()
     {
@@ -301,11 +273,9 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Check if user is allowed to execute table
      *
      * @return bool
-     *
      */
     public function isAllowedExecute()
     {
@@ -314,13 +284,13 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Set info about current user
      *
      * @param string $uname Name of user
      *
      * @param array $ugroups List of groups user belongs to
      *
+     * @return void
      */
     public function setUser($uname, array $ugroups = array())
     {
@@ -338,11 +308,9 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Get name of current user
      *
      * @return string
-     *
      */
     public function getUser()
     {
@@ -351,11 +319,9 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Get groups of current user
      *
      * @return array
-     *
      */
     public function getUserGroups()
     {
@@ -364,14 +330,12 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Check if user is root
      *
      * The root user always have access. Roots are all users named 'root' or
      * belonging to a group named 'root'.
      *
      * @return bool
-     *
      */
     public function userIsRoot()
     {
@@ -380,11 +344,9 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Check if user owns table
      *
      * @return bool
-     *
      */
     public function userIsOwner()
     {
@@ -393,11 +355,9 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Check if user is in group that owns table
      *
      * @return bool
-     *
      */
     public function userIsGroup()
     {
@@ -406,13 +366,11 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Check if user is allowed to perform action on table
      *
      * @param string $action 'r', 'w' or 'x'
      *
      * @return bool
-     *
      */
     private function isAllowedTable($action)
     {
@@ -451,7 +409,6 @@ class AcTable extends MysqlTable implements AccessInterface
 
 
     /**
-     *
      * Validate row access for empty statements
      *
      * Checks if statment is empty (using PDOStamtement::rowCount, hence this
@@ -473,7 +430,6 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @throws AccessDeniedException if statement is empty due to access
      * restrictions att row level
-     *
      */
     private function forwardValidStmt(
         $verb,

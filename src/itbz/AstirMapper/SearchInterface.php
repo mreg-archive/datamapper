@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -11,25 +10,22 @@
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
  *
  * @package AstirMapper
- *
  */
 namespace itbz\AstirMapper;
 
 
 /**
- *
  * Basic search interface
  *
  * @package AstirMapper
- *
  */
 interface SearchInterface
 {
 
     /**
-     *
      * Get search limit
      *
+     * @return scalar
      */
     public function getLimit();
 

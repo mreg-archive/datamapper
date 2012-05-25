@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,30 +12,25 @@
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 namespace itbz\AstirMapper\PDO;
 use itbz\AstirMapper\Exception\PdoException;
 
 
 /**
- *
  * Internal class for modeling SQL expressions
  *
  * @package AstirMapper
  *
  * @subpackage PDO
- *
  */
 class Expression
 {
 
     /**
+     * Map of valid operators and inversions
      *
-     * Map of valid operators and their inversions
-     *
-     * @var array $_operators
-     *
+     * @var array
      */
     static private $_operators = array(
         '<=>' => '!=',
@@ -59,57 +53,46 @@ class Expression
 
 
     /**
-     *
      * The name of this expression
      *
-     * @var string $_name
-     *
+     * @var string
      */
     private $_name;
 
 
     /**
-     *
      * The value of this expression
      *
-     * @var string $_value
-     *
+     * @var string
      */
     private $_value;
 
 
     /**
-     *
      * Expression operator
      *
-     * @var string $_operator
-     *
+     * @var string
      */
     private $_operator;
 
 
     /**
-     *
      * Flag if expression value should be escaped
      *
-     * @var bool $_escapeValue
-     *
+     * @var bool
      */
     private $_escapeValue = TRUE;
 
 
     /**
-     *
      * Flag if expression name should be escaped
      *
-     * @var bool $_escapeName
-     *
+     * @var bool
      */
     private $_escapeName = TRUE;
 
 
     /**
-     *
      * Construct and cast value to string
      *
      * The type conversion used differs from standard PHP type juggling rules.
@@ -131,7 +114,6 @@ class Expression
      * @throws PdoException if unable to value object to string
      *
      * @throws PdoException if operator is not a valid
-     * 
      */
     public function __construct($name, $value, $operator = '=')
     {
@@ -177,11 +159,11 @@ class Expression
 
 
     /**
-     *
      * Set if expression value should be escaped
      *
      * @param bool $flag
      *
+     * @return void
      */
     public function setEscapeValue($flag)
     {
@@ -191,11 +173,11 @@ class Expression
 
 
     /**
-     *
      * Set if expression name should be escaped
      *
      * @param bool $flag
      *
+     * @return void
      */
     public function setEscapeName($flag)
     {
@@ -205,11 +187,9 @@ class Expression
 
 
     /**
-     *
      * Get name of expression
      *
      * @return string
-     *
      */
     public function getName()
     {
@@ -218,11 +198,9 @@ class Expression
 
 
     /**
-     *
      * Get value of expression
      *
      * @return string
-     *
      */
     public function getValue()
     {
@@ -231,11 +209,9 @@ class Expression
 
 
     /**
-     *
      * Get operator for comparisons
      *
      * @return string
-     *
      */
     public function getOperator()
     {
@@ -244,9 +220,9 @@ class Expression
 
 
     /**
-     *
      * Invert operator
      *
+     * @return void
      */
     public function invertOperator()
     {
@@ -255,11 +231,9 @@ class Expression
 
 
     /**
-     *
      * Check if expression value should be escaped
      *
      * @return bool
-     *
      */
     public function escapeValue()
     {
@@ -268,11 +242,9 @@ class Expression
 
 
     /**
-     *
      * Check if expression name should be escaped
      *
      * @return bool
-     *
      */
     public function escapeName()
     {

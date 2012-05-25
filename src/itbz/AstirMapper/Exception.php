@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -11,17 +10,14 @@
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
  *
  * @package AstirMapper
- *
  */
 namespace itbz\AstirMapper;
 
 
 /**
- *
  * Base exception
  *
  * @package AstirMapper
- *
  */
 class Exception extends \Exception
 {

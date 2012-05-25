@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * This file is part of the AstirMapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
@@ -13,7 +12,6 @@
  * @package AstirMapper
  *
  * @subpackage PDO\Access
- *
  */
 namespace itbz\AstirMapper\PDO\Access;
 use itbz\AstirMapper\ModelInterface;
@@ -22,26 +20,22 @@ use itbz\AstirMapper\PDO\Expression;
 
 
 /**
- *
  * PDO access control mapper object
  *
  * @package AstirMapper
  *
  * @subpackage PDO\Access
- *
  */
 class AcMapper extends Mapper implements AccessInterface
 {
 
     /**
-     *
      * Construct and inject table instance
      *
      * @param AcTable $table
      *
      * @param ModelInterface $prototype Prototype model that will be cloned when
      * mapper needs a new return object.
-     *
      */
     public function __construct(AcTable $table, ModelInterface $prototype)
     {
@@ -50,13 +44,13 @@ class AcMapper extends Mapper implements AccessInterface
 
 
     /**
-     *
      * Set info about current user
      *
      * @param string $uname Name of user
      *
      * @param array $ugroups List of groups user belongs to
      *
+     * @return void
      */
     public function setUser($uname, array $ugroups = array())
     {
@@ -65,7 +59,6 @@ class AcMapper extends Mapper implements AccessInterface
 
 
     /**
-     *
      * Set new owner on rows matching model
      *
      * Only roots can change owner
@@ -79,7 +72,6 @@ class AcMapper extends Mapper implements AccessInterface
      * @throws AccessDeniedException if user is not root
      *
      * @throws Exception if primary key model is not set
-     *
      */
     public function chown(ModelInterface $model, $newOwner)
     {
@@ -111,7 +103,6 @@ class AcMapper extends Mapper implements AccessInterface
 
 
     /**
-     *
      * Set new mode on rows matching model
      *
      * Only owner and root can change mode
@@ -123,7 +114,6 @@ class AcMapper extends Mapper implements AccessInterface
      * @return int Number of affected rows
      *
      * @throws Exception if primary key model is not set
-     *
      */
     public function chmod(ModelInterface $model, $newMode)
     {
@@ -159,7 +149,6 @@ class AcMapper extends Mapper implements AccessInterface
 
 
     /**
-     *
      * Set new group on rows matching model
      *
      * Only owner and root can change group
@@ -173,7 +162,6 @@ class AcMapper extends Mapper implements AccessInterface
      * @throws Exception if primary key model is not set
      *
      * @throws AccessDeniedException if is not a member of the new group
-     *
      */
     public function chgrp(ModelInterface $model, $newGroup)
     {
