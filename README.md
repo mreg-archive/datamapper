@@ -11,6 +11,26 @@ Currently there is no support for NoSQL databases. Support for MongoDB is
 planed.
 
 
+## The prototype design pattern and cloning
+
+AstirMapper creates model instances using the prototype design pattern. When
+creating your mapper you inject an empty instance of your model, the prototype.
+When reading data from storage the prototype is cloned and the retrieved data
+is written to the cloned model before returning.
+
+You should note that cloning in PHP by default creates shallow copies.
+This means that if your model contaions references to other objects the
+referenced object is not cloned. If this is not what you want you can override
+the magic method `__clone` to create deep copies.
+
+    public function __clone()
+    {
+        $this->_deepCloneMe = clone $this->_deepCloneMe;
+    }
+
+For more information see the [PHP documentation](http://php.net/manual/en/language.oop5.cloning.php).
+
+
 ## Limitations
 
 * The PDO subpackage can currently only handle db tables with single column
