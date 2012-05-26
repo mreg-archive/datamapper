@@ -1,8 +1,8 @@
 {
     "name": "itbz/AstirMapper",
-    "description": "Generic data mapper",
+    "description": "AstirMapper has moved to itbz/DataMapper",
     "keywords": ["mapper", "data mapper"],
-    "homepage": "https://github.com/itbz/AstirMapper",
+    "homepage": "https://github.com/itbz/DataMapper",
     "type": "library",
     "license": "MIT",
     "authors": [
