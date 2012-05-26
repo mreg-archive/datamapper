@@ -1,5 +1,3 @@
-* Rename to DataMapper, Astir is just bad inheritance
-
 * Add support for SplTypes to PDO\Expression
 
 * Add hooks from mapper to model:

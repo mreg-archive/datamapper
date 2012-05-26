@@ -1,6 +1,6 @@
 {
-    "name": "itbz/AstirMapper",
-    "description": "AstirMapper has moved to itbz/DataMapper",
+    "name": "itbz/DataMapper",
+    "description": "Generic data mapper",
     "keywords": ["mapper", "data mapper"],
     "homepage": "https://github.com/itbz/DataMapper",
     "type": "library",
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-0": {
-            "itbz\\AstirMapper": "src/"
+            "itbz\\DataMapper": "src/"
         }
     }
 }

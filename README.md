@@ -1,5 +1,5 @@
-AstirMapper
-===========
+DataMapper
+==========
 
 PHP data mapper
 
@@ -13,7 +13,7 @@ planed.
 
 ## The prototype design pattern and cloning
 
-AstirMapper creates model instances using the prototype design pattern. When
+DataMapper creates model instances using the prototype design pattern. When
 creating your mapper you inject an empty instance of your model, the prototype.
 When reading data from storage the prototype is cloned and the retrieved data
 is written to the cloned model before returning.
@@ -48,10 +48,10 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     // $pdo = ...
     
     // create table object
-    $table = new \itbz\AstirMapper\PDO\Table\Table('mytable', $pdo);
+    $table = new \itbz\DataMapper\PDO\Table\Table('mytable', $pdo);
 
     // add a naturally joined table
-    $join = new \itbz\AstirMapper\PDO\Table\Table('joinedtable', $pdo);
+    $join = new \itbz\DataMapper\PDO\Table\Table('joinedtable', $pdo);
     $table->addNaturalJoin($join);
 
     // create an instance of your model
@@ -59,7 +59,7 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     $prototype = new MyModel();
     
     // create mapper
-    $mapper = new \itbz\AstirMapper\PDO\Mapper($table, $prototype);
+    $mapper = new \itbz\DataMapper\PDO\Mapper($table, $prototype);
 
     // select from db
     $iterator = $mapper->findMany(array('name' => 'foobar'));
@@ -78,7 +78,7 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
 
 ## Extracting data from models
 
-When reading data from models AstirMapper first tries to convert params to
+When reading data from models DataMapper first tries to convert params to
 method calls. This is done by prefixing name with `get` and removing all non
 alpha-numeric characters.  If searching for param `first_name` mapper will look
 for method `getFirstName`. If it exists it is called and the return value is
@@ -87,7 +87,7 @@ the param is skipped.
 
 To test how this scheme works on your mapper use the DataExtractor static class.
 
-    $data = itbz\AstirMapper\DataExtractor::extract($myModel, array('properties'));
+    $data = itbz\DataMapper\DataExtractor::extract($myModel, array('properties'));
     var_dump($data);
 
 
@@ -111,4 +111,4 @@ Or to do a complete build (also triggers CodeSniffer and other checks)
 To test against MySQL add your server credentials to `phpunit.xml`. To only test
 the parts that don't require MySQL specify testpath.
 
-    phpunit AstirMapper/PDO
+    phpunit DataMapper/PDO
