@@ -10,6 +10,8 @@ Supports multiple relational datbases through PDO.
 Currently there is no support for NoSQL databases. Support for MongoDB is
 planed.
 
+For detailed info se the [complete documentation](http://itbz.github.com/packages/DataMapper.html).
+
 
 ## The prototype design pattern and cloning
 
