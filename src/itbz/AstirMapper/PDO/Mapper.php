@@ -19,6 +19,7 @@ use itbz\AstirMapper\ModelInterface;
 use itbz\AstirMapper\SearchInterface;
 use itbz\AstirMapper\Exception\NotFoundException;
 use itbz\AstirMapper\Exception;
+use itbz\AstirMapper\DataExtractor;
 use itbz\AstirMapper\PDO\Table\Table;
 use PDOStatement;
 
@@ -269,34 +270,20 @@ class Mapper implements MapperInterface
     /**
      * Extract data from model
      *
-     * Property name is converted to a method call on model by prefixing name
-     * with 'get' and removing all non alpha-numeric characters. If method
-     * exists the return value is extracted. If not property is read directly
-     * from model.
+     * @param object $model
      *
-     * @param ModelInterface $model
-     *
-     * @param array $extract List of properties to extract. Defaults to native
-     * table column names.
+     * @param array $properties List of properties to extract. Defaults to
+     * native table column names.
      *
      * @return ExpressionSet
      */
-    protected function extract(ModelInterface $model, array $extract = NULL)
+    protected function extract($model, array $properties = NULL)
     {
-        if (!$extract) {
-            $extract = $this->_table->getNativeColumns();
+        if (!$properties) {
+            $properties = $this->_table->getNativeColumns();
         }
+        $data = DataExtractor::extract($model, $properties);
 
-        $data = array();
-        foreach ($extract as $property) {
-            $method = 'get' . preg_replace('/[^0-9a-z]/i', '', $property);
-            if (method_exists($model, $method)) {
-                $data[$property] = $model->$method();
-            } elseif (property_exists($model, $property)) {
-                $data[$property] = $model->$property;
-            }
-        }
-        
         return $this->arrayToExprSet($data);
     }
 
