@@ -87,7 +87,7 @@ class AcMapper extends Mapper implements AccessInterface
         }
 
         // Set new owner
-        $data = $this->extract($model);
+        $data = $this->extract($model, self::CONTEXT_UPDATE);
         $data->removeExpression(self::OWNER_FIELD);
         $data->addExpression(
             new Expression(self::OWNER_FIELD, $newOwner)
@@ -95,7 +95,7 @@ class AcMapper extends Mapper implements AccessInterface
 
         // Update model
         $columns = array($this->_table->getPrimaryKey());
-        $conditions = $this->extract($model, $columns);
+        $conditions = $this->extract($model, self::CONTEXT_READ, $columns);
         $stmt = $this->_table->update($data, $conditions);
 
         return $stmt->rowCount();
@@ -125,14 +125,14 @@ class AcMapper extends Mapper implements AccessInterface
         }
 
         // Set new mode
-        $data = $this->extract($model);
+        $data = $this->extract($model, self::CONTEXT_UPDATE);
         $data->removeExpression(self::MODE_FIELD);
         $data->addExpression(
             new Expression(self::MODE_FIELD, $newMode)
         );
 
         $columns = array($this->_table->getPrimaryKey());
-        $conditions = $this->extract($model, $columns);
+        $conditions = $this->extract($model, self::CONTEXT_READ, $columns);
 
         // Only owner and root can change mode
         if (!$this->_table->userIsRoot()) {
@@ -181,14 +181,14 @@ class AcMapper extends Mapper implements AccessInterface
         }
 
         // Set new group
-        $data = $this->extract($model);
+        $data = $this->extract($model, self::CONTEXT_UPDATE);
         $data->removeExpression(self::GROUP_FIELD);
         $data->addExpression(
             new Expression(self::GROUP_FIELD, $newGroup)
         );
 
         $columns = array($this->_table->getPrimaryKey());
-        $conditions = $this->extract($model, $columns);
+        $conditions = $this->extract($model, self::CONTEXT_READ, $columns);
 
         // Only owner and root can change group
         if (!$this->_table->userIsRoot()) {
