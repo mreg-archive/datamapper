@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="mreg" basedir="." default="build">
+    <property name="APP_NAME" value="DataMapper" />
     <property name="APP_ROOT" value="${project.basedir}" />
     <property name="SRC_DIR" value="${APP_ROOT}/src" />
     <property name="TEST_DIR" value="${APP_ROOT}/tests" />
+    <property name="BUILD_DIR" value="${APP_ROOT}/build" />
     <property name="CODE_STANDARD" value="Zend" />
 
     <fileset dir="${SRC_DIR}" id="sourceCode">
         <include name="**/*.php" />
     </fileset>
 
-    <target name="build" depends="test,codesniffer,messdetector,copydetector">
+    <target name="build" depends="test,sniff,document,messdetector,copydetector">
+    </target>
+
+    <target name="createBuildDir">
+        <mkdir dir="${BUILD_DIR}" />
     </target>
 
 
-    <target name="codesniffer">
+    <target name="test" depends="getdependencies,createBuildDir">
+        <exec
+            command="phpunit --coverage-html ${BUILD_DIR}/coverage"
+            dir="${TEST_DIR}"
+            checkreturn="true"
+            passthru="true"
+            />
+    </target>
+
+
+    <target name="sniff">
         <phpcodesniffer
             standard="${CODE_STANDARD}"
             showWarnings="true"
@@ -27,12 +43,15 @@
     </target>
 
 
-    <target name="test" depends="getdependencies">
+    <target name="document" depends="createBuildDir">
         <exec
-            command="phpunit"
-            dir="${TEST_DIR}"
-            checkreturn="true"
+            command="phpdoc -d ${SRC_DIR} -t ${BUILD_DIR}/documentation"
+            dir="${APP_ROOT}"
             passthru="true"
+            />
+        <exec
+            command="chmod -R 777 documentation"
+            dir="${BUILD_DIR}"
             />
     </target>
 
