@@ -1,3 +1,7 @@
+* The DataExtractor should support extract contexts
+
+* Extract could be done using an interface method
+
 * Add support for SplTypes to PDO\Expression
 
 * Add hooks from mapper to model:
