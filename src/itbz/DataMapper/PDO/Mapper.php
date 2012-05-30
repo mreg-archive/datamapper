@@ -287,7 +287,7 @@ class Mapper implements MapperInterface
      *
      * @throws Exception if model extract does not return an array
      */
-    private function extract(
+    protected function extract(
         ModelInterface $model,
         $context,
         array $use = NULL
