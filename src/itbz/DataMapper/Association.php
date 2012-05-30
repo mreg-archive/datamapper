@@ -116,6 +116,8 @@ class OneToManyAssociation
      *
      * @param string $name Name of this association.
      *
+     * @param string $plural
+     *
      * @param Mapper $associatedMapper
      */
     public function __construct($name, $plural, Mapper $associatedMapper)
