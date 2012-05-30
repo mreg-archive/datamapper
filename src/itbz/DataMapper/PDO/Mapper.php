@@ -16,6 +16,7 @@
 namespace itbz\DataMapper\PDO;
 use itbz\DataMapper\MapperInterface;
 use itbz\DataMapper\ModelInterface;
+use itbz\DataMapper\IgnoreAttributeInterface;
 use itbz\DataMapper\SearchInterface;
 use itbz\DataMapper\Exception\NotFoundException;
 use itbz\DataMapper\Exception;
@@ -386,7 +387,7 @@ class Mapper implements MapperInterface
             if (!$expr instanceof Expression) {
                 $expr = new Expression($name, $expr);
             }
-            if (!$expr instanceof Ignore) {
+            if (!$expr instanceof IgnoreAttributeInterface) {
                 $exprSet->addExpression($expr);
             }
         }

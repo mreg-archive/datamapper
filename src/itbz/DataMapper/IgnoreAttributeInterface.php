@@ -10,28 +10,18 @@
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
  *
  * @package DataMapper
- *
- * @subpackage PDO
  */
-namespace itbz\DataMapper\PDO;
+namespace itbz\DataMapper;
 
 
 /**
- * Meta expression that will be ignored when building expression sets
+ * Signal that property should be ignored
+ *
+ * Attribute objects implementing IgnoreAttributeInterface will be ignored when
+ * construction data queries.
  *
  * @package DataMapper
- *
- * @subpackage PDO
  */
-class Ignore extends Expression
+interface IgnoreAttributeInterface
 {
-
-    /**
-     * Empty constructor
-     */
-    public function __construct()
-    {
-        parent::__construct('', '');
-    }
-
 }
