@@ -7,15 +7,19 @@
     <property name="BUILD_DIR" value="${APP_ROOT}/build" />
     <property name="CODE_STANDARD" value="Zend" />
 
+
     <fileset dir="${SRC_DIR}" id="sourceCode">
         <include name="**/*.php" />
     </fileset>
 
-    <target name="build" depends="test,sniff,document,messdetector,copydetector">
-    </target>
 
-    <target name="createBuildDir">
-        <mkdir dir="${BUILD_DIR}" />
+    <fileset dir="${TEST_DIR}" id="testCode">
+        <include name="**/*Test*.php"/>
+        <exclude name="**/Abstract*.php"/>
+    </fileset>
+
+
+    <target name="build" depends="test,sniff,document,messdetector,copydetector">
     </target>
 
 
@@ -67,6 +71,11 @@
         <phpmd>
             <fileset refid="sourceCode" />
         </phpmd>
+    </target>
+
+
+    <target name="createBuildDir">
+        <mkdir dir="${BUILD_DIR}" />
     </target>
 
 
