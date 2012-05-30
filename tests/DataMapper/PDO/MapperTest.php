@@ -327,8 +327,32 @@ class MapperTest extends \PHPUnit_Framework_TestCase
               ->method('extract')
               ->will($this->returnValue('no array!'));
 
-        $mapper = new Mapper($table, clone $model);
+        $mapper = new Mapper($table, $model);
         $mapper->save($model);
+    }
+
+
+    function testGetNewModel()
+    {
+        $table = $this->getMock(
+            '\itbz\DataMapper\PDO\Table\Table',
+            array(),
+            array(),
+            '',
+            FALSE
+        );
+
+        $model = $this->getMock(
+            '\itbz\DataMapper\ModelInterface',
+            array('extract', 'load')
+        );
+
+        $mapper = new Mapper($table, $model);
+        $newModel = $mapper->getNewModel();
+        
+        // Assert that new model is a clone
+        $this->assertEquals($model, $newModel);
+        $this->assertFalse($model === $newModel);
     }
 
 }

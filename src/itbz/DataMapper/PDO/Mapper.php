@@ -211,7 +211,7 @@ class Mapper implements MapperInterface
      *
      * @return ModelInterface
      */
-    public function getModel()
+    public function getNewModel()
     {
         return clone $this->_prototype;
     }
