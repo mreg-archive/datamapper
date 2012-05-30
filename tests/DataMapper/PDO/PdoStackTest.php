@@ -3,7 +3,6 @@ namespace itbz\DataMapper\PDO;
 use itbz\DataMapper\ModelInterface;
 use PDO;
 use itbz\DataMapper\PDO\Table\SqliteTable;
-use itbz\DataMapper\DateTime;
 
 
 /*
@@ -111,20 +110,6 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
 
         $model2 = $mapper->findByPk(1);
         $this->assertNull($model2->name);
-    }
-
-
-    function testInsertDateTime()
-    {
-        $d = new DateTime('2012-01-02');
-        $mapper = $this->getMapper();
-        $model = new \Model();
-        $model->name = $d;
-        $mapper->save($model);
-
-        $model2 = $mapper->findByPk(1);
-        $model2->name = new DateTime('@' . $model2->name);
-        $this->assertEquals('2012-01-01', $model2->name->format('Y-m-d'));
     }
 
 }
