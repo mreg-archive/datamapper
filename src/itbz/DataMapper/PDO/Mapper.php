@@ -287,7 +287,7 @@ class Mapper implements MapperInterface
      *
      * @throws Exception if model extract does not return an array
      */
-    protected function extract(
+    protected function extractArray(
         ModelInterface $model,
         $context,
         array $use = NULL
@@ -314,7 +314,7 @@ class Mapper implements MapperInterface
         
         $data = array_intersect_key($data, array_flip($use));
 
-        return $this->arrayToExprSet($data);
+        return $data;
     }
 
 
@@ -329,7 +329,9 @@ class Mapper implements MapperInterface
      */
     protected function extractForCreate(ModelInterface $mod, array $use = NULL)
     {
-        return $this->extract($mod, self::CONTEXT_CREATE, $use);
+        return $this->arrayToExprSet(
+            $this->extractArray($mod, self::CONTEXT_CREATE, $use)
+        );
     }
 
 
@@ -344,7 +346,9 @@ class Mapper implements MapperInterface
      */
     protected function extractForRead(ModelInterface $mod, array $use = NULL)
     {
-        return $this->extract($mod, self::CONTEXT_READ, $use);
+        return $this->arrayToExprSet(
+            $this->extractArray($mod, self::CONTEXT_READ, $use)
+        );
     }
 
 
@@ -359,7 +363,9 @@ class Mapper implements MapperInterface
      */
     protected function extractForUpdate(ModelInterface $mod, array $use = NULL)
     {
-        return $this->extract($mod, self::CONTEXT_UPDATE, $use);
+        return $this->arrayToExprSet(
+            $this->extractArray($mod, self::CONTEXT_UPDATE, $use)
+        );
     }
 
 
@@ -374,7 +380,9 @@ class Mapper implements MapperInterface
      */
     protected function extractForDelete(ModelInterface $mod, array $use = NULL)
     {
-        return $this->extract($mod, self::CONTEXT_DELETE, $use);
+        return $this->arrayToExprSet(
+            $this->extractArray($mod, self::CONTEXT_DELETE, $use)
+        );
     }
 
 
