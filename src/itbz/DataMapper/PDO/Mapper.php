@@ -317,7 +317,7 @@ class Mapper implements MapperInterface
      *
      * @return ExpressionSet
      */
-    protected function extractForCreate($model, array $properties = NULL)
+    protected function extractForCreate($model, array $properties)
     {
         $data = DataExtractor::extract($model, $properties);
         return $this->arrayToExprSet($data);
@@ -333,7 +333,7 @@ class Mapper implements MapperInterface
      *
      * @return ExpressionSet
      */
-    protected function extractForRead($model, array $properties = NULL)
+    protected function extractForRead($model, array $properties)
     {
         $data = DataExtractor::extract($model, $properties);
         return $this->arrayToExprSet($data);
@@ -349,7 +349,7 @@ class Mapper implements MapperInterface
      *
      * @return ExpressionSet
      */
-    protected function extractForUpdate($model, array $properties = NULL)
+    protected function extractForUpdate($model, array $properties)
     {
         $data = DataExtractor::extract($model, $properties);
         return $this->arrayToExprSet($data);
@@ -365,7 +365,7 @@ class Mapper implements MapperInterface
      *
      * @return ExpressionSet
      */
-    protected function extractForDelete($model, array $properties = NULL)
+    protected function extractForDelete($model, array $properties)
     {
         $data = DataExtractor::extract($model, $properties);
         return $this->arrayToExprSet($data);
