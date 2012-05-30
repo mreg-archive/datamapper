@@ -1,5 +1,6 @@
 <?php
 namespace itbz\DataMapper\PDO;
+use itbz\DataMapper\ModelInterface;
 
 
 class MapperTest extends \PHPUnit_Framework_TestCase
@@ -122,45 +123,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /*
-     * Same testing strategy as in testFind
-     * Asserts that model->getName is called to read name from model
-     */
-    function testReadingGetMethod()
-    {
-        $searchName = 'foobar';
-        
-        $data = array(
-            'name' => $searchName
-        );
-        
-        $table = $this->getSelectOnceTableMock(array_keys($data));
-
-        $stmt = $this->getSelectOnceStmtMock($data);
-
-        $table->expects($this->once())
-              ->method('select')
-              ->will($this->returnValue($stmt));
-
-        $table->expects($this->once())
-              ->method('update')
-              ->will($this->returnValue($stmt));
-
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
-                      ->setMethods(array('getName','load'))
-                      ->getMock();
-
-        // model->getName should be invoked to read name
-        $model->expects($this->atLeastOnce())
-              ->method('getName')
-              ->will($this->returnValue($searchName));
-
-        $mapper = new Mapper($table, clone $model);
-
-        $mapper->save($model);
-    }
-
-
     /**
      * @expectedException itbz\DataMapper\Exception\NotFoundException
      */
@@ -217,14 +179,16 @@ class MapperTest extends \PHPUnit_Framework_TestCase
               ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
-                      ->getMock();
+        $model = $this->getMock(
+            'itbz\DataMapper\ModelInterface',
+            array('extract', 'load')
+        );
+
+        $model->expects($this->atLeastOnce())
+              ->method('extract')
+              ->will($this->returnValue(array('id' => 1, 'name' => 'foobar')));
 
         $mapper = new Mapper($table, clone $model);
-        
-        $model->id = 1;
-        $model->name = 'foobar';
-        
         $mapper->save($model);
     }
 
@@ -241,13 +205,16 @@ class MapperTest extends \PHPUnit_Framework_TestCase
               ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
-                      ->getMock();
+        $model = $this->getMock(
+            'itbz\DataMapper\ModelInterface',
+            array('extract', 'load')
+        );
+
+        $model->expects($this->atLeastOnce())
+              ->method('extract')
+              ->will($this->returnValue(array('name' => 'foobar')));
 
         $mapper = new Mapper($table, clone $model);
-        
-        $model->name = 'foobar';
-        
         $mapper->save($model);
     }
 
@@ -295,14 +262,16 @@ class MapperTest extends \PHPUnit_Framework_TestCase
               ))
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
-                      ->getMock();
+        $model = $this->getMock(
+            'itbz\DataMapper\ModelInterface',
+            array('extract', 'load')
+        );
+
+        $model->expects($this->atLeastOnce())
+              ->method('extract')
+              ->will($this->returnValue(array('id' => 1, 'name' => 'new name')));
 
         $mapper = new Mapper($table, clone $model);
-        
-        $model->id = 1;
-        $model->name = 'new name';
-        
         $mapper->save($model);
     }
 
@@ -321,12 +290,45 @@ class MapperTest extends \PHPUnit_Framework_TestCase
               )
               ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
-                      ->getMock();
+        $model = $this->getMock(
+            'itbz\DataMapper\ModelInterface',
+            array('extract', 'load')
+        );
+
+        $model->expects($this->once())
+              ->method('extract')
+              ->with(ModelInterface::CONTEXT_DELETE, array('id'))
+              ->will($this->returnValue(array('id' => 1)));
 
         $mapper = new Mapper($table, clone $model);
-        $model->id = 1;
         $mapper->delete($model);
+    }
+
+
+    /**
+     * @expectedException itbz\DataMapper\Exception
+     */
+    function testModelExtractReturnError()
+    {
+        $table = $this->getMock(
+            '\itbz\DataMapper\PDO\Table\Table',
+            array(),
+            array(),
+            '',
+            FALSE
+        );
+
+        $model = $this->getMock(
+            'itbz\DataMapper\ModelInterface',
+            array('extract', 'load')
+        );
+
+        $model->expects($this->once())
+              ->method('extract')
+              ->will($this->returnValue('no array!'));
+
+        $mapper = new Mapper($table, clone $model);
+        $mapper->save($model);
     }
 
 }

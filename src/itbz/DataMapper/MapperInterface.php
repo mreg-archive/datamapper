@@ -19,38 +19,8 @@ namespace itbz\DataMapper;
  *
  * @package DataMapper
  */
-interface MapperInterface
+interface MapperInterface extends ExtractInterface
 {
-
-    /**
-     * Extract context for data creation
-     *
-     * @const CONTEXT_CREATE
-     */
-    const CONTEXT_CREATE = 1;
-
-
-    /**
-     * Extract context for data reads
-     *
-     * @const CONTEXT_READ
-     */
-    const CONTEXT_READ = 2;
-
-    /**
-     * Extract context for data updates
-     *
-     * @const CONTEXT_UPDATE
-     */
-    const CONTEXT_UPDATE = 3;
-
-    /**
-     * Extract context for data deletes
-     *
-     * @const CONTEXT_DELETE
-     */
-    const CONTEXT_DELETE = 4;
-
 
     /**
      * Persistently store model

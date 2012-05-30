@@ -22,7 +22,7 @@ class IteratorTest extends \PHPUnit_Framework_TestCase
     {
         $model = $this->getMock(
             '\itbz\DataMapper\ModelInterface',
-            array('load')
+            array('load', 'extract')
         );
 
         $model->expects($this->exactly(4))

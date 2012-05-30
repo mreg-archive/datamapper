@@ -19,7 +19,7 @@ namespace itbz\DataMapper;
  *
  * @package DataMapper
  */
-interface ModelInterface
+interface ModelInterface extends ExtractInterface
 {
 
     /**
@@ -30,5 +30,24 @@ interface ModelInterface
      * @return void
      */
     public function load(array $data);
+
+
+    /**
+     * Extract data from model
+     *
+     * Model must return an array with attribute names as keys and extracted
+     * content as values.
+     *
+     * @param int $context CRUD context for this extract. One of
+     * 'self::CONTEXT_CREATE', 'self::CONTEXT_READ', 'self::CONTEXT_UPDATE' or
+     * 'self::CONTEXT_DELETE'.
+     *
+     * @param array $using List of model attributes to be extracted. Models does
+     * not have to honor tis list, as unvanted attributes are removed after
+     * extraction is complete.
+     *
+     * @return array
+     */
+    public function extract($context, array $using);
 
 }

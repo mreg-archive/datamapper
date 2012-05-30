@@ -78,21 +78,6 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     $mapper->save($model);
 
 
-## Extracting data from models
-
-When reading data from models DataMapper first tries to convert params to
-method calls. This is done by prefixing name with `get` and removing all non
-alpha-numeric characters.  If searching for param `first_name` mapper will look
-for method `getFirstName`. If it exists it is called and the return value is
-used. If not mapper looks for a puplic property `first_name`. In none is fund
-the param is skipped.
-
-To test how this scheme works on your mapper use the DataExtractor static class.
-
-    $data = itbz\DataMapper\DataExtractor::extract($myModel, array('properties'));
-    var_dump($data);
-
-
 ## Testing
 
 The testsuite uses the composer autoloader. To run tests from project root dir:

@@ -20,7 +20,6 @@ use itbz\DataMapper\IgnoreAttributeInterface;
 use itbz\DataMapper\SearchInterface;
 use itbz\DataMapper\Exception\NotFoundException;
 use itbz\DataMapper\Exception;
-use itbz\DataMapper\DataExtractor;
 use itbz\DataMapper\PDO\Table\Table;
 use PDOStatement;
 
@@ -137,7 +136,7 @@ class Mapper implements MapperInterface
     public function delete(ModelInterface $model)
     {
         $pk = $this->_table->getPrimaryKey();
-        $conditions = $this->extract($model, self::CONTEXT_DELETE, array($pk));
+        $conditions = $this->extractForDelete($model, array($pk));
         $stmt = $this->_table->delete($conditions);
 
         return $stmt->rowCount();
@@ -195,14 +194,15 @@ class Mapper implements MapperInterface
      */
     public function getPk(ModelInterface $model)
     {
-        $pkName = $this->_table->getPrimaryKey();
-        $exprSet = $this->extract($model, self::CONTEXT_READ, array($pkName));
-        $pk = '';
-        if ($exprSet->isExpression($pkName)) {
-            $pk = $exprSet->getExpression($pkName)->getValue();
+        $pk = $this->_table->getPrimaryKey();
+        $exprSet = $this->extractForRead($model, array($pk));
+
+        if ($exprSet->isExpression($pk)) {
+
+            return $exprSet->getExpression($pk)->getValue();
         }
         
-        return $pk;
+        return '';
     }
 
 
@@ -226,7 +226,7 @@ class Mapper implements MapperInterface
      */
     protected function insert(ModelInterface $model)
     {
-        $data = $this->extract($model, self::CONTEXT_CREATE);
+        $data = $this->extractForCreate($model);
         $stmt = $this->_table->insert($data);
 
         return $stmt->rowCount();
@@ -242,9 +242,9 @@ class Mapper implements MapperInterface
      */
     protected function update(ModelInterface $model)
     {
-        $data = $this->extract($model, self::CONTEXT_UPDATE);
+        $data = $this->extractForUpdate($model);
         $pk = $this->_table->getPrimaryKey();
-        $conditions = $this->extract($model, self::CONTEXT_READ, array($pk));
+        $conditions = $this->extractForRead($model, array($pk));
         $stmt = $this->_table->update($data, $conditions);
 
         return $stmt->rowCount();
@@ -271,105 +271,110 @@ class Mapper implements MapperInterface
     /**
      * Extract data from model
      *
-     * @param object $model
+     * This method should not be called directly. Use one of 'extractForCreate',
+     * 'extractForRead', 'extractForUpdate' or 'extractForDelete' instead.
+     *
+     * @param ModelInterface $model
      *
      * @param int $context Extract context
      *
-     * @param array $properties List of properties to extract. Defaults to
-     * native table column names.
+     * @param array $use List of model properties to extract. Defaults to table
+     * native columns.
      *
      * @return ExpressionSet
+     *
+     * @throws Exception if extract context is invalid
+     *
+     * @throws Exception if model extract does not return an array
      */
-    protected function extract(
-        $model,
+    private function extract(
+        ModelInterface $model,
         $context,
-        array $properties = NULL
+        array $use = NULL
     )
     {
-        if (!$properties) {
-            $properties = $this->_table->getNativeColumns();
+        // @codeCoverageIgnoreStart
+        if (!$context) {
+            $msg = "Invalid extract context '$context'";
+            throw new Exception($msg);
+        }
+        // @codeCoverageIgnoreEnd
+
+        if (!$use) {
+            $use = $this->_table->getNativeColumns();
         }
 
-        if ($context == self::CONTEXT_CREATE) {
-
-            return $this->extractForCreate($model, $properties);
-        } elseif ($context == self::CONTEXT_READ) {
-
-            return $this->extractForRead($model, $properties);
-        } elseif ($context == self::CONTEXT_UPDATE) {
-
-            return $this->extractForUpdate($model, $properties);
-        } elseif ($context == self::CONTEXT_DELETE) {
-
-            return $this->extractForDelete($model, $properties);
+        $data = $model->extract($context, $use);
+        
+        if (!is_array($data)) {
+            $type = gettype($data);
+            $msg = "Model extract must return an array, found '$type'";
+            throw new Exception($msg);
         }
+        
+        $data = array_intersect_key($data, array_flip($use));
 
-        $msg = "Invalid extract constant '$context'";
-        throw new Exception($msg);
+        return $this->arrayToExprSet($data);
     }
 
 
     /**
      * Extract data from model for data inserts
      *
-     * @param object $model
+     * @param ModelInterface $mod
      *
-     * @param array $properties
+     * @param array $use
      *
      * @return ExpressionSet
      */
-    protected function extractForCreate($model, array $properties)
+    protected function extractForCreate(ModelInterface $mod, array $use = NULL)
     {
-        $data = DataExtractor::extract($model, $properties);
-        return $this->arrayToExprSet($data);
+        return $this->extract($mod, self::CONTEXT_CREATE, $use);
     }
 
 
     /**
      * Extract data from model for data read
      *
-     * @param object $model
+     * @param ModelInterface $mod
      *
-     * @param array $properties
+     * @param array $use
      *
      * @return ExpressionSet
      */
-    protected function extractForRead($model, array $properties)
+    protected function extractForRead(ModelInterface $mod, array $use = NULL)
     {
-        $data = DataExtractor::extract($model, $properties);
-        return $this->arrayToExprSet($data);
+        return $this->extract($mod, self::CONTEXT_READ, $use);
     }
 
 
     /**
      * Extract data from model for data updates
      *
-     * @param object $model
+     * @param ModelInterface $mod
      *
-     * @param array $properties
+     * @param array $use
      *
      * @return ExpressionSet
      */
-    protected function extractForUpdate($model, array $properties)
+    protected function extractForUpdate(ModelInterface $mod, array $use = NULL)
     {
-        $data = DataExtractor::extract($model, $properties);
-        return $this->arrayToExprSet($data);
+        return $this->extract($mod, self::CONTEXT_UPDATE, $use);
     }
 
 
     /**
      * Extract data from model for data deletes
      *
-     * @param object $model
+     * @param ModelInterface $mod
      *
-     * @param array $properties
+     * @param array $use
      *
      * @return ExpressionSet
      */
-    protected function extractForDelete($model, array $properties)
+    protected function extractForDelete(ModelInterface $mod, array $use = NULL)
     {
-        $data = DataExtractor::extract($model, $properties);
-        return $this->arrayToExprSet($data);
+        return $this->extract($mod, self::CONTEXT_DELETE, $use);
     }
 
 

@@ -131,14 +131,15 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
-            array(),
+            array('getPrimaryKey'),
             array(),
             '',
             FALSE
         );
 
-        $table->setColumns(array('id', 'data'));
-        $table->setPrimaryKey('id');
+        $table->expects($this->atLeastOnce())
+              ->method('getPrimaryKey')
+              ->will($this->returnValue('id'));
 
         $mapper = new AcMapper($table, new \Model());
         $mapper->chmod(new \Model(), 0700);

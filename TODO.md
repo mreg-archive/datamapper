@@ -1,22 +1,11 @@
-* The DataExtractor should support extract contexts
-
-* Extract could be done using an interface method
-
 * Add support for SplTypes to PDO\Expression
 
 * Add hooks from mapper to model:
   if (is_callable($model, 'preSaveHook')) ...
     * preExtractHook
-    * extractModelData
     * postExtractHook
     * preLoadHook
-    * loadModelData
     * postLoadHook
-
-* Implementing `ModelInterface` should not be necessary. Any object should
-  be a valid prototype. Instead of calling `load` after cloning a prototype
-  check for load hooks. If not present load data using a scheme similar to
-  `mapper::extract`.
 
 * Refactor query building from `PDO\Table` to a builder object. In table use
   something simliar to
@@ -44,4 +33,3 @@
         // Same as above, but now getAddress returns a model, not an iterator
         $mapper->hasOne('Address', $relationObj, $addressMapper);
         $address = $mapper->getAddress($model);
-
