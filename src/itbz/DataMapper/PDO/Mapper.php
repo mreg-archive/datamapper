@@ -281,7 +281,7 @@ class Mapper implements MapperInterface
      * @param array $use List of model properties to extract. Defaults to table
      * native columns.
      *
-     * @return ExpressionSet
+     * @return array
      *
      * @throws Exception if extract context is invalid
      *
