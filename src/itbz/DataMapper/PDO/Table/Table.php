@@ -376,7 +376,13 @@ class Table
             $orderBy .= " {$search->getDirection()}";
         }
 
-        $query = $base . $where . $orderBy . ' ' . $search->getLimit();
+        $query = sprintf(
+            '%s %s %s %s',
+            $base,
+            $where,
+            $orderBy,
+            $search->getLimit()
+        );
         
         $stmt = $this->_pdo->prepare($query);
         $stmt->execute($whereValues);
