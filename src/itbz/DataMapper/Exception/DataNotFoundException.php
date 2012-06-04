@@ -23,6 +23,6 @@ namespace itbz\DataMapper\Exception;
  *
  * @subpackage Exception
  */
-class NotFoundException extends \itbz\DataMapper\Exception
+class DataNotFoundException extends \itbz\DataMapper\Exception
 {
 }

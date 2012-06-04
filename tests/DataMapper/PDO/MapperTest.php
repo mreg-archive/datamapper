@@ -124,9 +124,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException itbz\DataMapper\Exception\NotFoundException
+     * @expectedException itbz\DataMapper\Exception\DataNotFoundException
      */
-    function testNotFoundException()
+    function testDataNotFoundException()
     {
         $table = $this->getSelectOnceTableMock(array('id'), $this->any());
 

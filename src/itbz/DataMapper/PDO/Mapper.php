@@ -18,7 +18,7 @@ use itbz\DataMapper\MapperInterface;
 use itbz\DataMapper\ModelInterface;
 use itbz\DataMapper\IgnoreAttributeInterface;
 use itbz\DataMapper\SearchInterface;
-use itbz\DataMapper\Exception\NotFoundException;
+use itbz\DataMapper\Exception\DataNotFoundException;
 use itbz\DataMapper\Exception;
 use itbz\DataMapper\PDO\Table\Table;
 use PDOStatement;
@@ -92,7 +92,7 @@ class Mapper implements MapperInterface
      *
      * @return ModelInterface
      *
-     * @throws NotFoundException if no model was found
+     * @throws DataNotFoundException if no model was found
      */
     public function find(array $conditions)
     {
@@ -107,7 +107,7 @@ class Mapper implements MapperInterface
         }
 
         // This only happens if iterator is empty
-        throw new NotFoundException("No matching records found");        
+        throw new DataNotFoundException("No matching records found");        
     }
 
 
@@ -162,7 +162,7 @@ class Mapper implements MapperInterface
 
                 return $this->update($model);
             }
-        } catch (NotFoundException $e) {
+        } catch (DataNotFoundException $e) {
             // Do nothing, exception triggers insert, as do models with no PK
         }
 
