@@ -397,10 +397,10 @@ class Mapper implements MapperInterface
     {
         $exprSet = new ExpressionSet();
         foreach ($data as $name => $expr) {
-            if (!$expr instanceof Expression) {
-                $expr = new Expression($name, $expr);
-            }
             if (!$expr instanceof IgnoreAttributeInterface) {
+                if (!$expr instanceof Expression) {
+                    $expr = new Expression($name, $expr);
+                }
                 $exprSet->addExpression($expr);
             }
         }
