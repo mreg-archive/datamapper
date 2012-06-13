@@ -138,6 +138,17 @@ class Search implements SearchInterface
         assert('$startIndex >= 0');
         $this->_startIndex = $startIndex;
     }
+
+
+    /**
+     * Get start index
+     *
+     * @return int
+     */
+    public function getStartIndex()
+    {
+        return $this->_startIndex;
+    }
     
 
     /**
@@ -153,7 +164,18 @@ class Search implements SearchInterface
         assert('$limit >= 0');
         $this->_limit = $limit;
     }
-    
+
+
+    /**
+     * Get limit
+     *
+     * @return int
+     */
+    public function getLimit()
+    {
+        return $this->_limit;
+    }
+
 
     /**
      * Get sql limit clause
@@ -162,14 +184,16 @@ class Search implements SearchInterface
      *
      * @return void
      */    
-    public function getLimit()
+    public function getLimitClause()
     {
-        if (!isset($this->_limit)) {
+        $limit = $this->getLimit();
+        $startIndex = $this->getStartIndex();
+        if (!isset($limit)) {
             return '';
-        } elseif (!isset($this->_startIndex)) {
-            return "LIMIT {$this->_limit}";
+        } elseif (!isset($startIndex)) {
+            return "LIMIT $limit";
         } else {
-            return "LIMIT {$this->_startIndex},{$this->_limit}";
+            return "LIMIT $startIndex,$limit";
         }
     }
 

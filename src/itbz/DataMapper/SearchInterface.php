@@ -27,6 +27,6 @@ interface SearchInterface
      *
      * @return scalar
      */
-    public function getLimit();
+    public function getLimitClause();
 
 }

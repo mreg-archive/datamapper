@@ -381,7 +381,7 @@ class Table
             $base,
             $where,
             $orderBy,
-            $search->getLimit()
+            $search->getLimitClause()
         );
         
         $stmt = $this->_pdo->prepare($query);

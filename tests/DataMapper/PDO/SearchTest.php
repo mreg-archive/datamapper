@@ -28,11 +28,11 @@ class SearchTest extends \PHPUnit_Framework_TestCase
     public function testLimit()
     {
         $s = new Search();
-        $this->assertEquals('', $s->getLimit());
+        $this->assertEquals('', $s->getLimitClause());
         $s->setLimit(10);
-        $this->assertEquals('LIMIT 10', $s->getLimit());
+        $this->assertEquals('LIMIT 10', $s->getLimitClause());
         $s->setStartIndex(1);
-        $this->assertEquals('LIMIT 1,10', $s->getLimit());
+        $this->assertEquals('LIMIT 1,10', $s->getLimitClause());
     }
 
     
