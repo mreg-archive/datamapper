@@ -8,12 +8,11 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO\Access
+ * @package DataMapper\PDO\Access
  */
+
 namespace itbz\DataMapper\PDO\Access;
+
 use itbz\DataMapper\PDO\Table\MysqlTable;
 use itbz\DataMapper\PDO\Search;
 use itbz\DataMapper\PDO\ExpressionSet;
@@ -21,56 +20,47 @@ use itbz\DataMapper\PDO\Expression;
 use PDO;
 use PDOStatement;
 
-
 /**
  * PDO access control table object
  *
- * @package DataMapper
- *
- * @subpackage PDO\Access
+ * @package DataMapper\PDO\Access
  */
 class AcTable extends MysqlTable implements AccessInterface
 {
-
     /**
      * Name of owner of table
      *
      * @var string
      */
-    private $_owner;
-
+    private $owner;
 
     /**
      * Name of group of table
      *
      * @var string
      */
-    private $_group;
-
+    private $group;
 
     /**
      * Access mode of table
      *
      * @var int
      */
-    private $_mode;
-
+    private $mode;
 
     /**
      * Name of user
      *
      * @var string
      */
-    private $_uname = '';
-    
+    private $uname = '';
 
     /**
      * List of groups user belongs to
      *
      * @var array
      */
-    private $_ugroups = array();
-
+    private $ugroups = array();
 
     /**
      * Set access restrictions for table
@@ -81,13 +71,9 @@ class AcTable extends MysqlTable implements AccessInterface
      * access.
      *
      * @param string $name Name of database table
-     *
      * @param PDO $pdo PDO object for interacting with database
-     *
      * @param string $owner Name of owner of table
-     *
      * @param string $group Name of group of table
-     *
      * @param int $mode Access mode of table
      */
     public function __construct($name, PDO $pdo, $owner, $group, $mode = 0770)
@@ -98,24 +84,22 @@ class AcTable extends MysqlTable implements AccessInterface
 
         parent::__construct($name, $pdo);
 
-        $this->_owner = $owner;
-        $this->_group = $group;
-        $this->_mode = $mode;
+        $this->owner = $owner;
+        $this->group = $group;
+        $this->mode = $mode;
     }
-
 
     /**
      * Select rows from db
      *
      * @param Search $search
-     *
      * @param ExpressionSet $conditions
      *
      * @return PDOStatement
      *
      * @throws AccessDeniedException if user does not have access
      */
-    public function select(Search $search, ExpressionSet $conditions = NULL)
+    public function select(Search $search, ExpressionSet $conditions = null)
     {
         if (!$this->isAllowedExecute()) {
             $msg = "Access denied at table '{$this->getName()}'";
@@ -131,8 +115,8 @@ class AcTable extends MysqlTable implements AccessInterface
             new Mode(
                 'r',
                 $this->getName(),
-                $this->_uname,
-                $this->_ugroups
+                $this->uname,
+                $this->ugroups
             )
         );
 
@@ -143,7 +127,6 @@ class AcTable extends MysqlTable implements AccessInterface
             $search
         );
     }
-
 
     /**
      * Delete records from db that matches conditions
@@ -166,8 +149,8 @@ class AcTable extends MysqlTable implements AccessInterface
             new Mode(
                 'w',
                 $this->getName(),
-                $this->_uname,
-                $this->_ugroups
+                $this->uname,
+                $this->ugroups
             )
         );
 
@@ -177,7 +160,6 @@ class AcTable extends MysqlTable implements AccessInterface
             $conditions
         );
     }
-
 
     /**
      * Insert values into db
@@ -195,9 +177,9 @@ class AcTable extends MysqlTable implements AccessInterface
             throw new AccessDeniedException($msg);
         }
 
-        $defaultGroup = isset($this->_ugroups[0]) ? $this->_ugroups[0] : '';
+        $defaultGroup = isset($this->ugroups[0]) ? $this->ugroups[0] : '';
         $defaults = array(
-            self::OWNER_FIELD => $this->_uname,
+            self::OWNER_FIELD => $this->uname,
             self::GROUP_FIELD => $defaultGroup,
             self::MODE_FIELD => 0770
         );
@@ -213,12 +195,10 @@ class AcTable extends MysqlTable implements AccessInterface
         return parent::insert($data);
     }
 
-
     /**
      * Update db based on conditions
      *
      * @param ExpressionSet $data
-     *
      * @param ExpressionSet $conditions
      *
      * @return PDOStatement
@@ -237,8 +217,8 @@ class AcTable extends MysqlTable implements AccessInterface
             new Mode(
                 'w',
                 $this->getName(),
-                $this->_uname,
-                $this->_ugroups
+                $this->uname,
+                $this->ugroups
             )
         );
 
@@ -248,7 +228,6 @@ class AcTable extends MysqlTable implements AccessInterface
             $conditions
         );
     }
-
 
     /**
      * Check if user is allowed to read table
@@ -260,7 +239,6 @@ class AcTable extends MysqlTable implements AccessInterface
         return $this->isAllowedTable('r');
     }
 
-
     /**
      * Check if user is allowed to write to table
      *
@@ -270,7 +248,6 @@ class AcTable extends MysqlTable implements AccessInterface
     {
         return $this->isAllowedTable('w');
     }
-
 
     /**
      * Check if user is allowed to execute table
@@ -282,12 +259,10 @@ class AcTable extends MysqlTable implements AccessInterface
         return $this->isAllowedTable('x');
     }
 
-
     /**
      * Set info about current user
      *
      * @param string $uname Name of user
-     *
      * @param array $ugroups List of groups user belongs to
      *
      * @return void
@@ -295,8 +270,8 @@ class AcTable extends MysqlTable implements AccessInterface
     public function setUser($uname, array $ugroups = array())
     {
         assert('is_string($uname)');
-        $this->_uname = $uname;
-        $this->_ugroups = $ugroups;
+        $this->uname = $uname;
+        $this->ugroups = $ugroups;
 
         // Recursively set user on joined AcTables
         foreach ($this->getJoins() as $table) {
@@ -306,7 +281,6 @@ class AcTable extends MysqlTable implements AccessInterface
         }
     }
 
-
     /**
      * Get name of current user
      *
@@ -314,9 +288,8 @@ class AcTable extends MysqlTable implements AccessInterface
      */
     public function getUser()
     {
-        return $this->_uname;
+        return $this->uname;
     }
-
 
     /**
      * Get groups of current user
@@ -325,9 +298,8 @@ class AcTable extends MysqlTable implements AccessInterface
      */
     public function getUserGroups()
     {
-        return $this->_ugroups;
+        return $this->ugroups;
     }
-
 
     /**
      * Check if user is root
@@ -339,9 +311,8 @@ class AcTable extends MysqlTable implements AccessInterface
      */
     public function userIsRoot()
     {
-        return $this->_uname == 'root' || in_array('root', $this->_ugroups);
+        return $this->uname == 'root' || in_array('root', $this->ugroups);
     }
-
 
     /**
      * Check if user owns table
@@ -350,9 +321,8 @@ class AcTable extends MysqlTable implements AccessInterface
      */
     public function userIsOwner()
     {
-        return ($this->_owner == $this->_uname);
+        return ($this->owner == $this->uname);
     }
-
 
     /**
      * Check if user is in group that owns table
@@ -361,9 +331,8 @@ class AcTable extends MysqlTable implements AccessInterface
      */
     public function userIsGroup()
     {
-        return in_array($this->_group, $this->_ugroups);
+        return in_array($this->group, $this->ugroups);
     }
-
 
     /**
      * Check if user is allowed to perform action on table
@@ -381,13 +350,13 @@ class AcTable extends MysqlTable implements AccessInterface
                 && !$table->isAllowedTable($action)
             ) {
 
-                return FALSE;
+                return false;
             }
         }
-        
+
         if ($this->userIsRoot()) {
 
-            return TRUE;
+            return true;
         }
 
         $masks = array(
@@ -395,18 +364,17 @@ class AcTable extends MysqlTable implements AccessInterface
             'w' => 2,
             'x' => 1,
         );
-        
+
         $mask = $masks[$action];
-        
+
         if ($this->userIsOwner()) {
             $mask = $mask << 6;
         } elseif ($this->userIsGroup()) {
             $mask = $mask << 3;
         }
 
-        return (($this->_mode & $mask) == $mask);        
+        return (($this->mode & $mask) == $mask);
     }
-
 
     /**
      * Validate row access for empty statements
@@ -418,11 +386,8 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param string $verb Action description to be inserted in exception
      * message
-     *
      * @param PDOStatement $stmt The statement to evaluate
-     *
      * @param ExpressionSet $conditions Conditions used when creating statement
-     *
      * @param Search $search Search clause used when creating statement, if any
      *
      * @return PDOStatement
@@ -434,11 +399,10 @@ class AcTable extends MysqlTable implements AccessInterface
         $verb,
         PDOStatement $stmt,
         ExpressionSet $conditions,
-        Search $search = NULL
-    )
-    {
+        Search $search = null
+    ) {
         assert('is_string($verb)');
-        
+
         if (!$stmt->rowCount()) {
             if (!$search) {
                 $search = new Search();
@@ -460,5 +424,4 @@ class AcTable extends MysqlTable implements AccessInterface
 
         return $stmt;
     }
-
 }

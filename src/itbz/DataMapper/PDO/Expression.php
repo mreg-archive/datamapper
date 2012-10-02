@@ -8,31 +8,26 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
-namespace itbz\DataMapper\PDO;
-use itbz\DataMapper\Exception\PdoException;
 
+namespace itbz\DataMapper\PDO;
+
+use itbz\DataMapper\Exception\PdoException;
 
 /**
  * Internal class for modeling SQL expressions
  *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
 class Expression
 {
-
     /**
      * Map of valid operators and inversions
      *
      * @var array
      */
-    static private $_operators = array(
+    static private $operators = array(
         '<=>' => '!=',
         '=' => '!=',
         '>=' => '<',
@@ -51,46 +46,40 @@ class Expression
         'SOUNDS LIKE' => 'SOUNDS LIKE'
     );
 
-
     /**
      * The name of this expression
      *
      * @var string
      */
-    private $_name;
-
+    private $name;
 
     /**
      * The value of this expression
      *
      * @var string
      */
-    private $_value;
-
+    private $value;
 
     /**
      * Expression operator
      *
      * @var string
      */
-    private $_operator;
-
+    private $operator;
 
     /**
      * Flag if expression value should be escaped
      *
      * @var bool
      */
-    private $_escapeValue = TRUE;
-
+    private $escapeValue = true;
 
     /**
      * Flag if expression name should be escaped
      *
      * @var bool
      */
-    private $_escapeName = TRUE;
-
+    private $escapeName = true;
 
     /**
      * Construct and cast value to string
@@ -106,57 +95,49 @@ class Expression
      * NOT LIKE, NOT REGEXP, REGEXP, RLIKE or SOUNDS LIKE
      *
      * @param string $name The name of the expression
-     *
      * @param mixed $value
-     *
      * @param string $operator Defaults to '='
      *
      * @throws PdoException if unable to value object to string
-     *
      * @throws PdoException if operator is not a valid
      */
     public function __construct($name, $value, $operator = '=')
     {
         assert('is_string($name)');
         assert('is_string($operator)');
-        $this->_name = $name;
+        $this->name = $name;
 
         switch (gettype($value)) {
             case 'boolean':
-                $this->_value = $value ? '1' : '0';
+                $this->value = $value ? '1' : '0';
                 break;
-
             case 'array':
-                $this->_value = implode(',', $value);
+                $this->value = implode(',', $value);
                 break;
-
             case 'NULL':
-                $this->_value = 'null';
-                $this->setEscapeValue(FALSE);
+                $this->value = 'null';
+                $this->setEscapeValue(false);
                 break;
-
             case 'object':
                 if (method_exists($value, '__toString')) {
-                    $this->_value = (string)$value;
+                    $this->value = (string)$value;
                 } else {
                     $classname = get_class($value);
                     $msg = "Unable to convert class '$classname' to string";
                     throw new PdoException($msg);
                 }
                 break;
-
             default:
-                $this->_value = (string)$value;
+                $this->value = (string)$value;
         }
 
-        if (!isset(self::$_operators[$operator])) {
+        if (!isset(self::$operators[$operator])) {
             $msg = "'$operator' is not a valid SQL operator";
             throw new PdoException($msg);
         }
 
-        $this->_operator = $operator;
+        $this->operator = $operator;
     }
-
 
     /**
      * Set if expression value should be escaped
@@ -168,9 +149,8 @@ class Expression
     public function setEscapeValue($flag)
     {
         assert('is_bool($flag)');
-        $this->_escapeValue = $flag;
+        $this->escapeValue = $flag;
     }
-
 
     /**
      * Set if expression name should be escaped
@@ -182,9 +162,8 @@ class Expression
     public function setEscapeName($flag)
     {
         assert('is_bool($flag)');
-        $this->_escapeName = $flag;
+        $this->escapeName = $flag;
     }
-
 
     /**
      * Get name of expression
@@ -193,9 +172,8 @@ class Expression
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
-
 
     /**
      * Get value of expression
@@ -204,9 +182,8 @@ class Expression
      */
     public function getValue()
     {
-        return $this->_value;
+        return $this->value;
     }
-
 
     /**
      * Get operator for comparisons
@@ -215,9 +192,8 @@ class Expression
      */
     public function getOperator()
     {
-        return $this->_operator;
+        return $this->operator;
     }
-
 
     /**
      * Invert operator
@@ -226,9 +202,8 @@ class Expression
      */
     public function invertOperator()
     {
-        $this->_operator = self::$_operators[$this->_operator];
+        $this->operator = self::$operators[$this->operator];
     }
-
 
     /**
      * Check if expression value should be escaped
@@ -237,9 +212,8 @@ class Expression
      */
     public function escapeValue()
     {
-        return $this->_escapeValue;
+        return $this->escapeValue;
     }
-
 
     /**
      * Check if expression name should be escaped
@@ -248,7 +222,6 @@ class Expression
      */
     public function escapeName()
     {
-        return $this->_escapeName;
+        return $this->escapeName;
     }
-
 }

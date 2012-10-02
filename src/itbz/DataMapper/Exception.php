@@ -8,11 +8,10 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
  * @package DataMapper
  */
-namespace itbz\DataMapper;
 
+namespace itbz\DataMapper;
 
 /**
  * Base exception

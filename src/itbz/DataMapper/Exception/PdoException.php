@@ -8,20 +8,15 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage Exception
+ * @package DataMapper\Exception
  */
-namespace itbz\DataMapper\Exception;
 
+namespace itbz\DataMapper\Exception;
 
 /**
  * Base exception for the PDO subpackage
  *
- * @package DataMapper
- *
- * @subpackage Exception
+ * @package DataMapper\Exception
  */
 class PdoException extends \itbz\DataMapper\Exception
 {

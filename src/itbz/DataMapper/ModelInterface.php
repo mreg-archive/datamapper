@@ -8,11 +8,10 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
  * @package DataMapper
  */
-namespace itbz\DataMapper;
 
+namespace itbz\DataMapper;
 
 /**
  * Basic model interface
@@ -21,7 +20,6 @@ namespace itbz\DataMapper;
  */
 interface ModelInterface extends ExtractInterface
 {
-
     /**
      * Fill model with data from associative array
      *
@@ -30,7 +28,6 @@ interface ModelInterface extends ExtractInterface
      * @return void
      */
     public function load(array $data);
-
 
     /**
      * Extract data from model
@@ -49,5 +46,4 @@ interface ModelInterface extends ExtractInterface
      * @return array
      */
     public function extract($context, array $using);
-
 }

@@ -1,10 +1,8 @@
 <?php
 namespace itbz\DataMapper\PDO;
 
-
 class SearchTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testAscDesc()
     {
         $s = new Search();
@@ -15,7 +13,6 @@ class SearchTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('ASC', $s->getDirection());
     }
 
-
     public function testOrderBy()
     {
         $s = new Search();
@@ -23,7 +20,6 @@ class SearchTest extends \PHPUnit_Framework_TestCase
         $s->setOrderBy('id');
         $this->assertEquals('id', $s->getOrderBy());
     }
-
 
     public function testLimit()
     {
@@ -35,7 +31,6 @@ class SearchTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('LIMIT 1,10', $s->getLimitClause());
     }
 
-    
     public function testColumns()
     {
         $s = new Search();
@@ -45,5 +40,4 @@ class SearchTest extends \PHPUnit_Framework_TestCase
         $s->addColumn('name');
         $this->assertEquals(array('id','name'), $s->getColumns());
     }
-
 }

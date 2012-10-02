@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
+ * @package DataMapper\Association
  */
-namespace itbz\DataMapper;
+
+namespace itbz\DataMapper\Association;
 
 /*
     field: id       => field: parentId
     value: 'member' => field: parentTable
-    
+
     detta ska översättas till en whereclause i child..
         hämta parent field id
             sätt det till child field parentId
@@ -26,8 +26,8 @@ namespace itbz\DataMapper;
     vad händer som jag stoppar in mapper och hela baletten här??
         när jag laddar den till mapper kan mapper fråga vilka fält jag vill ha
             för att bygga relation
-    
-    sedan kan mapper säga -> 
+
+    sedan kan mapper säga ->
         foreach ($this->_associations as $assoc) {
             $assoc->findAssociatedModels(array $valuesNeeded...);
         }
@@ -43,7 +43,7 @@ namespace itbz\DataMapper;
             jsclient
             men det går ju hur som helst, skillnaden är bara om de ska hämtas
                 direkt
-            
+
     hur ska det gå till att spara, skapa nya adresser osv???
         om adresser hämtas direkt och jag skapar en array av object snarare än
         sparar en iterator så kan jag hämta objecten
@@ -55,56 +55,47 @@ namespace itbz\DataMapper;
             array
             om när jag sparar så ska den gå igenom alla och se till att de har
                 rätt conditions
-        
+
         att ta bort är helt enkelt att ta bort med conditions...
-        
+
     gör jag på detta sätt så behöver jag inte det här konstiga med
         interfaceMethods längre...
-
-            
-
-
 */
 
 /**
  * One-to-many association
  *
- * @package DataMapper
+ * @package DataMapper\Association
  */
 class OneToManyAssociation
 {
-
     /**
      * List of dynamic conditions
      *
      * @var array
      */
-    private $_dynamicConds = array();
-
+    private $dynamicConds = array();
 
     /**
      * List of static conditions
      *
      * @var array
      */
-    private $_staticConds = array();
-
+    private $staticConds = array();
 
     /**
      * Associated mapper
      *
      * @var Mapper
      */
-    private $_mapper;
-
+    private $mapper;
 
     /**
      * List of method names this association responds to
      *
      * @var array
      */
-    private $_interfaceMethods;
-
+    private $interfaceMethods;
 
     /**
      * One-to-many association
@@ -124,14 +115,13 @@ class OneToManyAssociation
     {
         assert('is_string($name)');
         assert('is_string($plural)');
-        $this->_mapper = $associatedMapper;
-        $this->_interfaceMethods = array(
+        $this->mapper = $associatedMapper;
+        $this->interfaceMethods = array(
             'get' . $plural => 'findAssociatedModels',
             'delete' . $name => 'deleteAssociatedModel',
             'save' . $name => 'saveAssociatedModel'
         );
     }
-
 
     /**
      * Check if interface method exists
@@ -142,9 +132,8 @@ class OneToManyAssociation
      */
     public function interfaceMethodExists($methodName)
     {
-        return isset($this->_interfaceMethods[$methodName]);
+        return isset($this->interfaceMethods[$methodName]);
     }
-
 
     /**
      * Call interface method with param
@@ -161,11 +150,10 @@ class OneToManyAssociation
             $msg = "Interface method '$methodName' does not exist";
             throw new Exception($msg);
         }
-        $method = $this->_interfaceMethods[$methodName];
-        
+        $method = $this->interfaceMethods[$methodName];
+
         return $this->$method($param);
     }
-
 
     /**
      * Read associated models using master attributes
@@ -178,9 +166,8 @@ class OneToManyAssociation
     {
         $conditions = $this->buildConditions($masterAttributes);
 
-        return $this->_mapper->findMany($conditions, new Search());
+        return $this->mapper->findMany($conditions, new Search());
     }
-
 
     /**
      * Add dynaimc condition
@@ -198,9 +185,8 @@ class OneToManyAssociation
     {
         assert('is_string($masterAttr)');
         assert('is_string($associatedAttr)');
-        $this->_dynamicConds[$associatedAttr] = $masterAttr;
+        $this->dynamicConds[$associatedAttr] = $masterAttr;
     }
-
 
     /**
      * Add static condition
@@ -216,9 +202,8 @@ class OneToManyAssociation
     public function addStaticCondition($value, $associatedAttr)
     {
         assert('is_string($associatedAttr)');
-        $this->_staticConds[$associatedAttr] = $value;
+        $this->staticConds[$associatedAttr] = $value;
     }
-
 
     /**
      * Get list of attributes containing mapper must supply
@@ -227,9 +212,8 @@ class OneToManyAssociation
      */
     public function getRequiredAttributes()
     {
-        return array_values($this->_dynamicConds);
+        return array_values($this->dynamicConds);
     }
-
 
     /**
      * Build array of conditions from master attributes
@@ -242,16 +226,15 @@ class OneToManyAssociation
      */
     protected function buildConditions(array $masterAttributes)
     {
-        $conditions = $this->_staticConds;
-        foreach ($this->_dynamicConds as $associatedAttr => $masterAttr) {
+        $conditions = $this->staticConds;
+        foreach ($this->dynamicConds as $associatedAttr => $masterAttr) {
             if (!array_key_exists($masterAttr, $masterAttributes)) {
                 $msg = "Required master attribute '$masterAttr' missing";
                 throw new Exception($msg);
             }
-            $conditions[$associatedAttr] = $masterAttributes[masterAttr];
+            $conditions[$associatedAttr] = $masterAttributes[$masterAttr];
         }
-        
+
         return $conditions;
     }
-
 }

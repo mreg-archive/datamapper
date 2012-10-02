@@ -8,13 +8,10 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO\Table
+ * @package DataMapper\PDO\Table
  */
-namespace itbz\DataMapper\PDO\Table;
 
+namespace itbz\DataMapper\PDO\Table;
 
 /**
  * PDO table for use with SQLite
@@ -23,13 +20,10 @@ namespace itbz\DataMapper\PDO\Table;
  * not need to reverse egnigeer column names and primay keys of tables use
  * the regular Table class instead.
  *
- * @package DataMapper
- *
- * @subpackage PDO\Table
+ * @package DataMapper\PDO\Table
  */
 class SqliteTable extends Table
 {
-
     /**
      * Reverse engineer structure of database table
      *
@@ -38,7 +32,7 @@ class SqliteTable extends Table
     public function reverseEngineerColumns()
     {
         $query = "PRAGMA table_info(`{$this->getName()}`)";
-        $stmt = $this->_pdo->query($query);
+        $stmt = $this->pdo->query($query);
         $columns = array();
         while ($col = $stmt->fetchColumn(1)) {
             $columns[] = $col;
@@ -46,7 +40,6 @@ class SqliteTable extends Table
 
         return $columns;
     }
-
 
     /**
      * Reverse engineer primary key of database table
@@ -56,7 +49,7 @@ class SqliteTable extends Table
     public function reverseEngineerPK()
     {
         $query = "PRAGMA table_info(`{$this->getName()}`)";
-        $stmt = $this->_pdo->query($query);
+        $stmt = $this->pdo->query($query);
         $key = '';
         while ($col = $stmt->fetch()) {
             if ($col['pk'] == '1') {
@@ -66,5 +59,4 @@ class SqliteTable extends Table
 
         return $key;
     }
-
 }

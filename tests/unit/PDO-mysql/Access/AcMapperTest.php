@@ -1,91 +1,88 @@
 <?php
 namespace itbz\DataMapper\PDO\Access;
+
 use itbz\DataMapper\PDO\ExpressionSet;
 use itbz\DataMapper\PDO\Expression;
-
+use itbz\DataMapper\tests\Model;
 
 class AcMapperTest extends \PHPUnit_Framework_TestCase
 {
-
-    function testSetUser()
+    public function testSetUser()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('setUser'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->once())
               ->method('setUser')
               ->with('foo', array('bar'));
-        
-        $mapper = new AcMapper($table, new \Model());
+
+        $mapper = new AcMapper($table, new Model());
         $mapper->setUser('foo', array('bar'));
     }
-
 
     /**
      * @expectedException itbz\DataMapper\PDO\Access\AccessDeniedException
      */
-    function testChownNoRootException()
+    public function testChownNoRootException()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('userIsRoot'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->once())
               ->method('userIsRoot')
-              ->will($this->returnValue(FALSE));
+              ->will($this->returnValue(false));
 
-        $mapper = new AcMapper($table, new \Model());
-        $mapper->chown(new \Model(), 'foobar');
+        $mapper = new AcMapper($table, new Model());
+        $mapper->chown(new Model(), 'foobar');
     }
-
 
     /**
      * @expectedException itbz\DataMapper\PDO\Access\Exception
      */
-    function testChownNoPrimaryKeyException()
+    public function testChownNoPrimaryKeyException()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('userIsRoot'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->once())
               ->method('userIsRoot')
-              ->will($this->returnValue(TRUE));
+              ->will($this->returnValue(true));
 
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new \Model());
-        $mapper->chown(new \Model(), 'foobar');
+        $mapper = new AcMapper($table, new Model());
+        $mapper->chown(new Model(), 'foobar');
     }
 
-
-    function testChown()
+    public function testChown()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('userIsRoot', 'update'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->atLeastOnce())
               ->method('userIsRoot')
-              ->will($this->returnValue(TRUE));
+              ->will($this->returnValue(true));
 
         $stmt = $this->getMock(
             "\PDOStatement",
@@ -113,52 +110,50 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new \Model());
-        
-        $model = new \Model();
+        $mapper = new AcMapper($table, new Model());
+
+        $model = new Model();
         $model->id = 'yo';
         $model->owner = 'oldOwner';
         $nRows = $mapper->chown($model, 'foobar');
-        
+
         $this->assertEquals(1, $nRows);
     }
-
 
     /**
      * @expectedException itbz\DataMapper\PDO\Access\Exception
      */
-    function testChmodNoPrimaryKeyException()
+    public function testChmodNoPrimaryKeyException()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->atLeastOnce())
               ->method('getPrimaryKey')
               ->will($this->returnValue('id'));
 
-        $mapper = new AcMapper($table, new \Model());
-        $mapper->chmod(new \Model(), 0700);
+        $mapper = new AcMapper($table, new Model());
+        $mapper->chmod(new Model(), 0700);
     }
 
-
-    function testChmod()
+    public function testChmod()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('userIsRoot', 'update', 'getUser'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->atLeastOnce())
               ->method('userIsRoot')
-              ->will($this->returnValue(FALSE));
+              ->will($this->returnValue(false));
 
         $table->expects($this->atLeastOnce())
               ->method('getUser')
@@ -191,78 +186,75 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new \Model());
-        
-        $model = new \Model();
+        $mapper = new AcMapper($table, new Model());
+
+        $model = new Model();
         $model->id = 'yo';
         $model->mode = 0777;
         $nRows = $mapper->chmod($model, 0700);
-        
+
         $this->assertEquals(1, $nRows);
     }
-
 
     /**
      * @expectedException itbz\DataMapper\PDO\Access\Exception
      */
-    function testChgrpNoPrimaryKeyException()
+    public function testChgrpNoPrimaryKeyException()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->atLeastOnce())
               ->method('getPrimaryKey')
               ->will($this->returnValue('id'));
 
-        $mapper = new AcMapper($table, new \Model());
-        $mapper->chgrp(new \Model(), 'foobar');
+        $mapper = new AcMapper($table, new Model());
+        $mapper->chgrp(new Model(), 'foobar');
     }
-
 
     /**
      * @expectedException itbz\DataMapper\PDO\Access\AccessDeniedException
      */
-    function testChgrpNotInGroupException()
+    public function testChgrpNotInGroupException()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->atLeastOnce())
               ->method('getPrimaryKey')
               ->will($this->returnValue('id'));
 
-        $mapper = new AcMapper($table, new \Model());
+        $mapper = new AcMapper($table, new Model());
 
-        $model = new \Model();
+        $model = new Model();
         $model->id = 'foo';
-        
+
         $mapper->chgrp($model, 'foobar');
     }
 
-
-    function testChgrp()
+    public function testChgrp()
     {
         $table = $this->getMock(
             'itbz\DataMapper\PDO\Access\AcTable',
             array('userIsRoot', 'update', 'getUser', 'getUserGroups'),
             array(),
             '',
-            FALSE
+            false
         );
 
         $table->expects($this->atLeastOnce())
               ->method('userIsRoot')
-              ->will($this->returnValue(FALSE));
+              ->will($this->returnValue(false));
 
         $table->expects($this->atLeastOnce())
               ->method('getUser')
@@ -299,14 +291,13 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
         $table->setColumns(array('id', 'data'));
         $table->setPrimaryKey('id');
 
-        $mapper = new AcMapper($table, new \Model());
-        
-        $model = new \Model();
+        $mapper = new AcMapper($table, new Model());
+
+        $model = new Model();
         $model->id = 'yo';
         $model->group = 'foobar';
         $nRows = $mapper->chgrp($model, 'newgroup');
-        
+
         $this->assertEquals(1, $nRows);
     }
-
 }

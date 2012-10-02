@@ -1,33 +1,31 @@
 <?php
 namespace itbz\DataMapper\PDO\Table;
+
 use itbz\DataMapper\PDO\Search;
 use itbz\DataMapper\PDO\Expression;
 use itbz\DataMapper\PDO\ExpressionSet;
 use PDO;
 
-
 class TableTest extends \PHPUnit_Framework_TestCase
 {
-
-    function getPdo()
+    private function getPdo()
     {
         $pdo = new PDO('sqlite::memory:');
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->query('CREATE TABLE foo(id INTEGER, foo1, foobar, PRIMARY KEY(id ASC));');
         $pdo->query('CREATE TABLE bar(foobar, bar1, barx, PRIMARY KEY(foobar ASC));');
         $pdo->query('CREATE TABLE x(barx, x1, PRIMARY KEY(barx ASC));');
+
         return  $pdo;
     }
 
-
-    function testGetName()
+    public function testGetName()
     {
         $table = new Table('foo', $this->getPdo());
         $this->assertEquals('foo', $table->getName());
     }
 
-
-    function testGetTableIdentifier()
+    public function testGetTableIdentifier()
     {
         $tableA = new Table('foo', $this->getPdo());
         $tableB = new Table('bar', $this->getPdo());
@@ -38,18 +36,16 @@ class TableTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-
     /**
      * @expectedException itbz\DataMapper\Exception\PdoException
      */
-    function testSetPrimaryKeyException()
+    public function testSetPrimaryKeyException()
     {
         $table = new Table('foo', $this->getPdo());
         $table->setPrimaryKey('nonvalid');
     }
 
-
-    function testGetPrimaryKey()
+    public function testGetPrimaryKey()
     {
         $table = new Table('foo', $this->getPdo());
         $this->assertEquals('', $table->getPrimaryKey());
@@ -59,19 +55,17 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('id', $table->getPrimaryKey());
     }
 
-
-    function testGetNativeColumns()
+    public function testGetNativeColumns()
     {
         $cols = array('id', 'foobar');
 
         $table = new Table('foo', $this->getPdo());
         $table->setColumns($cols);
-    
+
         $this->assertEquals($cols, $table->getNativeColumns());
     }
 
-
-    function testGetColumns()
+    public function testGetColumns()
     {
         $tableA = new Table('foo', $this->getPdo());
         $tableA->setColumns(array('id', 'foobar'));
@@ -89,8 +83,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $tableA->getColumns());
     }
 
-
-    function testIsNativeColumn()
+    public function testIsNativeColumn()
     {
         $table = new Table('foo', $this->getPdo());
         $table->setColumns(array('id', 'foobar'));
@@ -99,8 +92,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($table->isNativeColumn('id'));
     }
 
-
-    function testIsColumn()
+    public function testIsColumn()
     {
         $tableA = new Table('foo', $this->getPdo());
         $tableA->setColumns(array('id'));
@@ -114,103 +106,108 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($tableA->isColumn('foobar'));
     }
 
-
     /**
      * @expectedException itbz\DataMapper\Exception\PdoException
      */
-    function testGetColumnIdentifierException()
+    public function testGetColumnIdentifierException()
     {
         $table = new Table('foo', $this->getPdo());
         $table->getColumnIdentifier('invalid');
     }
 
-
-    function testGetColumnIdentifier()
+    public function testGetColumnIdentifier()
     {
         $table = new Table('foo', $this->getPdo());
         $table->setColumns(array('id', 'foobar'));
         $this->assertEquals('`foo`.`id`', $table->getColumnIdentifier('id'));
     }
 
-
-    function testInsert()
+    public function testInsert()
     {
         $foo = new Table('foo', $this->getPdo());
-        
-        $foo->insert(new ExpressionSet(
-            new Expression('id', '1'),
-            new Expression('foo1', 'data'),
-            new Expression('foobar', 'a')
-        ));
-        
-        $foo->insert(new ExpressionSet(
-            new Expression('id', '2'),
-            new Expression('foo1', 'data'),
-            new Expression('foobar', 'a')
-        ));
-        
+
+        $foo->insert(
+            new ExpressionSet(
+                new Expression('id', '1'),
+                new Expression('foo1', 'data'),
+                new Expression('foobar', 'a')
+            )
+        );
+
+        $foo->insert(
+            new ExpressionSet(
+                new Expression('id', '2'),
+                new Expression('foo1', 'data'),
+                new Expression('foobar', 'a')
+            )
+        );
+
         $this->assertEquals(2, $foo->lastInsertId());
-        
-        $stmt = $foo->select(new Search());  
+
+        $stmt = $foo->select(new Search());
         $rowCount = 0;
-        while ( $row = $stmt->fetch() ) {
+        while ($row = $stmt->fetch()) {
             $this->assertEquals($row['foobar'], 'a');
             $rowCount++;
         }
         $this->assertEquals(2, $rowCount);
     }
 
-
     /**
      * @expectedException itbz\DataMapper\Exception\PdoException
      */
-    function testDeleteException()
+    public function testDeleteException()
     {
         $foo = new Table('foo', $this->getPdo());
         $foo->delete(new ExpressionSet());
     }
 
-
-    function testDelete()
+    public function testDelete()
     {
         $foo = new Table('foo', $this->getPdo());
-        
-        $foo->insert(new ExpressionSet(
-            new Expression('id', '1'),
-            new Expression('foo1', 'data'),
-            new Expression('foobar', 'a')
-        ));
 
-        $stmt = $foo->select(new Search());  
-        $rowCount = 0;
-        while ( $row = $stmt->fetch() ) $rowCount++;
-        $this->assertEquals(1, $rowCount);
-
-        $stmt = $foo->delete(new ExpressionSet(
-            new Expression('id', 1)
-        ));
+        $foo->insert(
+            new ExpressionSet(
+                new Expression('id', '1'),
+                new Expression('foo1', 'data'),
+                new Expression('foobar', 'a')
+            )
+        );
 
         $stmt = $foo->select(new Search());
         $rowCount = 0;
-        while ( $row = $stmt->fetch() ) $rowCount++;
+        while ($row = $stmt->fetch()) {
+            $rowCount++;
+        }
+        $this->assertEquals(1, $rowCount);
+
+        $stmt = $foo->delete(
+            new ExpressionSet(
+                new Expression('id', 1)
+            )
+        );
+
+        $stmt = $foo->select(new Search());
+        $rowCount = 0;
+        while ($row = $stmt->fetch()) {
+            $rowCount++;
+        }
         $this->assertEquals(0, $rowCount);
     }
-
 
     /**
      * @expectedException itbz\DataMapper\Exception\PdoException
      */
-    function testUpdateEmptyDataException()
+    public function testUpdateEmptyDataException()
     {
         $foo = new Table('foo', $this->getPdo());
         $foo->update(new ExpressionSet(), new ExpressionSet());
     }
 
-
     /**
      * @expectedException itbz\DataMapper\Exception\PdoException
      */
-    function testUpdateEmptyWhereException()
+    public function testUpdateEmptyWhereException()
     {
         $foo = new Table('foo', $this->getPdo());
         $foo->update(
@@ -221,26 +218,26 @@ class TableTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-
     /**
      * @expectedException itbz\DataMapper\Exception\PdoException
      */
-    function testInsertEmptyValuesException()
+    public function testInsertEmptyValuesException()
     {
         $foo = new Table('foo', $this->getPdo());
         $foo->insert(new ExpressionSet());
     }
 
-
-    function testUpdate()
+    public function testUpdate()
     {
         $foo = new Table('foo', $this->getPdo());
-        
-        $foo->insert(new ExpressionSet(
-            new Expression('id', '1'),
-            new Expression('foo1', 'data'),
-            new Expression('foobar', 'a')
-        ));
+
+        $foo->insert(
+            new ExpressionSet(
+                new Expression('id', '1'),
+                new Expression('foo1', 'data'),
+                new Expression('foobar', 'a')
+            )
+        );
 
         $foo->update(
             new ExpressionSet(
@@ -252,14 +249,13 @@ class TableTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $stmt = $foo->select(new Search());  
+        $stmt = $foo->select(new Search());
         $row = $stmt->fetch();
         $this->assertEquals('new', $row['foo1']);
         $this->assertEquals('b', $row['foobar']);
     }
 
-
-    function getTables()
+    public function getTables()
     {
         $pdo = $this->getPdo();
 
@@ -272,46 +268,58 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $bar->addNaturalJoin($x);
         $foo->addNaturalJoin($bar);
 
-        $foo->insert(new ExpressionSet(
-            new Expression('id', '1'),
-            new Expression('foo1', 'foo-data'),
-            new Expression('foobar', 'a')
-        ));
+        $foo->insert(
+            new ExpressionSet(
+                new Expression('id', '1'),
+                new Expression('foo1', 'foo-data'),
+                new Expression('foobar', 'a')
+            )
+        );
 
-        $foo->insert(new ExpressionSet(
-            new Expression('id', '2'),
-            new Expression('foo1', 'foo-data'),
-            new Expression('foobar', 'b')
-        ));
+        $foo->insert(
+            new ExpressionSet(
+                new Expression('id', '2'),
+                new Expression('foo1', 'foo-data'),
+                new Expression('foobar', 'b')
+            )
+        );
 
-        $bar->insert(new ExpressionSet(
-            new Expression('foobar', 'a'),
-            new Expression('bar1', 'bar-data'),
-            new Expression('barx', 'A')
-        ));
+        $bar->insert(
+            new ExpressionSet(
+                new Expression('foobar', 'a'),
+                new Expression('bar1', 'bar-data'),
+                new Expression('barx', 'A')
+            )
+        );
 
-        $bar->insert(new ExpressionSet(
-            new Expression('foobar', 'b'),
-            new Expression('bar1', 'bar-data'),
-            new Expression('barx', 'B')
-        ));
+        $bar->insert(
+            new ExpressionSet(
+                new Expression('foobar', 'b'),
+                new Expression('bar1', 'bar-data'),
+                new Expression('barx', 'B')
+            )
+        );
 
-        $x->insert(new ExpressionSet(
-            new Expression('barx', 'A'),
-            new Expression('x1', 'x-data')
-        ));
+        $x->insert(
+            new ExpressionSet(
+                new Expression('barx', 'A'),
+                new Expression('x1', 'x-data')
+            )
+        );
 
         return array($foo, $bar, $x);
     }
 
-
-    function testSelectJoinedData()
+    public function testSelectJoinedData()
     {
-        list($foo, $bar, $x) = $this->getTables();
+        list($foo) = $this->getTables();
 
-        $stmt = $foo->select(new Search(), new ExpressionSet(
-            new Expression('id', 1)
-        ));
+        $stmt = $foo->select(
+            new Search(),
+            new ExpressionSet(
+                new Expression('id', 1)
+            )
+        );
         $row = $stmt->fetch();
         $this->assertEquals('1', $row['id']);
         $this->assertEquals('foo-data', $row['foo1']);
@@ -320,15 +328,17 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('A', $row['barx']);
         $this->assertEquals('x-data', $row['x1']);
     }
-    
-    function testSelectLimit()
+
+    public function testSelectLimit()
     {
-        list($foo, $bar, $x) = $this->getTables();
+        list($foo) = $this->getTables();
 
         // No limit clause
         $stmt = $foo->select(new Search());
         $rowCount = 0;
-        while ( $row = $stmt->fetch() ) $rowCount++;
+        while ($row = $stmt->fetch()) {
+            $rowCount++;
+        }
         $this->assertEquals(2, $rowCount);
 
         // Limit clause
@@ -336,39 +346,48 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $s->setLimit(1);
         $stmt = $foo->select($s);
         $rowCount = 0;
-        while ( $row = $stmt->fetch() ) $rowCount++;
+        while ($row = $stmt->fetch()) {
+            $rowCount++;
+        }
         $this->assertEquals(1, $rowCount);
 
-        $stmt = $foo->select(new Search(), new ExpressionSet(
-            new Expression('id', 2)
-        ));
+        $stmt = $foo->select(
+            new Search(),
+            new ExpressionSet(
+                new Expression('id', 2)
+            )
+        );
         $rowCount = 0;
-        while ( $row = $stmt->fetch() ) $rowCount++;
+        while ($row = $stmt->fetch()) {
+            $rowCount++;
+        }
         $this->assertEquals(1, $rowCount);
     }
-    
-    function testSelectColumn()
+
+    public function testSelectColumn()
     {
-        list($foo, $bar, $x) = $this->getTables();
+        list($foo) = $this->getTables();
 
         // Assert selecting only some columns
         $search = new Search();
         $search->addColumn('foo1');
-        $stmt = $foo->select($search, new ExpressionSet(
-            new Expression('id', 2)
-        ));
+        $stmt = $foo->select(
+            $search,
+            new ExpressionSet(
+                new Expression('id', 2)
+            )
+        );
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $data = array('foo1'=>'foo-data');
         $this->assertEquals($data, $stmt->fetch());
     }
 
-    
-    function testSelectOrderBy()
+    public function testSelectOrderBy()
     {
-        list($foo, $bar, $x) = $this->getTables();
+        list($foo) = $this->getTables();
 
         $stmt = $foo->select(new Search());
-        
+
         $row = $stmt->fetch();
         $this->assertEquals('1', $row['id']);
 
@@ -379,5 +398,4 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = $stmt->fetch();
         $this->assertEquals('2', $row['id']);
     }
-
 }

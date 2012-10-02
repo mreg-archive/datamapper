@@ -1,12 +1,12 @@
 <?php
+namespace itbz\DataMapper\tests;
 
 class Model implements \itbz\DataMapper\ModelInterface
 {
 
     public function load(array $data)
     {
-        foreach ($data as $key => $value)
-        {
+        foreach ($data as $key => $value) {
             $this->$key = $value;
         }
     }
@@ -17,7 +17,7 @@ class Model implements \itbz\DataMapper\ModelInterface
         foreach ($this as $key => $value) {
             $data[$key] = $value;
         }
-        
+
         return $data;
     }
 }

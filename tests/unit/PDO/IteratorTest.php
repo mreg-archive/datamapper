@@ -1,24 +1,22 @@
 <?php
 namespace itbz\DataMapper\PDO;
-use PDO;
 
+use PDO;
 
 class IteratorTest extends \PHPUnit_Framework_TestCase
 {
-
-    function getStmt()
+    public function getStmt()
     {
         $pdo = new PDO('sqlite::memory:');
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->query('CREATE TABLE data(id INTEGER, name, PRIMARY KEY(id ASC));');
         $pdo->query("INSERT INTO data VALUES (1, 'foo')");
         $pdo->query("INSERT INTO data VALUES (2, 'bar')");
-        
+
         return $pdo->query('SELECT * FROM data');
     }
 
-
-    function testIterator()
+    public function testIterator()
     {
         $model = $this->getMock(
             '\itbz\DataMapper\ModelInterface',
@@ -53,7 +51,7 @@ class IteratorTest extends \PHPUnit_Framework_TestCase
         }
 
         // Re-iterating yields two more..
-        foreach ($iterator as $key => $model) {}
+        foreach ($iterator as $key => $model) {
+        }
     }
-
 }

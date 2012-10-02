@@ -8,18 +8,16 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO\Table
+ * @package DataMapper\PDO\Table
  */
+
 namespace itbz\DataMapper\PDO\Table;
+
 use itbz\DataMapper\Exception\PdoException;
 use itbz\DataMapper\PDO\Search;
 use itbz\DataMapper\PDO\ExpressionSet;
 use PDO;
 use PDOStatement;
-
 
 /**
  * PDO table for use by PDO models
@@ -28,44 +26,37 @@ use PDOStatement;
  * one column. In other words PDO\Table can not handle tables with composite
  * primary keys.
  *
- * @package DataMapper
- *
- * @subpackage PDO\Table
+ * @package DataMapper\PDO\Table
  */
 class Table
 {
-
     /**
      * PDO instance used
      *
      * @var PDO
      */
-    protected $_pdo;
-
+    protected $pdo;
 
     /**
      * Name of database table
      *
      * @var string
      */
-    private $_name;
-    
+    private $name;
 
     /**
      * Name of primary key
      *
      * @var string
      */
-    private $_primaryKey;
-    
+    private $primaryKey;
 
     /**
      * Array of columns in table
      *
      * @var string
      */
-    private $_nativeColumns;
-
+    private $nativeColumns;
 
     /**
      * Associative array of column names
@@ -75,42 +66,37 @@ class Table
      *
      * @var string
      */
-    private $_columns;
-
+    private $columns;
 
     /**
      * Array of naturally joined Tables
      *
      * @var array
      */
-    private $_naturalJoins = array();
-
+    private $naturalJoins = array();
 
     /**
      * PDO table for use by PDO models 
      *
      * @param string $name Name of database table
-     *
      * @param PDO $pdo PDO object for interacting with database
      */
     public function __construct($name, PDO $pdo)
     {
         assert('is_string($name)');
-        $this->_name = $name;
-        $this->_pdo = $pdo;
+        $this->name = $name;
+        $this->pdo = $pdo;
     }
-
 
     /**
      * Get name of table
      *
      * @return string
-     */ 
+     */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
-
 
     /**
      * Get identifier of base and joined tables
@@ -120,13 +106,12 @@ class Table
     public function getTableIdentifier()
     {
         $name = "`{$this->getName()}`";
-        foreach ($this->_naturalJoins as $joinTable) {
+        foreach ($this->naturalJoins as $joinTable) {
             $name .= " NATURAL LEFT JOIN {$joinTable->getTableIdentifier()}";
         }
 
         return $name;
     }
-
 
     /**
      * Set primary key of table
@@ -149,9 +134,8 @@ class Table
             $msg = "Unable to set non-native primary key '$key' to '$name'";
             throw new PdoException($msg);
         }
-        $this->_primaryKey = $key;
+        $this->primaryKey = $key;
     }
-
 
     /**
      * Get primary key for this table
@@ -160,13 +144,12 @@ class Table
      */
     public function getPrimaryKey()
     {
-        if (!isset($this->_primaryKey)) {
-            $this->_primaryKey = $this->reverseEngineerPK();
+        if (!isset($this->primaryKey)) {
+            $this->primaryKey = $this->reverseEngineerPK();
         }
-        
-        return $this->_primaryKey;
-    }
 
+        return $this->primaryKey;
+    }
 
     /**
      * Set native column names of table.
@@ -180,9 +163,8 @@ class Table
      */
     public function setColumns(array $columns)
     {
-        $this->_nativeColumns = $columns;
+        $this->nativeColumns = $columns;
     }
-
 
     /**
      * Get array of columns native to this table
@@ -191,13 +173,12 @@ class Table
      */
     public function getNativeColumns()
     {
-        if (!isset($this->_nativeColumns)) {
-            $this->_nativeColumns = $this->reverseEngineerColumns();
+        if (!isset($this->nativeColumns)) {
+            $this->nativeColumns = $this->reverseEngineerColumns();
         }
-        
-        return $this->_nativeColumns;
-    }
 
+        return $this->nativeColumns;
+    }
 
     /**
      * Get associative array of columns in native and joined tables
@@ -208,24 +189,23 @@ class Table
      */
     public function getColumns()
     {
-        if (!isset($this->_columns)) {
+        if (!isset($this->columns)) {
             // Add native columns
-            $this->_columns = array();
+            $this->columns = array();
             $nativeCols = $this->getNativeColumns();
             $nativeName = $this->getName();
             foreach ($nativeCols as $colname) {
-                $this->_columns[$colname] = "`$nativeName`.`$colname`";
+                $this->columns[$colname] = "`$nativeName`.`$colname`";
             }
             // Add joined columns
-            foreach ($this->_naturalJoins as $joinTable) {
+            foreach ($this->naturalJoins as $joinTable) {
                 $joinColumns = $joinTable->getColumns();
-                $this->_columns = array_merge($this->_columns, $joinColumns);
+                $this->columns = array_merge($this->columns, $joinColumns);
             }
         }
-        
-        return $this->_columns;
-    }
 
+        return $this->columns;
+    }
 
     /**
      * Check if column is native to table
@@ -238,10 +218,9 @@ class Table
     {
         assert('is_string($colname)');
         $columns = $this->getNativeColumns();
-        
+
         return in_array($colname, $columns);
     }
-
 
     /**
      * Check if column exist in native or joined table
@@ -258,7 +237,6 @@ class Table
         return array_key_exists($colname, $columns);
     }
 
-
     /**
      * Get full column identifier for column name
      *
@@ -266,7 +244,7 @@ class Table
      *
      * @return string
      *
-     * @throw PdoException if column does not exist
+     * @throws PdoException if column does not exist
      */
     public function getColumnIdentifier($colname)
     {
@@ -275,10 +253,9 @@ class Table
             throw new PdoException($msg);
         }
         $columns = $this->getColumns();
-        
+
         return $columns[$colname];
     }
-
 
     /**
      * Add a naturally joined table
@@ -289,10 +266,9 @@ class Table
      */
     public function addNaturalJoin(Table $table)
     {
-        $this->_naturalJoins[] = $table;
-        unset($this->_columns);
+        $this->naturalJoins[] = $table;
+        unset($this->columns);
     }
-
 
     /**
      * Get array of joined Table objects
@@ -301,9 +277,8 @@ class Table
      */
     public function getJoins()
     {
-        return $this->_naturalJoins;
+        return $this->naturalJoins;
     }
-
 
     /**
      * Reverse engineer structure of database table
@@ -318,7 +293,6 @@ class Table
         return array();
     }
 
-
     /**
      * Reverse engineer primary key of database table
      *
@@ -330,21 +304,19 @@ class Table
     public function reverseEngineerPK()
     {
         $columns = $this->getNativeColumns();
-        
+
         return isset($columns[0]) ? $columns[0] : '';
     }
-
 
     /**
      * Select rows from db
      *
      * @param Search $search
-     *
      * @param ExpressionSet $conditions
      *
      * @return PDOStatement
      */
-    public function select(Search $search, ExpressionSet $conditions = NULL)
+    public function select(Search $search, ExpressionSet $conditions = null)
     {
         $columns = $search->getColumns();
 
@@ -383,13 +355,12 @@ class Table
             $orderBy,
             $search->getLimitClause()
         );
-        
-        $stmt = $this->_pdo->prepare($query);
+
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute($whereValues);
-        
+
         return $stmt;
     }
-
 
     /**
      * Insert values into db
@@ -409,12 +380,11 @@ class Table
         list($columns, $exprs, $values) = $data->buildDataList();
         $query = "INSERT INTO `{$this->getName()}` ($columns) VALUES ($exprs)";
 
-        $stmt = $this->_pdo->prepare($query);
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute($values);
-        
+
         return $stmt;
     }
-
 
     /**
      * Get the ID of the last inserted row.
@@ -427,15 +397,13 @@ class Table
      */
     public function lastInsertId()
     {
-        return intval($this->_pdo->lastInsertId());
+        return intval($this->pdo->lastInsertId());
     }
-
 
     /**
      * Update db based on conditions
      *
      * @param ExpressionSet $data
-     *
      * @param ExpressionSet $conditions
      *
      * @return PDOStatement
@@ -459,12 +427,11 @@ class Table
         $values = array_merge($setValues, $whereValues);
 
         $query = "UPDATE `{$this->getName()}` $set $where";
-        $stmt = $this->_pdo->prepare($query);
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute($values);
 
         return $stmt;
     }
-
 
     /**
      * Delete records from db that matches conditions
@@ -483,10 +450,9 @@ class Table
         }
         list($where, $values) = $conditions->buildWhereClause();
         $query = "DELETE FROM `{$this->getName()}` $where";
-        $stmt = $this->_pdo->prepare($query);
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute($values);
 
         return $stmt;
     }
-
 }

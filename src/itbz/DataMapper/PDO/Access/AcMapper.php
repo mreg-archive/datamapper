@@ -8,32 +8,26 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO\Access
+ * @package DataMapper\PDO\Access
  */
+
 namespace itbz\DataMapper\PDO\Access;
+
 use itbz\DataMapper\ModelInterface;
 use itbz\DataMapper\PDO\Mapper;
 use itbz\DataMapper\PDO\Expression;
 
-
 /**
  * PDO access control mapper object
  *
- * @package DataMapper
- *
- * @subpackage PDO\Access
+ * @package DataMapper\PDO\Access
  */
 class AcMapper extends Mapper implements AccessInterface
 {
-
     /**
      * Construct and inject table instance
      *
      * @param AcTable $table
-     *
      * @param ModelInterface $prototype Prototype model that will be cloned when
      * mapper needs a new return object.
      */
@@ -42,21 +36,18 @@ class AcMapper extends Mapper implements AccessInterface
         parent::__construct($table, $prototype);
     }
 
-
     /**
      * Set info about current user
      *
      * @param string $uname Name of user
-     *
      * @param array $ugroups List of groups user belongs to
      *
      * @return void
      */
     public function setUser($uname, array $ugroups = array())
     {
-        $this->_table->setUser($uname, $ugroups);
+        $this->table->setUser($uname, $ugroups);
     }
-
 
     /**
      * Set new owner on rows matching model
@@ -64,20 +55,18 @@ class AcMapper extends Mapper implements AccessInterface
      * Only roots can change owner
      *
      * @param ModelInterface $model
-     *
      * @param string $newOwner
      *
      * @return int Number of affected rows
      *
      * @throws AccessDeniedException if user is not root
-     *
      * @throws Exception if primary key model is not set
      */
     public function chown(ModelInterface $model, $newOwner)
     {
         assert('is_string($newOwner)');
 
-        if (!$this->_table->userIsRoot()) {
+        if (!$this->table->userIsRoot()) {
             $msg = "Access denied changing owner, must be root.";
             throw new AccessDeniedException($msg);
         }
@@ -94,13 +83,12 @@ class AcMapper extends Mapper implements AccessInterface
         );
 
         // Update model
-        $columns = array($this->_table->getPrimaryKey());
+        $columns = array($this->table->getPrimaryKey());
         $conditions = $this->extractForRead($model, $columns);
-        $stmt = $this->_table->update($data, $conditions);
+        $stmt = $this->table->update($data, $conditions);
 
         return $stmt->rowCount();
     }
-
 
     /**
      * Set new mode on rows matching model
@@ -108,7 +96,6 @@ class AcMapper extends Mapper implements AccessInterface
      * Only owner and root can change mode
      *
      * @param ModelInterface $model
-     *
      * @param int $newMode
      *
      * @return int Number of affected rows
@@ -131,22 +118,21 @@ class AcMapper extends Mapper implements AccessInterface
             new Expression(self::MODE_FIELD, $newMode)
         );
 
-        $columns = array($this->_table->getPrimaryKey());
+        $columns = array($this->table->getPrimaryKey());
         $conditions = $this->extractForRead($model, $columns);
 
         // Only owner and root can change mode
-        if (!$this->_table->userIsRoot()) {
-            $uname = $this->_table->getUser();
+        if (!$this->table->userIsRoot()) {
+            $uname = $this->table->getUser();
             $conditions->addExpression(
                 new Expression(self::OWNER_FIELD, $uname)
             );
         }
 
-        $stmt = $this->_table->update($data, $conditions);
+        $stmt = $this->table->update($data, $conditions);
 
         return $stmt->rowCount();
     }
-
 
     /**
      * Set new group on rows matching model
@@ -154,13 +140,11 @@ class AcMapper extends Mapper implements AccessInterface
      * Only owner and root can change group
      *
      * @param ModelInterface $model
-     *
      * @param string $newGroup
      *
      * @return int Number of affected rows
      *
      * @throws Exception if primary key model is not set
-     *
      * @throws AccessDeniedException if is not a member of the new group
      */
     public function chgrp(ModelInterface $model, $newGroup)
@@ -173,8 +157,8 @@ class AcMapper extends Mapper implements AccessInterface
         }
 
         if (
-            !$this->_table->userIsRoot()
-            && !in_array($newGroup, $this->_table->getUserGroups())
+            !$this->table->userIsRoot()
+            && !in_array($newGroup, $this->table->getUserGroups())
         ) {
             $msg = "Unable to set group '$newGroup', you are not a member.";
             throw new AccessDeniedException($msg);
@@ -187,20 +171,19 @@ class AcMapper extends Mapper implements AccessInterface
             new Expression(self::GROUP_FIELD, $newGroup)
         );
 
-        $columns = array($this->_table->getPrimaryKey());
+        $columns = array($this->table->getPrimaryKey());
         $conditions = $this->extractForRead($model, $columns);
 
         // Only owner and root can change group
-        if (!$this->_table->userIsRoot()) {
-            $uname = $this->_table->getUser();
+        if (!$this->table->userIsRoot()) {
+            $uname = $this->table->getUser();
             $conditions->addExpression(
                 new Expression(self::OWNER_FIELD, $uname)
             );
         }
 
-        $stmt = $this->_table->update($data, $conditions);
+        $stmt = $this->table->update($data, $conditions);
 
         return $stmt->rowCount();
     }
-
 }

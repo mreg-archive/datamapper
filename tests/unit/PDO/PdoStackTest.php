@@ -1,45 +1,44 @@
 <?php
 namespace itbz\DataMapper\PDO;
+
 use itbz\DataMapper\ModelInterface;
+use itbz\DataMapper\tests\Model;
 use PDO;
 use itbz\DataMapper\PDO\Table\SqliteTable;
 
-
-/*
+/**
  * Some random test on the complete PDO stack
  * if test fails start looking at the concrete test cases
  */
 class PdoStackTest extends \PHPUnit_Framework_TestCase
 {
-
-    function getPdo()
+    private function getPdo()
     {
         $pdo = new PDO('sqlite::memory:');
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->query('CREATE TABLE data(id INTEGER, name, PRIMARY KEY(id ASC));');
+
         return  $pdo;
     }
 
-
-    function getTable()
+    private function getTable()
     {
         $table = new SqliteTable('data', $this->getPdo());
+
         return $table;
     }
 
-    
-    function getMapper()
+    public function getMapper()
     {
-        return new Mapper($this->getTable(), new \Model());
+        return new Mapper($this->getTable(), new Model());
     }
 
-
-    function testCRUD()
+    public function testCRUD()
     {
         $mapper = $this->getMapper();
-        
+
         // Insert two rows
-        $model1 = new \Model();
+        $model1 = new Model();
         $model1->name = "foobar";
         $mapper->save($model1);
         $mapper->save($model1);
@@ -53,7 +52,7 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1', $model3->id);
 
         // Delete primary key == 1
-        $model4 = new \Model();
+        $model4 = new Model();
         $model4->id = 1;
         $mapper->delete($model4);
 
@@ -62,11 +61,10 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('2', $model5->id);
     }
 
-
-    function testFindMany()
+    public function testFindMany()
     {
         $mapper = $this->getMapper();
-        $model = new \Model();
+        $model = new Model();
         $model->name = "foobar";
         $mapper->save($model);
         $mapper->save($model);
@@ -74,21 +72,21 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
 
         $iterator = $mapper->findMany(array('name'=>'foobar'), new Search());
         $key = '';
-        foreach ($iterator as $key => $mod) {}
-        
+        foreach ($iterator as $key => $mod) {
+        }
+
         $this->assertEquals('3', $key);
     }
 
-
-    function testInsertBool()
+    public function testInsertBool()
     {
         $mapper = $this->getMapper();
-        $model = new \Model();
+        $model = new Model();
 
-        $model->name = FALSE;
+        $model->name = false;
         $mapper->save($model);
 
-        $model->name = TRUE;
+        $model->name = true;
         $mapper->save($model);
 
         $model2 = $mapper->findByPk(1);
@@ -100,16 +98,14 @@ class PdoStackTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue((bool)$model3->name);
     }
 
-
-    function testInsertNull()
+    public function testInsertNull()
     {
         $mapper = $this->getMapper();
-        $model = new \Model();
-        $model->name = NULL;
+        $model = new Model();
+        $model->name = null;
         $mapper->save($model);
 
         $model2 = $mapper->findByPk(1);
         $this->assertNull($model2->name);
     }
-
 }

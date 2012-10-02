@@ -8,65 +8,55 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
-namespace itbz\DataMapper\PDO;
-use itbz\DataMapper\SearchInterface;
 
+namespace itbz\DataMapper\PDO;
+
+use itbz\DataMapper\SearchInterface;
 
 /**
  * PDO search object
  *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
 class Search implements SearchInterface
 {
-
     /**
      * Order by direction
      *
      * @var string
      */
-    private $_dir = 'ASC';
-
+    private $dir = 'ASC';
 
     /**
      * Order by column
      *
      * @var string
      */
-    private $_orderBy = '';
-
+    private $orderBy = '';
 
     /**
      * Return set start index
      *
      * @var int
      */
-    private $_startIndex;
-    
+    private $startIndex;
 
     /**
      * Return set limit
      *
      * @var int
-     */    
-    private $_limit;
-
+     */
+    private $limit;
 
     /**
      * List of columns to select
      *
      * @var array
      */
-    private $_columns = array();
+    private $columns = array();
 
-    
     /**
      * Set order by direction to ascending
      *
@@ -74,9 +64,8 @@ class Search implements SearchInterface
      */
     public function setAsc()
     {
-        $this->_dir = 'ASC';
+        $this->dir = 'ASC';
     }
-
 
     /**
      * Set order by direction to descending
@@ -85,10 +74,9 @@ class Search implements SearchInterface
      */
     public function setDesc()
     {
-        $this->_dir = 'DESC';
+        $this->dir = 'DESC';
     }
-    
-    
+
     /**
      * Get order by direction
      *
@@ -96,9 +84,8 @@ class Search implements SearchInterface
      */
     public function getDirection()
     {
-        return $this->_dir;
+        return $this->dir;
     }
-
 
     /**
      * Set order by column
@@ -110,10 +97,9 @@ class Search implements SearchInterface
     public function setOrderBy($orderBy)
     {
         assert('is_string($orderBy)');
-        $this->_orderBy = $orderBy;
+        $this->orderBy = $orderBy;
     }
-    
-    
+
     /**
      * Get order by column
      *
@@ -121,9 +107,8 @@ class Search implements SearchInterface
      */
     public function getOrderBy()
     {
-        return $this->_orderBy;
+        return $this->orderBy;
     }
-    
 
     /**
      * Set result set start index
@@ -136,9 +121,8 @@ class Search implements SearchInterface
     {
         assert('is_int($startIndex)');
         assert('$startIndex >= 0');
-        $this->_startIndex = $startIndex;
+        $this->startIndex = $startIndex;
     }
-
 
     /**
      * Get start index
@@ -147,9 +131,8 @@ class Search implements SearchInterface
      */
     public function getStartIndex()
     {
-        return $this->_startIndex;
+        return $this->startIndex;
     }
-    
 
     /**
      * Set result set limit
@@ -157,14 +140,13 @@ class Search implements SearchInterface
      * @param int $limit
      *
      * @return void
-     */    
+     */
     public function setLimit($limit)
     {
         assert('is_int($limit)');
         assert('$limit >= 0');
-        $this->_limit = $limit;
+        $this->limit = $limit;
     }
-
 
     /**
      * Get limit
@@ -173,9 +155,8 @@ class Search implements SearchInterface
      */
     public function getLimit()
     {
-        return $this->_limit;
+        return $this->limit;
     }
-
 
     /**
      * Get sql limit clause
@@ -183,7 +164,7 @@ class Search implements SearchInterface
      * @return string
      *
      * @return void
-     */    
+     */
     public function getLimitClause()
     {
         $limit = $this->getLimit();
@@ -197,7 +178,6 @@ class Search implements SearchInterface
         }
     }
 
-
     /**
      * Add select column
      *
@@ -208,9 +188,8 @@ class Search implements SearchInterface
     public function addColumn($column)
     {
         assert('is_string($column)');
-        $this->_columns[] = $column;
+        $this->columns[] = $column;
     }
-
 
     /**
      * Get select columns
@@ -219,7 +198,6 @@ class Search implements SearchInterface
      */
     public function getColumns()
     {
-        return $this->_columns;
+        return $this->columns;
     }
-
 }

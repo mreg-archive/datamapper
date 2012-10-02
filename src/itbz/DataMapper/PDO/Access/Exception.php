@@ -8,20 +8,15 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO\Access
+ * @package DataMapper\PDO\Access
  */
-namespace itbz\DataMapper\PDO\Access;
 
+namespace itbz\DataMapper\PDO\Access;
 
 /**
  * Base exception for the Access subpackage
  *
- * @package DataMapper
- *
- * @subpackage PDO\Access
+ * @package DataMapper\PDO\Access
  */
 class Exception extends \itbz\DataMapper\Exception
 {

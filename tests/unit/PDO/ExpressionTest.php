@@ -1,18 +1,15 @@
 <?php
 namespace itbz\DataMapper\PDO;
 
-
 class ExpressionTest extends \PHPUnit_Framework_TestCase
 {
-
-    function testGetName()
+    public function testGetName()
     {
         $a = new Expression('name', 'foo');
         $this->assertEquals('name', $a->getName());
     }
 
-
-    function testGetOperator()
+    public function testGetOperator()
     {
         $a = new Expression('name', 'foo');
         $this->assertEquals('=', $a->getOperator());
@@ -21,59 +18,53 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<', $a->getOperator());
     }
 
-    
-    function testString()
+    public function testString()
     {
         $a = new Expression('name', 'foo');
         $this->assertEquals('foo', $a->getValue());
         $this->assertTrue($a->escapeValue());
     }
 
-    
-    function testBool()
+    public function testBool()
     {
-        $a = new Expression('name', TRUE);
+        $a = new Expression('name', true);
         $this->assertEquals('1', $a->getValue());
         $this->assertTrue($a->escapeValue());
 
-        $a = new Expression('name', FALSE);
+        $a = new Expression('name', false);
         $this->assertEquals('0', $a->getValue());
     }
 
-
-    function testArray()
+    public function testArray()
     {
         $a = new Expression('name', array('foo','bar'));
         $this->assertEquals('foo,bar', $a->getValue());
         $this->assertTrue($a->escapeValue());
     }
 
-
-    function testNull()
+    public function testNull()
     {
-        $a = new Expression('name', NULL);
+        $a = new Expression('name', null);
         $this->assertEquals('null', $a->getValue());
         $this->assertFalse($a->escapeValue());
     }
 
-
     /**
      * @expectedException itbz\DataMapper\Exception\PdoException
      */
-    function testObjectToStringException()
+    public function testObjectToStringException()
     {
         // stdClass is not convertable to string
-        $a = new Expression('name', new \stdClass());
+        new Expression('name', new \stdClass());
     }
 
-
-    function testObject()
+    public function testObject()
     {
         $objmock = $this->getMock(
             '\stdClass',
             array('__tostring')
         );
-        
+
         $objmock->expects($this->once())
                 ->method('__tostring')
                 ->will($this->returnValue('foobar'));
@@ -83,25 +74,22 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($a->escapeValue());
     }
 
-
     /**
      * @expectedException itbz\DataMapper\Exception\PdoException
      */
     public function testInvalidOperator()
     {
-        $op = new Expression('column', 'val', 'sdfsdf');
+        new Expression('column', 'val', 'sdfsdf');
     }
-
 
     /**
      * @dataProvider operatorProvider
-     */ 
-    public function testOperators($operator, $inverted)
+     */
+    public function testOperators($operator)
     {
         $op = new Expression('column', 'value', $operator);
         $this->assertEquals($operator, $op->getOperator());
     }
-
 
     /**
      * @dataProvider operatorProvider
@@ -112,7 +100,6 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
         $op->invertOperator();
         $this->assertEquals($inverted, $op->getOperator());
     }
-
 
     public function operatorProvider()
     {
@@ -135,5 +122,4 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
             array('SOUNDS LIKE', 'SOUNDS LIKE'),
         );
     }
-
 }

@@ -8,12 +8,11 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
+
 namespace itbz\DataMapper\PDO;
+
 use itbz\DataMapper\MapperInterface;
 use itbz\DataMapper\ModelInterface;
 use itbz\DataMapper\IgnoreAttributeInterface;
@@ -23,67 +22,57 @@ use itbz\DataMapper\Exception;
 use itbz\DataMapper\PDO\Table\Table;
 use PDOStatement;
 
-
 /**
  * PDO mapper object
  *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
 class Mapper implements MapperInterface
 {
-
     /**
      * Table object to interact with
      *
      * @var Table
      */
-    protected $_table;
-
+    protected $table;
 
     /**
      * Prototype model that will be cloned on object creation
      *
      * @var ModelInterface
      */
-    private $_prototype;
-
+    private $prototype;
 
     /**
      * Construct and inject table instance
      *
      * @param Table $table
-     *
      * @param ModelInterface $prototype Prototype model that will be cloned when
      * mapper needs a new return object.
      */
     public function __construct(Table $table, ModelInterface $prototype)
     {
-        $this->_table = $table;
-        $this->_prototype = $prototype;
+        $this->table = $table;
+        $this->prototype = $prototype;
     }
-
 
     /**
      * Get iterator containing multiple racords based on search
      *
      * @param array $conditions
-     *
      * @param SearchInterface $search
      *
      * @return \Iterator
      */
     public function findMany(array $conditions, SearchInterface $search)
     {
-        $stmt = $this->_table->select(
+        $stmt = $this->table->select(
             $search,
             $this->arrayToExprSet($conditions)
         );
 
         return $this->getIterator($stmt);
     }
-
 
     /**
      * Find models that match current model values.
@@ -102,14 +91,13 @@ class Mapper implements MapperInterface
 
         // Return first object in iterator
         foreach ($iterator as $object) {
-            
+
             return $object;
         }
 
         // This only happens if iterator is empty
-        throw new DataNotFoundException("No matching records found");        
+        throw new DataNotFoundException("No matching records found");
     }
-
 
     /**
      * Find model based on primary key
@@ -121,10 +109,9 @@ class Mapper implements MapperInterface
     public function findByPk($key)
     {
         return $this->find(
-            array($this->_table->getPrimaryKey() => $key)
+            array($this->table->getPrimaryKey() => $key)
         );
     }
-
 
     /**
      * Delete model from persistent storage
@@ -135,13 +122,12 @@ class Mapper implements MapperInterface
      */
     public function delete(ModelInterface $model)
     {
-        $pk = $this->_table->getPrimaryKey();
+        $pk = $this->table->getPrimaryKey();
         $conditions = $this->extractForDelete($model, array($pk));
-        $stmt = $this->_table->delete($conditions);
+        $stmt = $this->table->delete($conditions);
 
         return $stmt->rowCount();
     }
-
 
     /**
      * Persistently store model
@@ -169,7 +155,6 @@ class Mapper implements MapperInterface
         return $this->insert($model);
     }
 
-
     /**
      * Get the ID of the last inserted row.
      *
@@ -181,9 +166,8 @@ class Mapper implements MapperInterface
      */
     public function getLastInsertId()
     {
-        return $this->_table->lastInsertId();
+        return $this->table->lastInsertId();
     }
-
 
     /**
      * Get primary key from model
@@ -194,17 +178,16 @@ class Mapper implements MapperInterface
      */
     public function getPk(ModelInterface $model)
     {
-        $pk = $this->_table->getPrimaryKey();
+        $pk = $this->table->getPrimaryKey();
         $exprSet = $this->extractForRead($model, array($pk));
 
         if ($exprSet->isExpression($pk)) {
 
             return $exprSet->getExpression($pk)->getValue();
         }
-        
+
         return '';
     }
-
 
     /**
      * Get a new prototype clone
@@ -213,9 +196,8 @@ class Mapper implements MapperInterface
      */
     public function getNewModel()
     {
-        return clone $this->_prototype;
+        return clone $this->prototype;
     }
-
 
     /**
      * Insert model into db
@@ -227,11 +209,10 @@ class Mapper implements MapperInterface
     protected function insert(ModelInterface $model)
     {
         $data = $this->extractForCreate($model);
-        $stmt = $this->_table->insert($data);
+        $stmt = $this->table->insert($data);
 
         return $stmt->rowCount();
     }
-
 
     /**
      * Update db using primary key as conditions clause.
@@ -243,13 +224,12 @@ class Mapper implements MapperInterface
     protected function update(ModelInterface $model)
     {
         $data = $this->extractForUpdate($model);
-        $pk = $this->_table->getPrimaryKey();
+        $pk = $this->table->getPrimaryKey();
         $conditions = $this->extractForRead($model, array($pk));
-        $stmt = $this->_table->update($data, $conditions);
+        $stmt = $this->table->update($data, $conditions);
 
         return $stmt->rowCount();
     }
-
 
     /**
      * Get iterator for PDOStatement
@@ -262,11 +242,10 @@ class Mapper implements MapperInterface
     {
         return new Iterator(
             $stmt,
-            $this->_table->getPrimaryKey(),
-            $this->_prototype
+            $this->table->getPrimaryKey(),
+            $this->prototype
         );
     }
-
 
     /**
      * Extract data from model
@@ -275,24 +254,20 @@ class Mapper implements MapperInterface
      * 'extractForRead', 'extractForUpdate' or 'extractForDelete' instead.
      *
      * @param ModelInterface $model
-     *
      * @param int $context Extract context
-     *
      * @param array $use List of model properties to extract. Defaults to table
      * native columns.
      *
      * @return array
      *
      * @throws Exception if extract context is invalid
-     *
      * @throws Exception if model extract does not return an array
      */
     protected function extractArray(
         ModelInterface $model,
         $context,
-        array $use = NULL
-    )
-    {
+        array $use = null
+    ) {
         // @codeCoverageIgnoreStart
         if (!$context) {
             $msg = "Invalid extract context '$context'";
@@ -301,90 +276,81 @@ class Mapper implements MapperInterface
         // @codeCoverageIgnoreEnd
 
         if (!$use) {
-            $use = $this->_table->getNativeColumns();
+            $use = $this->table->getNativeColumns();
         }
 
         $data = $model->extract($context, $use);
-        
+
         if (!is_array($data)) {
             $type = gettype($data);
             $msg = "Model extract must return an array, found '$type'";
             throw new Exception($msg);
         }
-        
+
         $data = array_intersect_key($data, array_flip($use));
 
         return $data;
     }
 
-
     /**
      * Extract data from model for data inserts
      *
      * @param ModelInterface $mod
-     *
      * @param array $use
      *
      * @return ExpressionSet
      */
-    protected function extractForCreate(ModelInterface $mod, array $use = NULL)
+    protected function extractForCreate(ModelInterface $mod, array $use = null)
     {
         return $this->arrayToExprSet(
             $this->extractArray($mod, self::CONTEXT_CREATE, $use)
         );
     }
 
-
     /**
      * Extract data from model for data read
      *
      * @param ModelInterface $mod
-     *
      * @param array $use
      *
      * @return ExpressionSet
      */
-    protected function extractForRead(ModelInterface $mod, array $use = NULL)
+    protected function extractForRead(ModelInterface $mod, array $use = null)
     {
         return $this->arrayToExprSet(
             $this->extractArray($mod, self::CONTEXT_READ, $use)
         );
     }
 
-
     /**
      * Extract data from model for data updates
      *
      * @param ModelInterface $mod
-     *
      * @param array $use
      *
      * @return ExpressionSet
      */
-    protected function extractForUpdate(ModelInterface $mod, array $use = NULL)
+    protected function extractForUpdate(ModelInterface $mod, array $use = null)
     {
         return $this->arrayToExprSet(
             $this->extractArray($mod, self::CONTEXT_UPDATE, $use)
         );
     }
 
-
     /**
      * Extract data from model for data deletes
      *
      * @param ModelInterface $mod
-     *
      * @param array $use
      *
      * @return ExpressionSet
      */
-    protected function extractForDelete(ModelInterface $mod, array $use = NULL)
+    protected function extractForDelete(ModelInterface $mod, array $use = null)
     {
         return $this->arrayToExprSet(
             $this->extractArray($mod, self::CONTEXT_DELETE, $use)
         );
     }
-
 
     /**
      * Convert array to ExpressionSet
@@ -404,8 +370,7 @@ class Mapper implements MapperInterface
                 $exprSet->addExpression($expr);
             }
         }
-        
+
         return $exprSet;
     }
-
 }

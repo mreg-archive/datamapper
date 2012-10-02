@@ -8,31 +8,24 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
-namespace itbz\DataMapper\PDO;
 
+namespace itbz\DataMapper\PDO;
 
 /**
  * Internal class for organizing expressions into substatements
  *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
 class ExpressionSet
 {
-
     /**
      * Array of Expressions
      *
      * @var array
      */
-    private $_expressions = array();
-
+    private $expressions = array();
 
     /**
      * Add any number of expressions at construct
@@ -44,7 +37,6 @@ class ExpressionSet
         }
     }
 
-
     /**
      * Check if container is empty
      *
@@ -52,9 +44,8 @@ class ExpressionSet
      */
     public function isEmpty()
     {
-        return empty($this->_expressions);
+        return empty($this->expressions);
     }
-
 
     /**
      * Add Expression to collection
@@ -66,9 +57,8 @@ class ExpressionSet
     public function addExpression(Expression $expr)
     {
         $name = $expr->getName();
-        $this->_expressions[$name] = $expr;
+        $this->expressions[$name] = $expr;
     }
-
 
     /**
      * Remove the most recently added expression
@@ -77,9 +67,8 @@ class ExpressionSet
      */
     public function popExpression()
     {
-        return array_pop($this->_expressions);
+        return array_pop($this->expressions);
     }
-
 
     /**
      * Remove expression by name
@@ -90,9 +79,8 @@ class ExpressionSet
      */
     public function removeExpression($name)
     {
-        unset($this->_expressions[$name]);
+        unset($this->expressions[$name]);
     }
-
 
     /**
      * Check if expression exists
@@ -103,10 +91,9 @@ class ExpressionSet
      */
     public function isExpression($name)
     {
-        return isset($this->_expressions[$name]);
+        return isset($this->expressions[$name]);
     }
 
-    
     /**
      * Get expression by name
      *
@@ -116,14 +103,13 @@ class ExpressionSet
      */
     public function getExpression($name)
     {
-        $return = FALSE;
+        $return = false;
         if ($this->isExpression($name)) {
-            $return = $this->_expressions[$name];
+            $return = $this->expressions[$name];
         }
 
         return $return;
     }
-
 
     /**
      * Build where clause from expressions
@@ -140,7 +126,7 @@ class ExpressionSet
         $exprs = array();
         $data = array();
 
-        foreach ($this->_expressions as $expr) {
+        foreach ($this->expressions as $expr) {
             if ($expr->escapeName()) {
                 $name = "`{$expr->getName()}`";
             } else {
@@ -162,10 +148,9 @@ class ExpressionSet
         if (!empty($clause)) {
             $clause = 'WHERE ' . $clause;
         }
-        
+
         return array($clause, $data);
     }
-
 
     /**
      * Build set statement from expressions
@@ -182,7 +167,7 @@ class ExpressionSet
         $exprs = array();
         $data = array();
 
-        foreach ($this->_expressions as $expr) {
+        foreach ($this->expressions as $expr) {
             if ($expr->escapeName()) {
                 $name = "`{$expr->getName()}`";
             } else {
@@ -208,7 +193,6 @@ class ExpressionSet
         return array($clause, $data);
     }
 
-
     /**
      * Build a data list from expressions
      *
@@ -226,7 +210,7 @@ class ExpressionSet
         $exprs = array();
         $data = array();
 
-        foreach ($this->_expressions as $expr) {
+        foreach ($this->expressions as $expr) {
             if ($expr->escapeName()) {
                 $names[] = "`{$expr->getName()}`";
             } else {
@@ -247,5 +231,4 @@ class ExpressionSet
             $data
         );
     }
-
 }

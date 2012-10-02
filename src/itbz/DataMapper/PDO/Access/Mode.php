@@ -8,34 +8,26 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO\Access
+ * @package DataMapper\PDO\Access
  */
-namespace itbz\DataMapper\PDO\Access;
-use itbz\DataMapper\PDO\Expression;
 
+namespace itbz\DataMapper\PDO\Access;
+
+use itbz\DataMapper\PDO\Expression;
 
 /**
  * Expression for row based access control
  *
- * @package DataMapper
- *
- * @subpackage PDO\Access
+ * @package DataMapper\PDO\Access
  */
 class Mode extends Expression implements AccessInterface
 {
-
     /**
      * Create access constraint
      *
      * @param string $action 'r' for read, 'w' for write or 'x' for execute
-     *
      * @param string $table Name of table access is being checked on
-     *
      * @param string $uname Name of user
-     *
      * @param array $ugroups List of groups user belongs to
      *
      * @throws Exception if action is invalid
@@ -61,13 +53,12 @@ class Mode extends Expression implements AccessInterface
         $expr[] = "'$uname'";
         $expr[] = "'$ugroups'";
 
-        $expr = implode(',', $expr);        
+        $expr = implode(',', $expr);
         $expr = "isAllowed($expr)";
 
         parent::__construct('1', $expr);
-        
-        $this->setEscapeName(FALSE);
-        $this->setEscapeValue(FALSE);
-    }
 
+        $this->setEscapeName(false);
+        $this->setEscapeValue(false);
+    }
 }

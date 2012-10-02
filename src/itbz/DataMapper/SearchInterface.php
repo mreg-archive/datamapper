@@ -8,11 +8,10 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
  * @package DataMapper
  */
-namespace itbz\DataMapper;
 
+namespace itbz\DataMapper;
 
 /**
  * Basic search interface
@@ -21,12 +20,10 @@ namespace itbz\DataMapper;
  */
 interface SearchInterface
 {
-
     /**
      * Get search limit
      *
      * @return scalar
      */
     public function getLimitClause();
-
 }

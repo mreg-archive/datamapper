@@ -8,16 +8,14 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
+
 namespace itbz\DataMapper\PDO;
+
 use itbz\DataMapper\ModelInterface;
 use PDO;
 use PDOStatement;
-
 
 /**
  * Iterates over rows in a PDOStatement returning Model instances
@@ -25,58 +23,49 @@ use PDOStatement;
  * PDOStatements are iterable as is. This class adds support for rewinds and
  * key retrieval. Also each result row is returned as a Model and not an array.
  *
- * @package DataMapper
- *
- * @subpackage PDO
+ * @package DataMapper\PDO
  */
 class Iterator implements \Iterator
 {
-
     /**
      * PDO statement to iterate
      *
      * @var PDOStatement
      */
-    private $_stmt;
-
+    private $stmt;
 
     /**
      * True if PDOStatement points to the first row in result set
      *
      * @var bool
      */
-    private $_firstRow;
-
+    private $firstRow;
 
     /**
      * Current row
      *
      * @var array
      */
-    private $_row;
-
+    private $row;
 
     /**
      * Name of row key
      *
      * @var string
      */
-    private $_key;
-
+    private $key;
 
     /**
      * Prototype model that will be cloned on current
      *
      * @var ModelInterface
      */
-    private $_prototype;
-
+    private $prototype;
 
     /**
      * Construct and inject PDOStatement instance
      *
      * @param PDOStatement $stmt
-     *
      * @param string $key Name of column to use as key
      *
      * @param ModelInterface $proto Prototype model to clone on current
@@ -84,15 +73,14 @@ class Iterator implements \Iterator
     public function __construct(PDOStatement $stmt, $key, ModelInterface $proto)
     {
         assert('is_string($key)');
-        $this->_stmt = $stmt;
-        $this->_key = $key;
-        $this->_prototype = $proto;
+        $this->stmt = $stmt;
+        $this->key = $key;
+        $this->prototype = $proto;
 
-        $this->_stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $this->stmt->setFetchMode(PDO::FETCH_ASSOC);
         $this->next();
-        $this->_firstRow = TRUE;
-    } 
-
+        $this->firstRow = true;
+    }
 
     /**
      * Re-execute PDOStatement to enable a new execution
@@ -101,12 +89,11 @@ class Iterator implements \Iterator
      */
     public function rewind()
     {
-        if (!$this->_firstRow) {
-            $this->_stmt->execute();
+        if (!$this->firstRow) {
+            $this->stmt->execute();
             $this->next();
         }
     }
-
 
     /**
      * Load next row from PDOStatement
@@ -115,10 +102,9 @@ class Iterator implements \Iterator
      */
     public function next()
     {
-        $this->_firstRow = FALSE;
-        $this->_row = $this->_stmt->fetch();
+        $this->firstRow = false;
+        $this->row = $this->stmt->fetch();
     }
-
 
     /**
      * Return current row
@@ -127,12 +113,11 @@ class Iterator implements \Iterator
      */
     public function current()
     {
-        $model = clone $this->_prototype;
-        $model->load($this->_row);
+        $model = clone $this->prototype;
+        $model->load($this->row);
 
         return $model;
     }
-
 
     /**
      * Return current id
@@ -142,13 +127,12 @@ class Iterator implements \Iterator
     public function key()
     {
         $key = '';
-        if (isset($this->_row[$this->_key])) {
-            $key = $this->_row[$this->_key];
+        if (isset($this->row[$this->key])) {
+            $key = $this->row[$this->key];
         }
 
         return $key;
     }
-
 
     /**
      * Check if current row is valid
@@ -157,7 +141,6 @@ class Iterator implements \Iterator
      */
     public function valid()
     {
-        return (boolean)$this->_row;
+        return (boolean)$this->row;
     }
-
 }

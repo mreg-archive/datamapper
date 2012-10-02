@@ -8,11 +8,10 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
  * @package DataMapper
  */
-namespace itbz\DataMapper;
 
+namespace itbz\DataMapper;
 
 /**
  * Basic mapper interface
@@ -21,7 +20,6 @@ namespace itbz\DataMapper;
  */
 interface MapperInterface extends ExtractInterface
 {
-
     /**
      * Persistently store model
      *
@@ -31,16 +29,14 @@ interface MapperInterface extends ExtractInterface
      */
     public function save(ModelInterface $model);
 
-
     /**
      * Delete model from persistent storage
      *
      * @param ModelInterface $model
      *
-	 * @return int Number of affected rows
+     * @return int Number of affected rows
      */
     public function delete(ModelInterface $model);
-
 
     /**
      * Read data from persistent storage
@@ -53,16 +49,13 @@ interface MapperInterface extends ExtractInterface
      */
     public function find(array $conditions);
 
-
     /**
      * Get iterator containing multiple models based on search
      *
      * @param array $conditions
-     *
      * @param SearchInterface $search
      *
      * @return \Iterator
      */
     public function findMany(array $conditions, SearchInterface $search);
-
 }

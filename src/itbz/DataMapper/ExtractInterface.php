@@ -8,11 +8,10 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
  * @package DataMapper
  */
-namespace itbz\DataMapper;
 
+namespace itbz\DataMapper;
 
 /**
  * Extract constants
@@ -21,12 +20,10 @@ namespace itbz\DataMapper;
  */
 interface ExtractInterface
 {
-
     /**
      * Extract context for data creation
      */
     const CONTEXT_CREATE = 1;
-
 
     /**
      * Extract context for data reads
@@ -42,5 +39,4 @@ interface ExtractInterface
      * Extract context for data deletes
      */
     const CONTEXT_DELETE = 4;
-
 }
