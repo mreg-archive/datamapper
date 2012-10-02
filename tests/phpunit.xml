@@ -1,9 +1,14 @@
 <phpunit bootstrap="bootstrap.php">
     <testsuites>
         <testsuite>
-            <directory>./DataMapper</directory>
+            <directory>./unit</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./../src</directory>
+        </whitelist>
+    </filter>
     <php>
         <const name="DB_USER" value="root"/>
         <const name="DB_PSWD" value="platon68"/>
