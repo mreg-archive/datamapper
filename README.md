@@ -98,4 +98,4 @@ Or to do a complete build (also triggers CodeSniffer and other checks)
 To test against MySQL add your server credentials to `phpunit.xml`. To only test
 the parts that don't require MySQL specify testpath.
 
-    phpunit DataMapper/PDO
+    phpunit unit/PDO
