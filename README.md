@@ -1,4 +1,4 @@
-DataMapper
+datamapper
 ==========
 
 PHP data mapper
@@ -10,12 +10,12 @@ Supports multiple relational datbases through PDO.
 Currently there is no support for NoSQL databases. Support for MongoDB is
 planed.
 
-For detailed info se the [complete documentation](http://itbz.github.com/packages/DataMapper.html).
+For detailed info se the [complete documentation](http://itbz.github.com/packages/datamapper.html).
 
 
 ## The prototype design pattern and cloning
 
-DataMapper creates model instances using the prototype design pattern. When
+datamapper creates model instances using the prototype design pattern. When
 creating your mapper you inject an empty instance of your model, the prototype.
 When reading data from storage the prototype is cloned and the retrieved data
 is written to the cloned model before returning.
@@ -50,10 +50,10 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     // $pdo = ...
     
     // create table object
-    $table = new \itbz\DataMapper\PDO\Table\Table('mytable', $pdo);
+    $table = new \itbz\datamapper\pdo\table\Table('mytable', $pdo);
 
     // add a naturally joined table
-    $join = new \itbz\DataMapper\PDO\Table\Table('joinedtable', $pdo);
+    $join = new \itbz\datamapper\pdo\table\Table('joinedtable', $pdo);
     $table->addNaturalJoin($join);
 
     // create an instance of your model
@@ -61,7 +61,7 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     $prototype = new MyModel();
     
     // create mapper
-    $mapper = new \itbz\DataMapper\PDO\Mapper($table, $prototype);
+    $mapper = new \itbz\datamapper\pdo\Mapper($table, $prototype);
 
     // select from db
     $iterator = $mapper->findMany(array('name' => 'foobar'));
@@ -98,4 +98,4 @@ Or to do a complete build (also triggers CodeSniffer and other checks)
 To test against MySQL add your server credentials to `phpunit.xml`. To only test
 the parts that don't require MySQL specify testpath.
 
-    phpunit unit/PDO
+    phpunit unit/pdo
