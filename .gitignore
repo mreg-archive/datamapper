@@ -2,5 +2,5 @@ build
 vendor
 composer.phar
 composer.lock
-DataMapper.sublime-project
-DataMapper.sublime-workspace
+datamapper.sublime-project
+datamapper.sublime-workspace
