@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\Exception
+ * @package datamapper\exception
  */
 
-namespace itbz\DataMapper\Exception;
+namespace itbz\datamapper\exception;
 
 /**
  * Data not found exception
  *
- * @package DataMapper\Exception
+ * @package datamapper\exception
  */
-class DataNotFoundException extends \itbz\DataMapper\Exception
+class DataNotFoundException extends \itbz\datamapper\Exception
 {
 }

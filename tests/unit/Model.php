@@ -1,7 +1,7 @@
 <?php
-namespace itbz\DataMapper\tests;
+namespace itbz\datamapper\tests;
 
-class Model implements \itbz\DataMapper\ModelInterface
+class Model implements \itbz\datamapper\ModelInterface
 {
 
     public function load(array $data)

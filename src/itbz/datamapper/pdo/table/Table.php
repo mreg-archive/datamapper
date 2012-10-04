@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,32 +8,32 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO\Table
+ * @package datamapper\pdo\table
  */
 
-namespace itbz\DataMapper\PDO\Table;
+namespace itbz\datamapper\pdo\table;
 
-use itbz\DataMapper\Exception\PdoException;
-use itbz\DataMapper\PDO\Search;
-use itbz\DataMapper\PDO\ExpressionSet;
-use PDO;
-use PDOStatement;
+use itbz\datamapper\exception\PdoException;
+use itbz\datamapper\pdo\Search;
+use itbz\datamapper\pdo\ExpressionSet;
+use pdo;
+use pdoStatement;
 
 /**
- * PDO table for use by PDO models
+ * pdo table for use by pdo models
  *
  * NOTE: Expects all database tables to have primary keys definied over only
- * one column. In other words PDO\Table can not handle tables with composite
+ * one column. In other words pdo\table can not handle tables with composite
  * primary keys.
  *
- * @package DataMapper\PDO\Table
+ * @package datamapper\pdo\table
  */
 class Table
 {
     /**
-     * PDO instance used
+     * pdo instance used
      *
-     * @var PDO
+     * @var pdo
      */
     protected $pdo;
 
@@ -76,12 +76,12 @@ class Table
     private $naturalJoins = array();
 
     /**
-     * PDO table for use by PDO models 
+     * pdo table for use by pdo models 
      *
      * @param string $name Name of database table
-     * @param PDO $pdo PDO object for interacting with database
+     * @param pdo $pdo pdo object for interacting with database
      */
-    public function __construct($name, PDO $pdo)
+    public function __construct($name, pdo $pdo)
     {
         assert('is_string($name)');
         $this->name = $name;
@@ -314,7 +314,7 @@ class Table
      * @param Search $search
      * @param ExpressionSet $conditions
      *
-     * @return PDOStatement
+     * @return pdoStatement
      */
     public function select(Search $search, ExpressionSet $conditions = null)
     {
@@ -367,7 +367,7 @@ class Table
      *
      * @param ExpressionSet $data
      *
-     * @return PDOStatement
+     * @return pdoStatement
      *
      * @throws PdoException if data is empty
      */
@@ -390,7 +390,7 @@ class Table
      * Get the ID of the last inserted row.
      *
      * The return value will only be meaningful on tables with an auto-increment
-     * field and with a PDO driver that supports auto-increment. NOTE: must be
+     * field and with a pdo driver that supports auto-increment. NOTE: must be
      * called directly after a database insert.
      *
      * @return int
@@ -406,7 +406,7 @@ class Table
      * @param ExpressionSet $data
      * @param ExpressionSet $conditions
      *
-     * @return PDOStatement
+     * @return pdoStatement
      *
      * @throws PdoException if conditions or data are empty
      */
@@ -438,7 +438,7 @@ class Table
      *
      * @param ExpressionSet $conditions
      *
-     * @return PDOStatement
+     * @return pdoStatement
      *
      * @throws PdoException if conditions are empty
      */

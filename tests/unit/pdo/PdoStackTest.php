@@ -1,21 +1,21 @@
 <?php
-namespace itbz\DataMapper\PDO;
+namespace itbz\datamapper\pdo;
 
-use itbz\DataMapper\ModelInterface;
-use itbz\DataMapper\tests\Model;
-use PDO;
-use itbz\DataMapper\PDO\Table\SqliteTable;
+use itbz\datamapper\ModelInterface;
+use itbz\datamapper\tests\Model;
+use pdo;
+use itbz\datamapper\pdo\table\SqliteTable;
 
 /**
- * Some random test on the complete PDO stack
+ * Some random test on the complete pdo stack
  * if test fails start looking at the concrete test cases
  */
 class PdoStackTest extends \PHPUnit_Framework_TestCase
 {
     private function getPdo()
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new pdo('sqlite::memory:');
+        $pdo->setAttribute(pdo::ATTR_ERRMODE, pdo::ERRMODE_EXCEPTION);
         $pdo->query('CREATE TABLE data(id INTEGER, name, PRIMARY KEY(id ASC));');
 
         return  $pdo;

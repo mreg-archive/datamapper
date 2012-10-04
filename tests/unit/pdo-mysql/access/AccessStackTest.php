@@ -1,10 +1,10 @@
 <?php
-namespace itbz\DataMapper\PDO\Access;
+namespace itbz\datamapper\pdo\access;
 
-use itbz\DataMapper\PDO\Search;
-use itbz\DataMapper\tests\Model;
+use itbz\datamapper\pdo\Search;
+use itbz\datamapper\tests\Model;
 
-class AccesStackTest extends \itbz\DataMapper\MysqlTestCase
+class AccesStackTest extends \itbz\datamapper\MysqlTestCase
 {
     public function setUp()
     {
@@ -38,7 +38,7 @@ class AccesStackTest extends \itbz\DataMapper\MysqlTestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\AccessDeniedException
+     * @expectedException itbz\datamapper\pdo\access\AccessDeniedException
      */
     public function testRowAccessException()
     {
@@ -72,7 +72,7 @@ class AccesStackTest extends \itbz\DataMapper\MysqlTestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\AccessDeniedException
+     * @expectedException itbz\datamapper\pdo\access\AccessDeniedException
      */
     public function testRowDeleteException()
     {
@@ -109,7 +109,7 @@ class AccesStackTest extends \itbz\DataMapper\MysqlTestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\AccessDeniedException
+     * @expectedException itbz\datamapper\pdo\access\AccessDeniedException
      */
     public function testRowUpdateException()
     {

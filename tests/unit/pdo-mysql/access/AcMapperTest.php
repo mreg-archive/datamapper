@@ -1,16 +1,16 @@
 <?php
-namespace itbz\DataMapper\PDO\Access;
+namespace itbz\datamapper\pdo\access;
 
-use itbz\DataMapper\PDO\ExpressionSet;
-use itbz\DataMapper\PDO\Expression;
-use itbz\DataMapper\tests\Model;
+use itbz\datamapper\pdo\ExpressionSet;
+use itbz\datamapper\pdo\Expression;
+use itbz\datamapper\tests\Model;
 
 class AcMapperTest extends \PHPUnit_Framework_TestCase
 {
     public function testSetUser()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('setUser'),
             array(),
             '',
@@ -26,12 +26,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\AccessDeniedException
+     * @expectedException itbz\datamapper\pdo\access\AccessDeniedException
      */
     public function testChownNoRootException()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('userIsRoot'),
             array(),
             '',
@@ -47,12 +47,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\Exception
+     * @expectedException itbz\datamapper\pdo\access\Exception
      */
     public function testChownNoPrimaryKeyException()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('userIsRoot'),
             array(),
             '',
@@ -73,7 +73,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     public function testChown()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('userIsRoot', 'update'),
             array(),
             '',
@@ -85,7 +85,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
               ->will($this->returnValue(true));
 
         $stmt = $this->getMock(
-            "\PDOStatement",
+            "\pdoStatement",
             array('rowCount')
         );
 
@@ -121,12 +121,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\Exception
+     * @expectedException itbz\datamapper\pdo\access\Exception
      */
     public function testChmodNoPrimaryKeyException()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
@@ -144,7 +144,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     public function testChmod()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('userIsRoot', 'update', 'getUser'),
             array(),
             '',
@@ -160,7 +160,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
               ->will($this->returnValue('foobar'));
 
         $stmt = $this->getMock(
-            "\PDOStatement",
+            "\pdoStatement",
             array('rowCount')
         );
 
@@ -197,12 +197,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\Exception
+     * @expectedException itbz\datamapper\pdo\access\Exception
      */
     public function testChgrpNoPrimaryKeyException()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
@@ -218,12 +218,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\AccessDeniedException
+     * @expectedException itbz\datamapper\pdo\access\AccessDeniedException
      */
     public function testChgrpNotInGroupException()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
@@ -245,7 +245,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     public function testChgrp()
     {
         $table = $this->getMock(
-            'itbz\DataMapper\PDO\Access\AcTable',
+            'itbz\datamapper\pdo\access\AcTable',
             array('userIsRoot', 'update', 'getUser', 'getUserGroups'),
             array(),
             '',
@@ -265,7 +265,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
               ->will($this->returnValue(array('newgroup')));
 
         $stmt = $this->getMock(
-            "\PDOStatement",
+            "\pdoStatement",
             array('rowCount')
         );
 

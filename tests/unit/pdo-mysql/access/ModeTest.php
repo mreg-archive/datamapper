@@ -1,10 +1,10 @@
 <?php
-namespace itbz\DataMapper\PDO\Access;
+namespace itbz\datamapper\pdo\access;
 
 class ModeTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException itbz\DataMapper\PDO\Access\Exception
+     * @expectedException itbz\datamapper\pdo\access\Exception
      */
     public function testActionException()
     {

@@ -1,5 +1,5 @@
 <?php
-namespace itbz\DataMapper;
+namespace itbz\datamapper;
 
 /**
  * Database connection constants are definied in phpunit.xml
@@ -8,16 +8,16 @@ class MysqlTestCase extends \PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
-        $pdo = new \PDO('mysql:host=localhost', DB_USER, DB_PSWD);
+        $pdo = new \pdo('mysql:host=localhost', DB_USER, DB_PSWD);
         $pdo->query('CREATE DATABASE ' . DB_NAME);
-        $pathToSql = realpath(__DIR__ . "/../../../src/itbz/DataMapper/PDO/Access/sql/access-mysql.sql");
+        $pathToSql = realpath(__DIR__ . "/../../../src/itbz/datamapper/pdo/access/sql/access-mysql.sql");
         $command = "mysql -u" . DB_USER . " -p" . DB_PSWD . ' ' . DB_NAME . " < " . $pathToSql;
         exec($command);
     }
 
     public static function tearDownAfterClass()
     {
-        $pdo = new \PDO('mysql:host=localhost', DB_USER, DB_PSWD);
+        $pdo = new \pdo('mysql:host=localhost', DB_USER, DB_PSWD);
         $pdo->query('DROP DATABASE ' . DB_NAME);
     }
 
@@ -40,8 +40,8 @@ class MysqlTestCase extends \PHPUnit_Framework_TestCase
 
     public function getPdo()
     {
-        $pdo = new \PDO('mysql:host=localhost;dbname=' . DB_NAME, DB_USER, DB_PSWD);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo = new \pdo('mysql:host=localhost;dbname=' . DB_NAME, DB_USER, DB_PSWD);
+        $pdo->setAttribute(\pdo::ATTR_ERRMODE, \pdo::ERRMODE_EXCEPTION);
 
         return  $pdo;
     }

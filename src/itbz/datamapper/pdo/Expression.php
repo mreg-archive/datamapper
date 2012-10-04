@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO
+ * @package datamapper\pdo
  */
 
-namespace itbz\DataMapper\PDO;
+namespace itbz\datamapper\pdo;
 
-use itbz\DataMapper\Exception\PdoException;
+use itbz\datamapper\exception\PdoException;
 
 /**
  * Internal class for modeling SQL expressions
  *
- * @package DataMapper\PDO
+ * @package datamapper\pdo
  */
 class Expression
 {

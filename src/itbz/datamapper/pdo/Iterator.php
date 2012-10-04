@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,34 +8,34 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO
+ * @package datamapper\pdo
  */
 
-namespace itbz\DataMapper\PDO;
+namespace itbz\datamapper\pdo;
 
-use itbz\DataMapper\ModelInterface;
-use PDO;
-use PDOStatement;
+use itbz\datamapper\ModelInterface;
+use pdo;
+use pdoStatement;
 
 /**
- * Iterates over rows in a PDOStatement returning Model instances
+ * Iterates over rows in a pdoStatement returning Model instances
  *
- * PDOStatements are iterable as is. This class adds support for rewinds and
+ * pdoStatements are iterable as is. This class adds support for rewinds and
  * key retrieval. Also each result row is returned as a Model and not an array.
  *
- * @package DataMapper\PDO
+ * @package datamapper\pdo
  */
 class Iterator implements \Iterator
 {
     /**
-     * PDO statement to iterate
+     * pdo statement to iterate
      *
-     * @var PDOStatement
+     * @var pdoStatement
      */
     private $stmt;
 
     /**
-     * True if PDOStatement points to the first row in result set
+     * True if pdoStatement points to the first row in result set
      *
      * @var bool
      */
@@ -63,27 +63,27 @@ class Iterator implements \Iterator
     private $prototype;
 
     /**
-     * Construct and inject PDOStatement instance
+     * Construct and inject pdoStatement instance
      *
-     * @param PDOStatement $stmt
+     * @param pdoStatement $stmt
      * @param string $key Name of column to use as key
      *
      * @param ModelInterface $proto Prototype model to clone on current
      */
-    public function __construct(PDOStatement $stmt, $key, ModelInterface $proto)
+    public function __construct(pdoStatement $stmt, $key, ModelInterface $proto)
     {
         assert('is_string($key)');
         $this->stmt = $stmt;
         $this->key = $key;
         $this->prototype = $proto;
 
-        $this->stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $this->stmt->setFetchMode(pdo::FETCH_ASSOC);
         $this->next();
         $this->firstRow = true;
     }
 
     /**
-     * Re-execute PDOStatement to enable a new execution
+     * Re-execute pdoStatement to enable a new execution
      *
      * @return void
      */
@@ -96,7 +96,7 @@ class Iterator implements \Iterator
     }
 
     /**
-     * Load next row from PDOStatement
+     * Load next row from pdoStatement
      *
      * @return void
      */

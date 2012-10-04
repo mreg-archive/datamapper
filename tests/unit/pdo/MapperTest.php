@@ -1,7 +1,7 @@
 <?php
-namespace itbz\DataMapper\PDO;
+namespace itbz\datamapper\pdo;
 
-use itbz\DataMapper\ModelInterface;
+use itbz\datamapper\ModelInterface;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +15,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             $expectNativeColumns = $this->atLeastOnce();
         }
 
-        $table = $this->getMockBuilder('itbz\DataMapper\PDO\Table\Table')
+        $table = $this->getMockBuilder('itbz\datamapper\pdo\table\Table')
             ->disableOriginalConstructor()
             ->setMethods(array('getNativeColumns','getPrimaryKey', 'select', 'insert', 'update', 'delete'))
             ->getMock();
@@ -36,13 +36,13 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Create a PDOStatement mock that return $data on fetch
+     * Create a pdoStatement mock that return $data on fetch
      * and returns $data on fetch
      */
     public function getSelectOnceStmtMock($data)
     {
         $stmt = $this->getMock(
-            "\PDOStatement",
+            "\pdoStatement",
             array('setFetchMode', 'fetch', 'execute', 'rowCount')
         );
 
@@ -80,7 +80,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->with($search, $where)
             ->will($this->returnValue($this->getSelectOnceStmtMock($data)));
 
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
+        $model = $this->getMockBuilder('itbz\datamapper\ModelInterface')
             ->getMock();
 
         $model->expects($this->once())
@@ -91,7 +91,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $returnModel = $mapper->find(array('id'=>1));
 
         // Must return a clone of the prototype model
-        $this->assertInstanceOf('itbz\DataMapper\ModelInterface', $returnModel);
+        $this->assertInstanceOf('itbz\datamapper\ModelInterface', $returnModel);
     }
 
     /**
@@ -114,7 +114,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->method('select')
             ->will($this->returnValue($this->getSelectOnceStmtMock($data)));
 
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
+        $model = $this->getMockBuilder('itbz\datamapper\ModelInterface')
                       ->getMock();
 
         $mapper = new Mapper($table, $model);
@@ -123,7 +123,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\Exception\DataNotFoundException
+     * @expectedException itbz\datamapper\exception\DataNotFoundException
      */
     public function testDataNotFoundException()
     {
@@ -134,7 +134,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->method('select')
             ->will($this->returnValue($this->getSelectOnceStmtMock(false)));
 
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
+        $model = $this->getMockBuilder('itbz\datamapper\ModelInterface')
                       ->getMock();
 
         $mapper = new Mapper($table, clone $model);
@@ -143,12 +143,12 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /*
-     * Create a PDOStatement mock that returns $rowCount on rowCount
+     * Create a pdoStatement mock that returns $rowCount on rowCount
      */
     public function getUpdateStmtMock($rowCount = 1)
     {
         $stmt = $this->getMock(
-            "\PDOStatement",
+            "\pdoStatement",
             array('setFetchMode', 'fetch', 'execute', 'rowCount')
         );
 
@@ -179,7 +179,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
         $model = $this->getMock(
-            'itbz\DataMapper\ModelInterface',
+            'itbz\datamapper\ModelInterface',
             array('extract', 'load')
         );
 
@@ -206,7 +206,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
         $model = $this->getMock(
-            'itbz\DataMapper\ModelInterface',
+            'itbz\datamapper\ModelInterface',
             array('extract', 'load')
         );
 
@@ -220,7 +220,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     public function testLastInsertId()
     {
-        $table = $this->getMockBuilder('itbz\DataMapper\PDO\Table\Table')
+        $table = $this->getMockBuilder('itbz\datamapper\pdo\table\Table')
             ->disableOriginalConstructor()
             ->setMethods(array('lastInsertId'))
             ->getMock();
@@ -230,7 +230,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->method('lastInsertId')
             ->will($this->returnValue(1));
 
-        $model = $this->getMockBuilder('itbz\DataMapper\ModelInterface')
+        $model = $this->getMockBuilder('itbz\datamapper\ModelInterface')
             ->getMock();
 
         $mapper = new Mapper($table, clone $model);
@@ -263,7 +263,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
         $model = $this->getMock(
-            'itbz\DataMapper\ModelInterface',
+            'itbz\datamapper\ModelInterface',
             array('extract', 'load')
         );
 
@@ -290,7 +290,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getUpdateStmtMock(1)));
 
         $model = $this->getMock(
-            'itbz\DataMapper\ModelInterface',
+            'itbz\datamapper\ModelInterface',
             array('extract', 'load')
         );
 
@@ -304,12 +304,12 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\Exception
+     * @expectedException itbz\datamapper\Exception
      */
     public function testModelExtractReturnError()
     {
         $table = $this->getMock(
-            '\itbz\DataMapper\PDO\Table\Table',
+            '\itbz\datamapper\pdo\table\Table',
             array(),
             array(),
             '',
@@ -317,7 +317,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         );
 
         $model = $this->getMock(
-            'itbz\DataMapper\ModelInterface',
+            'itbz\datamapper\ModelInterface',
             array('extract', 'load')
         );
 
@@ -332,7 +332,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testGetNewModel()
     {
         $table = $this->getMock(
-            '\itbz\DataMapper\PDO\Table\Table',
+            '\itbz\datamapper\pdo\table\Table',
             array(),
             array(),
             '',
@@ -340,7 +340,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         );
 
         $model = $this->getMock(
-            '\itbz\DataMapper\ModelInterface',
+            '\itbz\datamapper\ModelInterface',
             array('extract', 'load')
         );
 

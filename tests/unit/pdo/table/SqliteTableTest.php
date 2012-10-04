@@ -1,14 +1,14 @@
 <?php
-namespace itbz\DataMapper\PDO\Table;
+namespace itbz\datamapper\pdo\table;
 
-use PDO;
+use pdo;
 
 class SqliteTableTest extends \PHPUnit_Framework_TestCase
 {
     private function getPdo()
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new pdo('sqlite::memory:');
+        $pdo->setAttribute(pdo::ATTR_ERRMODE, pdo::ERRMODE_EXCEPTION);
         $pdo->query('CREATE TABLE data(id INTEGER, name, foobar, PRIMARY KEY(id ASC));');
 
         return  $pdo;

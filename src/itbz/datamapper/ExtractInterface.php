@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper
+ * @package datamapper
  */
 
-namespace itbz\DataMapper;
+namespace itbz\datamapper;
 
 /**
  * Extract constants
  *
- * @package DataMapper
+ * @package datamapper
  */
 interface ExtractInterface
 {

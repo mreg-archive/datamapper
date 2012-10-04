@@ -1,5 +1,5 @@
 <?php
-namespace itbz\DataMapper\tests;
+namespace itbz\datamapper\tests;
 
 class MockPDO extends \PDO
 {

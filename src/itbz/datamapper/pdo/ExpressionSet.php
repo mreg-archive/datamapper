@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO
+ * @package datamapper\pdo
  */
 
-namespace itbz\DataMapper\PDO;
+namespace itbz\datamapper\pdo;
 
 /**
  * Internal class for organizing expressions into substatements
  *
- * @package DataMapper\PDO
+ * @package datamapper\pdo
  */
 class ExpressionSet
 {

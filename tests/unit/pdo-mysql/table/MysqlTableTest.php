@@ -1,7 +1,7 @@
 <?php
-namespace itbz\DataMapper\PDO\Table;
+namespace itbz\datamapper\pdo\table;
 
-class MysqlTableTest extends \itbz\DataMapper\MysqlTestCase
+class MysqlTableTest extends \itbz\datamapper\MysqlTestCase
 {
     public function testReverseEngineerColumns()
     {

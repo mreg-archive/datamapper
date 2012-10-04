@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,19 +8,19 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO\Table
+ * @package datamapper\pdo\table
  */
 
-namespace itbz\DataMapper\PDO\Table;
+namespace itbz\datamapper\pdo\table;
 
 /**
- * PDO table for use with SQLite
+ * pdo table for use with SQLite
  *
  * Extends Table by adding SQLite reverse engineering capabilities. If you do
  * not need to reverse egnigeer column names and primay keys of tables use
  * the regular Table class instead.
  *
- * @package DataMapper\PDO\Table
+ * @package datamapper\pdo\table
  */
 class SqliteTable extends Table
 {

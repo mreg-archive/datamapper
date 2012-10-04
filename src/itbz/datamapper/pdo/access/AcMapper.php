@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,19 +8,19 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO\Access
+ * @package datamapper\pdo\access
  */
 
-namespace itbz\DataMapper\PDO\Access;
+namespace itbz\datamapper\pdo\access;
 
-use itbz\DataMapper\ModelInterface;
-use itbz\DataMapper\PDO\Mapper;
-use itbz\DataMapper\PDO\Expression;
+use itbz\datamapper\ModelInterface;
+use itbz\datamapper\pdo\Mapper;
+use itbz\datamapper\pdo\Expression;
 
 /**
- * PDO access control mapper object
+ * pdo access control mapper object
  *
- * @package DataMapper\PDO\Access
+ * @package datamapper\pdo\access
  */
 class AcMapper extends Mapper implements AccessInterface
 {

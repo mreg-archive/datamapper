@@ -1,14 +1,14 @@
 <?php
-namespace itbz\DataMapper\PDO;
+namespace itbz\datamapper\pdo;
 
-use PDO;
+use pdo;
 
 class IteratorTest extends \PHPUnit_Framework_TestCase
 {
     public function getStmt()
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new pdo('sqlite::memory:');
+        $pdo->setAttribute(pdo::ATTR_ERRMODE, pdo::ERRMODE_EXCEPTION);
         $pdo->query('CREATE TABLE data(id INTEGER, name, PRIMARY KEY(id ASC));');
         $pdo->query("INSERT INTO data VALUES (1, 'foo')");
         $pdo->query("INSERT INTO data VALUES (2, 'bar')");
@@ -19,7 +19,7 @@ class IteratorTest extends \PHPUnit_Framework_TestCase
     public function testIterator()
     {
         $model = $this->getMock(
-            '\itbz\DataMapper\ModelInterface',
+            '\itbz\datamapper\ModelInterface',
             array('load', 'extract')
         );
 
@@ -46,7 +46,7 @@ class IteratorTest extends \PHPUnit_Framework_TestCase
 
         // Iterating over iterator yields two calls to model::load()
         foreach ($iterator as $key => $model) {
-            $this->assertInstanceOf('itbz\DataMapper\ModelInterface', $model);
+            $this->assertInstanceOf('itbz\datamapper\ModelInterface', $model);
             $this->assertTrue(is_numeric($key));
         }
 

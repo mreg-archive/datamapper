@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,22 +8,22 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO\Access
+ * @package datamapper\pdo\access
  */
 
-namespace itbz\DataMapper\PDO\Access;
+namespace itbz\datamapper\pdo\access;
 
-use itbz\DataMapper\PDO\Table\MysqlTable;
-use itbz\DataMapper\PDO\Search;
-use itbz\DataMapper\PDO\ExpressionSet;
-use itbz\DataMapper\PDO\Expression;
-use PDO;
-use PDOStatement;
+use itbz\datamapper\pdo\table\MysqlTable;
+use itbz\datamapper\pdo\Search;
+use itbz\datamapper\pdo\ExpressionSet;
+use itbz\datamapper\pdo\Expression;
+use pdo;
+use pdoStatement;
 
 /**
- * PDO access control table object
+ * pdo access control table object
  *
- * @package DataMapper\PDO\Access
+ * @package datamapper\pdo\access
  */
 class AcTable extends MysqlTable implements AccessInterface
 {
@@ -71,12 +71,12 @@ class AcTable extends MysqlTable implements AccessInterface
      * access.
      *
      * @param string $name Name of database table
-     * @param PDO $pdo PDO object for interacting with database
+     * @param pdo $pdo pdo object for interacting with database
      * @param string $owner Name of owner of table
      * @param string $group Name of group of table
      * @param int $mode Access mode of table
      */
-    public function __construct($name, PDO $pdo, $owner, $group, $mode = 0770)
+    public function __construct($name, pdo $pdo, $owner, $group, $mode = 0770)
     {
         assert('is_string($owner)');
         assert('is_string($group)');
@@ -95,7 +95,7 @@ class AcTable extends MysqlTable implements AccessInterface
      * @param Search $search
      * @param ExpressionSet $conditions
      *
-     * @return PDOStatement
+     * @return pdoStatement
      *
      * @throws AccessDeniedException if user does not have access
      */
@@ -133,7 +133,7 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param ExpressionSet $conditions
      *
-     * @return PDOStatement
+     * @return pdoStatement
      *
      * @throws AccessDeniedException if user does not have access
      */
@@ -166,7 +166,7 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param ExpressionSet $data
      *
-     * @return PDOStatement
+     * @return pdoStatement
      *
      * @throws AccessDeniedException if user does not have access
      */
@@ -201,7 +201,7 @@ class AcTable extends MysqlTable implements AccessInterface
      * @param ExpressionSet $data
      * @param ExpressionSet $conditions
      *
-     * @return PDOStatement
+     * @return pdoStatement
      *
      * @throws AccessDeniedException if user does not have access
      */
@@ -379,25 +379,25 @@ class AcTable extends MysqlTable implements AccessInterface
     /**
      * Validate row access for empty statements
      *
-     * Checks if statment is empty (using PDOStamtement::rowCount, hence this
+     * Checks if statment is empty (using pdoStamtement::rowCount, hence this
      * is not supported with all database drivers if the last executed query in
      * statement was a select). If statement is empty valuate if this is due to
      * access restrictions. If so throw exception. Else return statement as is.
      *
      * @param string $verb Action description to be inserted in exception
      * message
-     * @param PDOStatement $stmt The statement to evaluate
+     * @param pdoStatement $stmt The statement to evaluate
      * @param ExpressionSet $conditions Conditions used when creating statement
      * @param Search $search Search clause used when creating statement, if any
      *
-     * @return PDOStatement
+     * @return pdoStatement
      *
      * @throws AccessDeniedException if statement is empty due to access
      * restrictions att row level
      */
     private function forwardValidStmt(
         $verb,
-        PDOStatement $stmt,
+        pdoStatement $stmt,
         ExpressionSet $conditions,
         Search $search = null
     ) {

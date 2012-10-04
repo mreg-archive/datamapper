@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\Association
+ * @package datamapper\association
  */
 
-namespace itbz\DataMapper\Association;
+namespace itbz\datamapper\association;
 
 /*
     field: id       => field: parentId
@@ -65,7 +65,7 @@ namespace itbz\DataMapper\Association;
 /**
  * One-to-many association
  *
- * @package DataMapper\Association
+ * @package datamapper\association
  */
 class OneToManyAssociation
 {

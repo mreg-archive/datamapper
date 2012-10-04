@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,24 +8,24 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO
+ * @package datamapper\pdo
  */
 
-namespace itbz\DataMapper\PDO;
+namespace itbz\datamapper\pdo;
 
-use itbz\DataMapper\MapperInterface;
-use itbz\DataMapper\ModelInterface;
-use itbz\DataMapper\IgnoreAttributeInterface;
-use itbz\DataMapper\SearchInterface;
-use itbz\DataMapper\Exception\DataNotFoundException;
-use itbz\DataMapper\Exception;
-use itbz\DataMapper\PDO\Table\Table;
-use PDOStatement;
+use itbz\datamapper\MapperInterface;
+use itbz\datamapper\ModelInterface;
+use itbz\datamapper\IgnoreAttributeInterface;
+use itbz\datamapper\SearchInterface;
+use itbz\datamapper\exception\DataNotFoundException;
+use itbz\datamapper\Exception;
+use itbz\datamapper\pdo\table\Table;
+use pdoStatement;
 
 /**
- * PDO mapper object
+ * pdo mapper object
  *
- * @package DataMapper\PDO
+ * @package datamapper\pdo
  */
 class Mapper implements MapperInterface
 {
@@ -159,7 +159,7 @@ class Mapper implements MapperInterface
      * Get the ID of the last inserted row.
      *
      * The return value will only be meaningful on tables with an auto-increment
-     * field and with a PDO driver that supports auto-increment. Must be called
+     * field and with a pdo driver that supports auto-increment. Must be called
      * directly after an insert.
      *
      * @return int
@@ -232,13 +232,13 @@ class Mapper implements MapperInterface
     }
 
     /**
-     * Get iterator for PDOStatement
+     * Get iterator for pdoStatement
      *
-     * @param PDOStatement $stmt
+     * @param pdoStatement $stmt
      *
      * @return \Iterator
      */
-    protected function getIterator(PDOStatement $stmt)
+    protected function getIterator(pdoStatement $stmt)
     {
         return new Iterator(
             $stmt,

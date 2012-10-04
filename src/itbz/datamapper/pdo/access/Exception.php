@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the DataMapper package
+ * This file is part of the datamapper package
  *
  * Copyright (c) 2012 Hannes Forsgård
  *
@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package DataMapper\PDO\Access
+ * @package datamapper\pdo\access
  */
 
-namespace itbz\DataMapper\PDO\Access;
+namespace itbz\datamapper\pdo\access;
 
 /**
  * Base exception for the Access subpackage
  *
- * @package DataMapper\PDO\Access
+ * @package datamapper\pdo\access
  */
-class Exception extends \itbz\DataMapper\Exception
+class Exception extends \itbz\datamapper\Exception
 {
 }

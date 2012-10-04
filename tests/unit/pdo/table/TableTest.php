@@ -1,17 +1,17 @@
 <?php
-namespace itbz\DataMapper\PDO\Table;
+namespace itbz\datamapper\pdo\table;
 
-use itbz\DataMapper\PDO\Search;
-use itbz\DataMapper\PDO\Expression;
-use itbz\DataMapper\PDO\ExpressionSet;
-use PDO;
+use itbz\datamapper\pdo\Search;
+use itbz\datamapper\pdo\Expression;
+use itbz\datamapper\pdo\ExpressionSet;
+use pdo;
 
 class TableTest extends \PHPUnit_Framework_TestCase
 {
     private function getPdo()
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new pdo('sqlite::memory:');
+        $pdo->setAttribute(pdo::ATTR_ERRMODE, pdo::ERRMODE_EXCEPTION);
         $pdo->query('CREATE TABLE foo(id INTEGER, foo1, foobar, PRIMARY KEY(id ASC));');
         $pdo->query('CREATE TABLE bar(foobar, bar1, barx, PRIMARY KEY(foobar ASC));');
         $pdo->query('CREATE TABLE x(barx, x1, PRIMARY KEY(barx ASC));');
@@ -37,7 +37,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\Exception\PdoException
+     * @expectedException itbz\datamapper\exception\PdoException
      */
     public function testSetPrimaryKeyException()
     {
@@ -107,7 +107,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\Exception\PdoException
+     * @expectedException itbz\datamapper\exception\PdoException
      */
     public function testGetColumnIdentifierException()
     {
@@ -154,7 +154,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\Exception\PdoException
+     * @expectedException itbz\datamapper\exception\PdoException
      */
     public function testDeleteException()
     {
@@ -196,7 +196,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\Exception\PdoException
+     * @expectedException itbz\datamapper\exception\PdoException
      */
     public function testUpdateEmptyDataException()
     {
@@ -205,7 +205,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\Exception\PdoException
+     * @expectedException itbz\datamapper\exception\PdoException
      */
     public function testUpdateEmptyWhereException()
     {
@@ -219,7 +219,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\DataMapper\Exception\PdoException
+     * @expectedException itbz\datamapper\exception\PdoException
      */
     public function testInsertEmptyValuesException()
     {
@@ -377,7 +377,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
                 new Expression('id', 2)
             )
         );
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->setFetchMode(pdo::FETCH_ASSOC);
         $data = array('foo1'=>'foo-data');
         $this->assertEquals($data, $stmt->fetch());
     }
