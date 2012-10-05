@@ -1,5 +1,3 @@
-* Add support for SplTypes to PDO\Expression
-
 * Add hooks from mapper to model:
   if (is_callable($model, 'preSaveHook')) ...
     * preExtractHook
