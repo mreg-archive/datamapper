@@ -1,10 +1,10 @@
 <?php
-namespace itbz\datamapper\pdo;
+namespace iio\datamapper\pdo;
 
-use itbz\datamapper\ModelInterface;
-use itbz\datamapper\tests\Model;
+use iio\datamapper\ModelInterface;
+use iio\datamapper\tests\Model;
 use pdo;
-use itbz\datamapper\pdo\table\SqliteTable;
+use iio\datamapper\pdo\table\SqliteTable;
 
 /**
  * Some random test on the complete pdo stack

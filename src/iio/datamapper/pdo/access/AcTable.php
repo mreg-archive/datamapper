@@ -11,12 +11,12 @@
  * @package datamapper\pdo\access
  */
 
-namespace itbz\datamapper\pdo\access;
+namespace iio\datamapper\pdo\access;
 
-use itbz\datamapper\pdo\table\MysqlTable;
-use itbz\datamapper\pdo\Search;
-use itbz\datamapper\pdo\ExpressionSet;
-use itbz\datamapper\pdo\Expression;
+use iio\datamapper\pdo\table\MysqlTable;
+use iio\datamapper\pdo\Search;
+use iio\datamapper\pdo\ExpressionSet;
+use iio\datamapper\pdo\Expression;
 use pdo;
 use pdoStatement;
 

@@ -1,7 +1,7 @@
 <?php
-namespace itbz\datamapper\tests;
+namespace iio\datamapper\tests;
 
-class Model implements \itbz\datamapper\ModelInterface
+class Model implements \iio\datamapper\ModelInterface
 {
 
     public function load(array $data)

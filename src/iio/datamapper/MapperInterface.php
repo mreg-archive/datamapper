@@ -11,7 +11,7 @@
  * @package datamapper
  */
 
-namespace itbz\datamapper;
+namespace iio\datamapper;
 
 /**
  * Basic mapper interface

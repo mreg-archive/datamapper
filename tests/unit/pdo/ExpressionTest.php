@@ -1,5 +1,5 @@
 <?php
-namespace itbz\datamapper\pdo;
+namespace iio\datamapper\pdo;
 
 class ExpressionTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,7 +50,7 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\datamapper\exception\PdoException
+     * @expectedException iio\datamapper\exception\PdoException
      */
     public function testObjectToStringException()
     {
@@ -75,7 +75,7 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException itbz\datamapper\exception\PdoException
+     * @expectedException iio\datamapper\exception\PdoException
      */
     public function testInvalidOperator()
     {

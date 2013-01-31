@@ -10,8 +10,6 @@ Supports multiple relational datbases through PDO.
 Currently there is no support for NoSQL databases. Support for MongoDB is
 planed.
 
-For detailed info se the [complete documentation](http://itbz.github.com/packages/datamapper.html).
-
 
 ## The prototype design pattern and cloning
 
@@ -50,10 +48,10 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     // $pdo = ...
     
     // create table object
-    $table = new \itbz\datamapper\pdo\table\Table('mytable', $pdo);
+    $table = new \iio\datamapper\pdo\table\Table('mytable', $pdo);
 
     // add a naturally joined table
-    $join = new \itbz\datamapper\pdo\table\Table('joinedtable', $pdo);
+    $join = new \iio\datamapper\pdo\table\Table('joinedtable', $pdo);
     $table->addNaturalJoin($join);
 
     // create an instance of your model
@@ -61,7 +59,7 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     $prototype = new MyModel();
     
     // create mapper
-    $mapper = new \itbz\datamapper\pdo\Mapper($table, $prototype);
+    $mapper = new \iio\datamapper\pdo\Mapper($table, $prototype);
 
     // select from db
     $iterator = $mapper->findMany(array('name' => 'foobar'));

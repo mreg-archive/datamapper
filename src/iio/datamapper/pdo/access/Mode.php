@@ -11,9 +11,9 @@
  * @package datamapper\pdo\access
  */
 
-namespace itbz\datamapper\pdo\access;
+namespace iio\datamapper\pdo\access;
 
-use itbz\datamapper\pdo\Expression;
+use iio\datamapper\pdo\Expression;
 
 /**
  * Expression for row based access control

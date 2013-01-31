@@ -11,13 +11,13 @@
  * @package datamapper\pdo\access
  */
 
-namespace itbz\datamapper\pdo\access;
+namespace iio\datamapper\pdo\access;
 
 /**
- * Base exception for the Access subpackage
+ * Access denied exception
  *
  * @package datamapper\pdo\access
  */
-class Exception extends \itbz\datamapper\Exception
+class AccessDeniedException extends Exception
 {
 }

@@ -11,7 +11,7 @@
  * @package datamapper\pdo
  */
 
-namespace itbz\datamapper\pdo;
+namespace iio\datamapper\pdo;
 
 /**
  * Internal class for organizing expressions into substatements

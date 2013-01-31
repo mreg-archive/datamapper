@@ -11,7 +11,7 @@
  * @package datamapper\pdo\access
  */
 
-namespace itbz\datamapper\pdo\access;
+namespace iio\datamapper\pdo\access;
 
 /**
  * Access control flags and names of access fields

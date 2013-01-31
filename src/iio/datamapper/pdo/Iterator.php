@@ -11,9 +11,9 @@
  * @package datamapper\pdo
  */
 
-namespace itbz\datamapper\pdo;
+namespace iio\datamapper\pdo;
 
-use itbz\datamapper\ModelInterface;
+use iio\datamapper\ModelInterface;
 use pdo;
 use pdoStatement;
 

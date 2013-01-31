@@ -8,16 +8,19 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\exception
+ * @package datamapper
  */
 
-namespace itbz\datamapper\exception;
+namespace iio\datamapper;
 
 /**
- * Base exception for the pdo subpackage
+ * Signal that property should be ignored
  *
- * @package datamapper\exception
+ * Attribute objects implementing IgnoreAttributeInterface will be ignored when
+ * construction data queries.
+ *
+ * @package datamapper
  */
-class PdoException extends \itbz\datamapper\Exception
+interface IgnoreAttributeInterface
 {
 }

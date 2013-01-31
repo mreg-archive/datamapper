@@ -8,16 +8,22 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo\access
+ * @package datamapper
  */
 
-namespace itbz\datamapper\pdo\access;
+namespace iio\datamapper;
 
 /**
- * Access denied exception
+ * Basic search interface
  *
- * @package datamapper\pdo\access
+ * @package datamapper
  */
-class AccessDeniedException extends Exception
+interface SearchInterface
 {
+    /**
+     * Get search limit
+     *
+     * @return scalar
+     */
+    public function getLimitClause();
 }

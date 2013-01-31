@@ -1,5 +1,5 @@
 <?php
-namespace itbz\datamapper\pdo\table;
+namespace iio\datamapper\pdo\table;
 
 use pdo;
 

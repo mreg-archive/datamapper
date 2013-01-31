@@ -11,9 +11,9 @@
  * @package datamapper\pdo
  */
 
-namespace itbz\datamapper\pdo;
+namespace iio\datamapper\pdo;
 
-use itbz\datamapper\exception\PdoException;
+use iio\datamapper\exception\PdoException;
 
 /**
  * Internal class for modeling SQL expressions

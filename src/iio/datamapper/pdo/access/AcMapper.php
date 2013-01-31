@@ -11,11 +11,11 @@
  * @package datamapper\pdo\access
  */
 
-namespace itbz\datamapper\pdo\access;
+namespace iio\datamapper\pdo\access;
 
-use itbz\datamapper\ModelInterface;
-use itbz\datamapper\pdo\Mapper;
-use itbz\datamapper\pdo\Expression;
+use iio\datamapper\ModelInterface;
+use iio\datamapper\pdo\Mapper;
+use iio\datamapper\pdo\Expression;
 
 /**
  * pdo access control mapper object

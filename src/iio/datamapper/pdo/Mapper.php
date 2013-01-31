@@ -11,15 +11,15 @@
  * @package datamapper\pdo
  */
 
-namespace itbz\datamapper\pdo;
+namespace iio\datamapper\pdo;
 
-use itbz\datamapper\MapperInterface;
-use itbz\datamapper\ModelInterface;
-use itbz\datamapper\IgnoreAttributeInterface;
-use itbz\datamapper\SearchInterface;
-use itbz\datamapper\exception\DataNotFoundException;
-use itbz\datamapper\Exception;
-use itbz\datamapper\pdo\table\Table;
+use iio\datamapper\MapperInterface;
+use iio\datamapper\ModelInterface;
+use iio\datamapper\IgnoreAttributeInterface;
+use iio\datamapper\SearchInterface;
+use iio\datamapper\exception\DataNotFoundException;
+use iio\datamapper\Exception;
+use iio\datamapper\pdo\table\Table;
 use pdoStatement;
 
 /**

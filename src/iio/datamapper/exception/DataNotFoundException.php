@@ -8,22 +8,16 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper
+ * @package datamapper\exception
  */
 
-namespace itbz\datamapper;
+namespace iio\datamapper\exception;
 
 /**
- * Basic search interface
+ * Data not found exception
  *
- * @package datamapper
+ * @package datamapper\exception
  */
-interface SearchInterface
+class DataNotFoundException extends \iio\datamapper\Exception
 {
-    /**
-     * Get search limit
-     *
-     * @return scalar
-     */
-    public function getLimitClause();
 }

@@ -1,8 +1,8 @@
 {
-    "name": "itbz/datamapper",
+    "name": "iio/datamapper",
     "description": "Generic data mapper",
     "keywords": ["mapper", "data mapper"],
-    "homepage": "https://github.com/itbz/datamapper",
+    "homepage": "https://github.com/iio/datamapper",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-0": {
-            "itbz\\datamapper": "src/"
+            "iio\\datamapper": "src/"
         }
     }
 }

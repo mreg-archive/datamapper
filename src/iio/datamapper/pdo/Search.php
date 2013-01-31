@@ -11,9 +11,9 @@
  * @package datamapper\pdo
  */
 
-namespace itbz\datamapper\pdo;
+namespace iio\datamapper\pdo;
 
-use itbz\datamapper\SearchInterface;
+use iio\datamapper\SearchInterface;
 
 /**
  * pdo search object

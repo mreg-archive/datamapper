@@ -8,19 +8,16 @@
  * file that was distributed with this source code.
  *
  * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper
+ * @package datamapper\pdo\access
  */
 
-namespace itbz\datamapper;
+namespace iio\datamapper\pdo\access;
 
 /**
- * Signal that property should be ignored
+ * Base exception for the Access subpackage
  *
- * Attribute objects implementing IgnoreAttributeInterface will be ignored when
- * construction data queries.
- *
- * @package datamapper
+ * @package datamapper\pdo\access
  */
-interface IgnoreAttributeInterface
+class Exception extends \iio\datamapper\Exception
 {
 }

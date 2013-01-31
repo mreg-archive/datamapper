@@ -1,5 +1,5 @@
 <?php
-namespace itbz\datamapper\pdo;
+namespace iio\datamapper\pdo;
 
 class SearchTest extends \PHPUnit_Framework_TestCase
 {

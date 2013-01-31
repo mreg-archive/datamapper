@@ -11,7 +11,7 @@
  * @package datamapper\association
  */
 
-namespace itbz\datamapper\association;
+namespace iio\datamapper\association;
 
 /*
     field: id       => field: parentId

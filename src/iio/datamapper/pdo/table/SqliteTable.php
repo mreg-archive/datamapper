@@ -11,18 +11,18 @@
  * @package datamapper\pdo\table
  */
 
-namespace itbz\datamapper\pdo\table;
+namespace iio\datamapper\pdo\table;
 
 /**
- * pdo table for use with MySQL
+ * pdo table for use with SQLite
  *
- * Extends Table by adding MySQL reverse engineering capabilities. If you do
+ * Extends Table by adding SQLite reverse engineering capabilities. If you do
  * not need to reverse egnigeer column names and primay keys of tables use
  * the regular Table class instead.
  *
  * @package datamapper\pdo\table
  */
-class MysqlTable extends Table
+class SqliteTable extends Table
 {
     /**
      * Reverse engineer structure of database table
@@ -31,10 +31,10 @@ class MysqlTable extends Table
      */
     public function reverseEngineerColumns()
     {
-        $query = "DESCRIBE `{$this->getName()}`";
-        $statement = $this->pdo->query($query);
+        $query = "PRAGMA table_info(`{$this->getName()}`)";
+        $stmt = $this->pdo->query($query);
         $columns = array();
-        while ( $col = $statement->fetchColumn() ) {
+        while ($col = $stmt->fetchColumn(1)) {
             $columns[] = $col;
         }
 
@@ -48,11 +48,13 @@ class MysqlTable extends Table
      */
     public function reverseEngineerPK()
     {
-        $q = "SHOW INDEX FROM `{$this->getName()}` WHERE Key_name='PRIMARY'";
-        $stmt = $this->pdo->query($q);
+        $query = "PRAGMA table_info(`{$this->getName()}`)";
+        $stmt = $this->pdo->query($query);
         $key = '';
-        while ($col = $stmt->fetchColumn(4)) {
-            $key = $col;
+        while ($col = $stmt->fetch()) {
+            if ($col['pk'] == '1') {
+                $key = $col['name'];
+            }
         }
 
         return $key;

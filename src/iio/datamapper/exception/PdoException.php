@@ -11,13 +11,13 @@
  * @package datamapper\exception
  */
 
-namespace itbz\datamapper\exception;
+namespace iio\datamapper\exception;
 
 /**
- * Data not found exception
+ * Base exception for the pdo subpackage
  *
  * @package datamapper\exception
  */
-class DataNotFoundException extends \itbz\datamapper\Exception
+class PdoException extends \iio\datamapper\Exception
 {
 }

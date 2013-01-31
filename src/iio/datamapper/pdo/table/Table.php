@@ -11,11 +11,11 @@
  * @package datamapper\pdo\table
  */
 
-namespace itbz\datamapper\pdo\table;
+namespace iio\datamapper\pdo\table;
 
-use itbz\datamapper\exception\PdoException;
-use itbz\datamapper\pdo\Search;
-use itbz\datamapper\pdo\ExpressionSet;
+use iio\datamapper\exception\PdoException;
+use iio\datamapper\pdo\Search;
+use iio\datamapper\pdo\ExpressionSet;
 use pdo;
 use pdoStatement;
 
