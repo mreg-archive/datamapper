@@ -1,6 +1,6 @@
 <?php
 
-$base = __DIR__ . "/../src/iio/datamapper";
+$base = __DIR__ . "/../src";
 
 require_once "$base/Exception.php";
 require_once "$base/ExtractInterface.php";
