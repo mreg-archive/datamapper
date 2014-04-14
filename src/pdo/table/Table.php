@@ -1,60 +1,48 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo\table
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo\table;
+namespace datamapper\pdo\table;
 
-use iio\datamapper\exception\PdoException;
-use iio\datamapper\pdo\Search;
-use iio\datamapper\pdo\ExpressionSet;
+use datamapper\exception\PdoException;
+use datamapper\pdo\Search;
+use datamapper\pdo\ExpressionSet;
 use pdo;
 use pdoStatement;
 
 /**
- * pdo table for use by pdo models
+ * PDO table for use by pdo models
  *
  * NOTE: Expects all database tables to have primary keys definied over only
  * one column. In other words pdo\table can not handle tables with composite
  * primary keys.
  *
- * @package datamapper\pdo\table
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class Table
 {
     /**
-     * pdo instance used
-     *
-     * @var pdo
+     * @var pdo PDO instance used
      */
     protected $pdo;
 
     /**
-     * Name of database table
-     *
-     * @var string
+     * @var string Name of database table
      */
     private $name;
 
     /**
-     * Name of primary key
-     *
-     * @var string
+     * @var string Name of primary key
      */
     private $primaryKey;
 
     /**
-     * Array of columns in table
-     *
-     * @var string
+     * @var array Array of columns in table
      */
     private $nativeColumns;
 
@@ -64,19 +52,17 @@ class Table
      * Includes columns in both native and joined tables. Names as keys,
      * identfiers (`table`.`column`) as values.
      *
-     * @var string
+     * @var array
      */
     private $columns;
 
     /**
-     * Array of naturally joined Tables
-     *
-     * @var array
+     * @var array Array of naturally joined Tables
      */
     private $naturalJoins = array();
 
     /**
-     * pdo table for use by pdo models 
+     * PDO table for use by pdo models 
      *
      * @param string $name Name of database table
      * @param pdo $pdo pdo object for interacting with database
@@ -120,11 +106,8 @@ class Table
      * as necessary.
      *
      * @param string $key
-     *
      * @return void
-     *
      * @throws PdoException if key is not a native column in table
-     *
      */
     public function setPrimaryKey($key)
     {
@@ -158,7 +141,6 @@ class Table
      * as necessary.
      *
      * @param array $columns
-     *
      * @return void
      */
     public function setColumns(array $columns)
@@ -211,7 +193,6 @@ class Table
      * Check if column is native to table
      *
      * @param string $colname
-     *
      * @return bool
      */
     public function isNativeColumn($colname)
@@ -226,7 +207,6 @@ class Table
      * Check if column exist in native or joined table
      *
      * @param string $colname
-     *
      * @return bool
      */
     public function isColumn($colname)
@@ -241,9 +221,7 @@ class Table
      * Get full column identifier for column name
      *
      * @param string $colname Use regular column name with no backticks
-     *
      * @return string
-     *
      * @throws PdoException if column does not exist
      */
     public function getColumnIdentifier($colname)
@@ -261,7 +239,6 @@ class Table
      * Add a naturally joined table
      *
      * @param Table $table
-     *
      * @return void
      */
     public function addNaturalJoin(Table $table)
@@ -313,7 +290,6 @@ class Table
      *
      * @param Search $search
      * @param ExpressionSet $conditions
-     *
      * @return pdoStatement
      */
     public function select(Search $search, ExpressionSet $conditions = null)
@@ -366,9 +342,7 @@ class Table
      * Insert values into db
      *
      * @param ExpressionSet $data
-     *
      * @return pdoStatement
-     *
      * @throws PdoException if data is empty
      */
     public function insert(ExpressionSet $data)
@@ -405,9 +379,7 @@ class Table
      *
      * @param ExpressionSet $data
      * @param ExpressionSet $conditions
-     *
      * @return pdoStatement
-     *
      * @throws PdoException if conditions or data are empty
      */
     public function update(ExpressionSet $data, ExpressionSet $conditions)
@@ -437,9 +409,7 @@ class Table
      * Delete records from db that matches conditions
      *
      * @param ExpressionSet $conditions
-     *
      * @return pdoStatement
-     *
      * @throws PdoException if conditions are empty
      */
     public function delete(ExpressionSet $conditions)

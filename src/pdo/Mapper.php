@@ -1,45 +1,37 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo;
+namespace datamapper\pdo;
 
-use iio\datamapper\MapperInterface;
-use iio\datamapper\ModelInterface;
-use iio\datamapper\IgnoreAttributeInterface;
-use iio\datamapper\SearchInterface;
-use iio\datamapper\exception\DataNotFoundException;
-use iio\datamapper\Exception;
-use iio\datamapper\pdo\table\Table;
+use datamapper\MapperInterface;
+use datamapper\ModelInterface;
+use datamapper\IgnoreAttributeInterface;
+use datamapper\SearchInterface;
+use datamapper\exception\DataNotFoundException;
+use datamapper\Exception;
+use datamapper\pdo\table\Table;
 use pdoStatement;
 
 /**
- * pdo mapper object
+ * PDO mapper object
  *
- * @package datamapper\pdo
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class Mapper implements MapperInterface
 {
     /**
-     * Table object to interact with
-     *
-     * @var Table
+     * @var Table Table object to interact with
      */
     protected $table;
 
     /**
-     * Prototype model that will be cloned on object creation
-     *
-     * @var ModelInterface
+     * @var ModelInterface Prototype model that will be cloned on object creation
      */
     private $prototype;
 
@@ -48,7 +40,7 @@ class Mapper implements MapperInterface
      *
      * @param Table $table
      * @param ModelInterface $prototype Prototype model that will be cloned when
-     * mapper needs a new return object.
+     *     mapper needs a new return object.
      */
     public function __construct(Table $table, ModelInterface $prototype)
     {
@@ -61,7 +53,6 @@ class Mapper implements MapperInterface
      *
      * @param array $conditions
      * @param SearchInterface $search
-     *
      * @return \Iterator
      */
     public function findMany(array $conditions, SearchInterface $search)
@@ -78,9 +69,7 @@ class Mapper implements MapperInterface
      * Find models that match current model values.
      *
      * @param array $conditions
-     *
      * @return ModelInterface
-     *
      * @throws DataNotFoundException if no model was found
      */
     public function find(array $conditions)
@@ -103,7 +92,6 @@ class Mapper implements MapperInterface
      * Find model based on primary key
      *
      * @param mixed $key
-     *
      * @return ModelInterface
      */
     public function findByPk($key)
@@ -117,7 +105,6 @@ class Mapper implements MapperInterface
      * Delete model from persistent storage
      *
      * @param ModelInterface $model
-     *
      * @return int Number of affected rows
      */
     public function delete(ModelInterface $model)
@@ -136,7 +123,6 @@ class Mapper implements MapperInterface
      * model is updated. Else model is inserted.
      *
      * @param ModelInterface $model
-     *
      * @return int Number of affected rows
      */
     public function save(ModelInterface $model)
@@ -173,7 +159,6 @@ class Mapper implements MapperInterface
      * Get primary key from model
      *
      * @param ModelInterface $model
-     *
      * @return string Empty string if no key was found
      */
     public function getPk(ModelInterface $model)
@@ -203,7 +188,6 @@ class Mapper implements MapperInterface
      * Insert model into db
      *
      * @param ModelInterface $model
-     *
      * @return int Number of affected rows
      */
     protected function insert(ModelInterface $model)
@@ -218,7 +202,6 @@ class Mapper implements MapperInterface
      * Update db using primary key as conditions clause.
      *
      * @param ModelInterface $model
-     *
      * @return int Number of affected rows
      */
     protected function update(ModelInterface $model)
@@ -235,7 +218,6 @@ class Mapper implements MapperInterface
      * Get iterator for pdoStatement
      *
      * @param pdoStatement $stmt
-     *
      * @return \Iterator
      */
     protected function getIterator(pdoStatement $stmt)
@@ -255,11 +237,8 @@ class Mapper implements MapperInterface
      *
      * @param ModelInterface $model
      * @param int $context Extract context
-     * @param array $use List of model properties to extract. Defaults to table
-     * native columns.
-     *
+     * @param array $use List of model properties to extract. Defaults to table native columns.
      * @return array
-     *
      * @throws Exception if extract context is invalid
      * @throws Exception if model extract does not return an array
      */
@@ -297,7 +276,6 @@ class Mapper implements MapperInterface
      *
      * @param ModelInterface $mod
      * @param array $use
-     *
      * @return ExpressionSet
      */
     protected function extractForCreate(ModelInterface $mod, array $use = null)
@@ -312,7 +290,6 @@ class Mapper implements MapperInterface
      *
      * @param ModelInterface $mod
      * @param array $use
-     *
      * @return ExpressionSet
      */
     protected function extractForRead(ModelInterface $mod, array $use = null)
@@ -327,7 +304,6 @@ class Mapper implements MapperInterface
      *
      * @param ModelInterface $mod
      * @param array $use
-     *
      * @return ExpressionSet
      */
     protected function extractForUpdate(ModelInterface $mod, array $use = null)
@@ -342,7 +318,6 @@ class Mapper implements MapperInterface
      *
      * @param ModelInterface $mod
      * @param array $use
-     *
      * @return ExpressionSet
      */
     protected function extractForDelete(ModelInterface $mod, array $use = null)
@@ -356,7 +331,6 @@ class Mapper implements MapperInterface
      * Convert array to ExpressionSet
      *
      * @param array $data
-     *
      * @return ExpressionSet
      */
     protected function arrayToExprSet(array $data)

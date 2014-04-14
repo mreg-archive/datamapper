@@ -1,5 +1,5 @@
 <?php
-namespace iio\datamapper\pdo;
+namespace datamapper\pdo;
 
 use pdo;
 
@@ -19,7 +19,7 @@ class IteratorTest extends \PHPUnit_Framework_TestCase
     public function testIterator()
     {
         $model = $this->getMock(
-            '\iio\datamapper\ModelInterface',
+            '\datamapper\ModelInterface',
             array('load', 'extract')
         );
 
@@ -46,7 +46,7 @@ class IteratorTest extends \PHPUnit_Framework_TestCase
 
         // Iterating over iterator yields two calls to model::load()
         foreach ($iterator as $key => $model) {
-            $this->assertInstanceOf('iio\datamapper\ModelInterface', $model);
+            $this->assertInstanceOf('datamapper\ModelInterface', $model);
             $this->assertTrue(is_numeric($key));
         }
 

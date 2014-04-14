@@ -1,14 +1,14 @@
 {
-    "name": "iio/datamapper",
+    "name": "datamapper/datamapper",
     "description": "Generic data mapper",
-    "keywords": ["mapper", "data mapper"],
-    "homepage": "https://github.com/iio/datamapper",
+    "keywords": ["mapper", "datamapper"],
+    "homepage": "https://github.com/hanneskod/datamapper",
     "type": "library",
-    "license": "MIT",
+    "license": "WTFPL",
     "authors": [
         {
             "name": "Hannes Forsgård",
-            "email": "hannes.forsgard@gmail.com"
+            "email": "hannes.forsgard@fripost.org"
         }
     ],
     "require": {
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "iio\\datamapper\\": "src/"
+            "datamapper\\": "src/"
         }
     }
 }

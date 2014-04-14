@@ -40,10 +40,10 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     // $pdo = ...
     
     // create table object
-    $table = new \iio\datamapper\pdo\table\Table('mytable', $pdo);
+    $table = new \datamapper\pdo\table\Table('mytable', $pdo);
 
     // add a naturally joined table
-    $join = new \iio\datamapper\pdo\table\Table('joinedtable', $pdo);
+    $join = new \datamapper\pdo\table\Table('joinedtable', $pdo);
     $table->addNaturalJoin($join);
 
     // create an instance of your model
@@ -51,7 +51,7 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
     $prototype = new MyModel();
     
     // create mapper
-    $mapper = new \iio\datamapper\pdo\Mapper($table, $prototype);
+    $mapper = new \datamapper\pdo\Mapper($table, $prototype);
 
     // select from db
     $iterator = $mapper->findMany(array('name' => 'foobar'));

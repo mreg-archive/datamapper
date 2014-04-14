@@ -1,10 +1,10 @@
 <?php
-namespace iio\datamapper\pdo;
+namespace datamapper\pdo;
 
-use iio\datamapper\ModelInterface;
-use iio\datamapper\tests\Model;
+use datamapper\ModelInterface;
+use datamapper\tests\Model;
+use datamapper\pdo\table\SqliteTable;
 use pdo;
-use iio\datamapper\pdo\table\SqliteTable;
 
 /**
  * Some random test on the complete pdo stack

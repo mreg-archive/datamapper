@@ -1,26 +1,22 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo\access
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo\access;
+namespace datamapper\pdo\access;
 
-use iio\datamapper\ModelInterface;
-use iio\datamapper\pdo\Mapper;
-use iio\datamapper\pdo\Expression;
+use datamapper\ModelInterface;
+use datamapper\pdo\Mapper;
+use datamapper\pdo\Expression;
 
 /**
- * pdo access control mapper object
+ * PDO access control mapper object
  *
- * @package datamapper\pdo\access
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class AcMapper extends Mapper implements AccessInterface
 {
@@ -41,7 +37,6 @@ class AcMapper extends Mapper implements AccessInterface
      *
      * @param string $uname Name of user
      * @param array $ugroups List of groups user belongs to
-     *
      * @return void
      */
     public function setUser($uname, array $ugroups = array())
@@ -56,9 +51,7 @@ class AcMapper extends Mapper implements AccessInterface
      *
      * @param ModelInterface $model
      * @param string $newOwner
-     *
      * @return int Number of affected rows
-     *
      * @throws AccessDeniedException if user is not root
      * @throws Exception if primary key model is not set
      */
@@ -97,9 +90,7 @@ class AcMapper extends Mapper implements AccessInterface
      *
      * @param ModelInterface $model
      * @param int $newMode
-     *
      * @return int Number of affected rows
-     *
      * @throws Exception if primary key model is not set
      */
     public function chmod(ModelInterface $model, $newMode)
@@ -141,9 +132,7 @@ class AcMapper extends Mapper implements AccessInterface
      *
      * @param ModelInterface $model
      * @param string $newGroup
-     *
      * @return int Number of affected rows
-     *
      * @throws Exception if primary key model is not set
      * @throws AccessDeniedException if is not a member of the new group
      */

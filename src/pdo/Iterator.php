@@ -1,19 +1,15 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo;
+namespace datamapper\pdo;
 
-use iio\datamapper\ModelInterface;
+use datamapper\ModelInterface;
 use pdo;
 use pdoStatement;
 
@@ -23,42 +19,32 @@ use pdoStatement;
  * pdoStatements are iterable as is. This class adds support for rewinds and
  * key retrieval. Also each result row is returned as a Model and not an array.
  *
- * @package datamapper\pdo
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class Iterator implements \Iterator
 {
     /**
-     * pdo statement to iterate
-     *
-     * @var pdoStatement
+     * @var pdoStatement PDO statement to iterate
      */
     private $stmt;
 
     /**
-     * True if pdoStatement points to the first row in result set
-     *
-     * @var bool
+     * @var bool True if pdoStatement points to the first row in result set
      */
     private $firstRow;
 
     /**
-     * Current row
-     *
-     * @var array
+     * @var array Current row
      */
     private $row;
 
     /**
-     * Name of row key
-     *
-     * @var string
+     * @var string Name of row key
      */
     private $key;
 
     /**
-     * Prototype model that will be cloned on current
-     *
-     * @var ModelInterface
+     * @var ModelInterface Prototype model that will be cloned on current
      */
     private $prototype;
 
@@ -67,7 +53,6 @@ class Iterator implements \Iterator
      *
      * @param pdoStatement $stmt
      * @param string $key Name of column to use as key
-     *
      * @param ModelInterface $proto Prototype model to clone on current
      */
     public function __construct(pdoStatement $stmt, $key, ModelInterface $proto)

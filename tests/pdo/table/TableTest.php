@@ -1,9 +1,9 @@
 <?php
-namespace iio\datamapper\pdo\table;
+namespace datamapper\pdo\table;
 
-use iio\datamapper\pdo\Search;
-use iio\datamapper\pdo\Expression;
-use iio\datamapper\pdo\ExpressionSet;
+use datamapper\pdo\Search;
+use datamapper\pdo\Expression;
+use datamapper\pdo\ExpressionSet;
 use pdo;
 
 class TableTest extends \PHPUnit_Framework_TestCase
@@ -37,7 +37,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\exception\PdoException
+     * @expectedException datamapper\exception\PdoException
      */
     public function testSetPrimaryKeyException()
     {
@@ -107,7 +107,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\exception\PdoException
+     * @expectedException datamapper\exception\PdoException
      */
     public function testGetColumnIdentifierException()
     {
@@ -154,7 +154,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\exception\PdoException
+     * @expectedException datamapper\exception\PdoException
      */
     public function testDeleteException()
     {
@@ -196,7 +196,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\exception\PdoException
+     * @expectedException datamapper\exception\PdoException
      */
     public function testUpdateEmptyDataException()
     {
@@ -205,7 +205,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\exception\PdoException
+     * @expectedException datamapper\exception\PdoException
      */
     public function testUpdateEmptyWhereException()
     {
@@ -219,7 +219,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\exception\PdoException
+     * @expectedException datamapper\exception\PdoException
      */
     public function testInsertEmptyValuesException()
     {

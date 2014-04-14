@@ -1,26 +1,22 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo\table
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo\table;
+namespace datamapper\pdo\table;
 
 /**
- * pdo table for use with SQLite
+ * PDO table for use with SQLite
  *
  * Extends Table by adding SQLite reverse engineering capabilities. If you do
  * not need to reverse egnigeer column names and primay keys of tables use
  * the regular Table class instead.
  *
- * @package datamapper\pdo\table
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class SqliteTable extends Table
 {

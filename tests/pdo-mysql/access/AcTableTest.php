@@ -1,15 +1,15 @@
 <?php
-namespace iio\datamapper\pdo\access;
+namespace datamapper\pdo\access;
 
-use iio\datamapper\pdo\Search;
-use iio\datamapper\pdo\ExpressionSet;
+use datamapper\pdo\Search;
+use datamapper\pdo\ExpressionSet;
 
 class AcTableTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsAllowedRead()
     {
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array()
         );
 
@@ -34,7 +34,7 @@ class AcTableTest extends \PHPUnit_Framework_TestCase
     public function testIsAllowedWrite()
     {
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array()
         );
 
@@ -59,7 +59,7 @@ class AcTableTest extends \PHPUnit_Framework_TestCase
     public function testIsAllowedExecute()
     {
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array()
         );
 
@@ -84,7 +84,7 @@ class AcTableTest extends \PHPUnit_Framework_TestCase
     public function testRecursiveIsAllowed()
     {
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array()
         );
 
@@ -102,12 +102,12 @@ class AcTableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\AccessDeniedException
+     * @expectedException datamapper\pdo\access\AccessDeniedException
      */
     public function testSelectTableAccessException()
     {
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array()
         );
 
@@ -116,12 +116,12 @@ class AcTableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\AccessDeniedException
+     * @expectedException datamapper\pdo\access\AccessDeniedException
      */
     public function testDeleteTableAccessException()
     {
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array()
         );
 
@@ -130,12 +130,12 @@ class AcTableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\AccessDeniedException
+     * @expectedException datamapper\pdo\access\AccessDeniedException
      */
     public function testInsertTableAccessException()
     {
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array()
         );
 
@@ -144,12 +144,12 @@ class AcTableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\AccessDeniedException
+     * @expectedException datamapper\pdo\access\AccessDeniedException
      */
     public function testUpdateTableAccessException()
     {
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array()
         );
 
@@ -168,7 +168,7 @@ class AcTableTest extends \PHPUnit_Framework_TestCase
              ->method('execute');
 
         $pdo = $this->getMock(
-            '\iio\datamapper\tests\MockPDO',
+            '\datamapper\tests\MockPDO',
             array('prepare')
         );
 

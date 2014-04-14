@@ -1,59 +1,45 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo;
+namespace datamapper\pdo;
 
-use iio\datamapper\SearchInterface;
+use datamapper\SearchInterface;
 
 /**
- * pdo search object
+ * PDO search object
  *
- * @package datamapper\pdo
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class Search implements SearchInterface
 {
     /**
-     * Order by direction
-     *
-     * @var string
+     * @var string Order by direction
      */
     private $dir = 'ASC';
 
     /**
-     * Order by column
-     *
-     * @var string
+     * @var string Order by column
      */
     private $orderBy = '';
 
     /**
-     * Return set start index
-     *
-     * @var int
+     * @var int Return set start index
      */
     private $startIndex;
 
     /**
-     * Return set limit
-     *
-     * @var int
+     * @var int Return set limit
      */
     private $limit;
 
     /**
-     * List of columns to select
-     *
-     * @var array
+     * @var array List of columns to select
      */
     private $columns = array();
 
@@ -91,7 +77,6 @@ class Search implements SearchInterface
      * Set order by column
      *
      * @param string $orderBy
-     *
      * @return void
      */
     public function setOrderBy($orderBy)
@@ -114,7 +99,6 @@ class Search implements SearchInterface
      * Set result set start index
      *
      * @param int $startIndex
-     *
      * @return void
      */
     public function setStartIndex($startIndex)
@@ -138,7 +122,6 @@ class Search implements SearchInterface
      * Set result set limit
      *
      * @param int $limit
-     *
      * @return void
      */
     public function setLimit($limit)
@@ -162,7 +145,6 @@ class Search implements SearchInterface
      * Get sql limit clause
      *
      * @return string
-     *
      * @return void
      */
     public function getLimitClause()
@@ -182,7 +164,6 @@ class Search implements SearchInterface
      * Add select column
      *
      * @param string $column
-     *
      * @return void
      */
     public function addColumn($column)

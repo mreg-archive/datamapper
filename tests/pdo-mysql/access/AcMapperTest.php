@@ -1,16 +1,16 @@
 <?php
-namespace iio\datamapper\pdo\access;
+namespace datamapper\pdo\access;
 
-use iio\datamapper\pdo\ExpressionSet;
-use iio\datamapper\pdo\Expression;
-use iio\datamapper\tests\Model;
+use datamapper\pdo\ExpressionSet;
+use datamapper\pdo\Expression;
+use datamapper\tests\Model;
 
 class AcMapperTest extends \PHPUnit_Framework_TestCase
 {
     public function testSetUser()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('setUser'),
             array(),
             '',
@@ -26,12 +26,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\AccessDeniedException
+     * @expectedException datamapper\pdo\access\AccessDeniedException
      */
     public function testChownNoRootException()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('userIsRoot'),
             array(),
             '',
@@ -47,12 +47,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\Exception
+     * @expectedException datamapper\pdo\access\Exception
      */
     public function testChownNoPrimaryKeyException()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('userIsRoot'),
             array(),
             '',
@@ -73,7 +73,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     public function testChown()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('userIsRoot', 'update'),
             array(),
             '',
@@ -121,12 +121,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\Exception
+     * @expectedException datamapper\pdo\access\Exception
      */
     public function testChmodNoPrimaryKeyException()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
@@ -144,7 +144,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     public function testChmod()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('userIsRoot', 'update', 'getUser'),
             array(),
             '',
@@ -197,12 +197,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\Exception
+     * @expectedException datamapper\pdo\access\Exception
      */
     public function testChgrpNoPrimaryKeyException()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
@@ -218,12 +218,12 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException iio\datamapper\pdo\access\AccessDeniedException
+     * @expectedException datamapper\pdo\access\AccessDeniedException
      */
     public function testChgrpNotInGroupException()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('getPrimaryKey'),
             array(),
             '',
@@ -245,7 +245,7 @@ class AcMapperTest extends \PHPUnit_Framework_TestCase
     public function testChgrp()
     {
         $table = $this->getMock(
-            'iio\datamapper\pdo\access\AcTable',
+            'datamapper\pdo\access\AcTable',
             array('userIsRoot', 'update', 'getUser', 'getUserGroups'),
             array(),
             '',

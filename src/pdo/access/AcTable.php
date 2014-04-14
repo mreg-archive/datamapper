@@ -1,64 +1,50 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo\access
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo\access;
+namespace datamapper\pdo\access;
 
-use iio\datamapper\pdo\table\MysqlTable;
-use iio\datamapper\pdo\Search;
-use iio\datamapper\pdo\ExpressionSet;
-use iio\datamapper\pdo\Expression;
+use datamapper\pdo\table\MysqlTable;
+use datamapper\pdo\Search;
+use datamapper\pdo\ExpressionSet;
+use datamapper\pdo\Expression;
 use pdo;
 use pdoStatement;
 
 /**
- * pdo access control table object
+ * PDO access control table object
  *
- * @package datamapper\pdo\access
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class AcTable extends MysqlTable implements AccessInterface
 {
     /**
-     * Name of owner of table
-     *
-     * @var string
+     * @var string Name of owner of table
      */
     private $owner;
 
     /**
-     * Name of group of table
-     *
-     * @var string
+     * @var string Name of group of table
      */
     private $group;
 
     /**
-     * Access mode of table
-     *
-     * @var int
+     * @var int Access mode of table
      */
     private $mode;
 
     /**
-     * Name of user
-     *
-     * @var string
+     * @var string Name of user
      */
     private $uname = '';
 
     /**
-     * List of groups user belongs to
-     *
-     * @var array
+     * @var array List of groups user belongs to
      */
     private $ugroups = array();
 
@@ -94,9 +80,7 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param Search $search
      * @param ExpressionSet $conditions
-     *
      * @return pdoStatement
-     *
      * @throws AccessDeniedException if user does not have access
      */
     public function select(Search $search, ExpressionSet $conditions = null)
@@ -132,9 +116,7 @@ class AcTable extends MysqlTable implements AccessInterface
      * Delete records from db that matches conditions
      *
      * @param ExpressionSet $conditions
-     *
      * @return pdoStatement
-     *
      * @throws AccessDeniedException if user does not have access
      */
     public function delete(ExpressionSet $conditions)
@@ -165,9 +147,7 @@ class AcTable extends MysqlTable implements AccessInterface
      * Insert values into db
      *
      * @param ExpressionSet $data
-     *
      * @return pdoStatement
-     *
      * @throws AccessDeniedException if user does not have access
      */
     public function insert(ExpressionSet $data)
@@ -200,9 +180,7 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param ExpressionSet $data
      * @param ExpressionSet $conditions
-     *
      * @return pdoStatement
-     *
      * @throws AccessDeniedException if user does not have access
      */
     public function update(ExpressionSet $data, ExpressionSet $conditions)
@@ -264,7 +242,6 @@ class AcTable extends MysqlTable implements AccessInterface
      *
      * @param string $uname Name of user
      * @param array $ugroups List of groups user belongs to
-     *
      * @return void
      */
     public function setUser($uname, array $ugroups = array())
@@ -338,7 +315,6 @@ class AcTable extends MysqlTable implements AccessInterface
      * Check if user is allowed to perform action on table
      *
      * @param string $action 'r', 'w' or 'x'
-     *
      * @return bool
      */
     private function isAllowedTable($action)
@@ -384,16 +360,13 @@ class AcTable extends MysqlTable implements AccessInterface
      * statement was a select). If statement is empty valuate if this is due to
      * access restrictions. If so throw exception. Else return statement as is.
      *
-     * @param string $verb Action description to be inserted in exception
-     * message
+     * @param string $verb Action description to be inserted in exception message
      * @param pdoStatement $stmt The statement to evaluate
      * @param ExpressionSet $conditions Conditions used when creating statement
      * @param Search $search Search clause used when creating statement, if any
-     *
      * @return pdoStatement
-     *
      * @throws AccessDeniedException if statement is empty due to access
-     * restrictions att row level
+     *     restrictions att row level
      */
     private function forwardValidStmt(
         $verb,

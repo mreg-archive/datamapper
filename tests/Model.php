@@ -1,7 +1,7 @@
 <?php
-namespace iio\datamapper\tests;
+namespace datamapper\tests;
 
-class Model implements \iio\datamapper\ModelInterface
+class Model implements \datamapper\ModelInterface
 {
 
     public function load(array $data)

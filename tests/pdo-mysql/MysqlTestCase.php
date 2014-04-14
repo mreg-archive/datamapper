@@ -1,5 +1,5 @@
 <?php
-namespace iio\datamapper;
+namespace datamapper;
 
 /**
  * Database connection constants are definied in phpunit.xml

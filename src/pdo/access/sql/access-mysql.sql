@@ -3,16 +3,13 @@
  * access-mysql.sql: A collection of SQL functions to help manage user access
  * Requires MySQL >= 5.0.10
  *
- * This file is part of the AstirMapper package
- *
- * Copyright (c) 2011-2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- *
- * @package AstirMapper
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
+ * 
+ * author: Hannes Forsgård <hannes.forsgard@fripost.org>
  *
  */
 DELIMITER //

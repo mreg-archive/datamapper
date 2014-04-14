@@ -1,5 +1,5 @@
 <?php
-namespace iio\datamapper\tests;
+namespace datamapper\tests;
 
 class MockPDO extends \PDO
 {

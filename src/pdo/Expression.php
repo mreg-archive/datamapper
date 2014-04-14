@@ -1,31 +1,25 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo;
+namespace datamapper\pdo;
 
-use iio\datamapper\exception\PdoException;
+use datamapper\exception\PdoException;
 
 /**
  * Internal class for modeling SQL expressions
  *
- * @package datamapper\pdo
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class Expression
 {
     /**
-     * Map of valid operators and inversions
-     *
-     * @var array
+     * @var array Map of valid operators and inversions
      */
     static private $operators = array(
         '<=>' => '!=',
@@ -47,37 +41,27 @@ class Expression
     );
 
     /**
-     * The name of this expression
-     *
-     * @var string
+     * @var string The name of this expression
      */
     private $name;
 
     /**
-     * The value of this expression
-     *
-     * @var string
+     * @var string The value of this expression
      */
     private $value;
 
     /**
-     * Expression operator
-     *
-     * @var string
+     * @var string Expression operator
      */
     private $operator;
 
     /**
-     * Flag if expression value should be escaped
-     *
-     * @var bool
+     * @var bool Flag if expression value should be escaped
      */
     private $escapeValue = true;
 
     /**
-     * Flag if expression name should be escaped
-     *
-     * @var bool
+     * @var bool Flag if expression name should be escaped
      */
     private $escapeName = true;
 
@@ -97,7 +81,6 @@ class Expression
      * @param string $name The name of the expression
      * @param mixed $value
      * @param string $operator Defaults to '='
-     *
      * @throws PdoException if unable to value object to string
      * @throws PdoException if operator is not a valid
      */
@@ -143,7 +126,6 @@ class Expression
      * Set if expression value should be escaped
      *
      * @param bool $flag
-     *
      * @return void
      */
     public function setEscapeValue($flag)
@@ -156,7 +138,6 @@ class Expression
      * Set if expression name should be escaped
      *
      * @param bool $flag
-     *
      * @return void
      */
     public function setEscapeName($flag)

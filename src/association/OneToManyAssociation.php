@@ -1,99 +1,52 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\association
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\association;
-
-/*
-    field: id       => field: parentId
-    value: 'member' => field: parentTable
-
-    detta ska översättas till en whereclause i child..
-        hämta parent field id
-            sätt det till child field parentId
-        hämta värde 'member'
-            sätt det till child field parentTable
-
-    vad händer som jag stoppar in mapper och hela baletten här??
-        när jag laddar den till mapper kan mapper fråga vilka fält jag vill ha
-            för att bygga relation
-
-    sedan kan mapper säga ->
-        foreach ($this->_associations as $assoc) {
-            $assoc->findAssociatedModels(array $valuesNeeded...);
-        }
-
-    callback för att processa hämtade object ska laddas till master...
-
-    hur vill jag hämta associerade object?
-        vill jag använda en metod på mapper
-            getAddresses
-        eller vill jag att de ska laddas in automatiskt när jag gör en read??
-
-        jag behöver att de går att hämta som kompletta object för redigering i
-            jsclient
-            men det går ju hur som helst, skillnaden är bara om de ska hämtas
-                direkt
-
-    hur ska det gå till att spara, skapa nya adresser osv???
-        om adresser hämtas direkt och jag skapar en array av object snarare än
-        sparar en iterator så kan jag hämta objecten
-            arbeta på dem
-            och sedan spara dem igen
-        i så fall så ska de sparas när jag sparar master model
-
-        när jag lägger till nya så är det kanske att jag bara skriver dem till
-            array
-            om när jag sparar så ska den gå igenom alla och se till att de har
-                rätt conditions
-
-        att ta bort är helt enkelt att ta bort med conditions...
-
-    gör jag på detta sätt så behöver jag inte det här konstiga med
-        interfaceMethods längre...
-*/
+namespace datamapper\association;
 
 /**
- * One-to-many association
- *
- * @package datamapper\association
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
+ * @todo Add support for inter-mapper-relations. Create a Relation class for
+ *     managing search conditions when working with the related mapper.
+ *     Support for one-to-one and one-to-many using `hasOne` and `hasMany`
+ *     // Load an one-to-many relation
+ *     $mapper->hasMany('Address', $relationObj, $addressMapper);
+ *     // Get all addresses
+ *     $iterator = $mapper->getAddressIterator($model);
+ *     // Insert or update an address
+ *     $mapper->saveAddress($model, $address);
+ *     // Remove relation to address, but do not delete address from db
+ *     $memberMapper->disownAddress($member, $address);
+ *     // Remove relation and remove address from db
+ *     $memberMapper->purgeAddress($member, $address);
+ *     // Same as above, but now getAddress returns a model, not an iterator
+ *     $mapper->hasOne('Address', $relationObj, $addressMapper);
+ *     $address = $mapper->getAddress($model);
  */
 class OneToManyAssociation
 {
     /**
-     * List of dynamic conditions
-     *
-     * @var array
+     * @var array List of dynamic conditions
      */
     private $dynamicConds = array();
 
     /**
-     * List of static conditions
-     *
-     * @var array
+     * @var array List of static conditions
      */
     private $staticConds = array();
 
     /**
-     * Associated mapper
-     *
-     * @var Mapper
+     * @var Mapper Associated mapper
      */
     private $mapper;
 
     /**
-     * List of method names this association responds to
-     *
-     * @var array
+     * @var array List of method names this association responds to
      */
     private $interfaceMethods;
 
@@ -106,9 +59,7 @@ class OneToManyAssociation
      * 'saveAddress'.
      *
      * @param string $name Name of this association.
-     *
      * @param string $plural
-     *
      * @param Mapper $associatedMapper
      */
     public function __construct($name, $plural, Mapper $associatedMapper)
@@ -127,7 +78,6 @@ class OneToManyAssociation
      * Check if interface method exists
      *
      * @param string $methodName
-     *
      * @return bool
      */
     public function interfaceMethodExists($methodName)
@@ -139,9 +89,7 @@ class OneToManyAssociation
      * Call interface method with param
      *
      * @param string $methodName
-     *
      * @param mixed $param
-     *
      * @return mixed
      */
     public function interfaceMethodCall($methodName, $param)
@@ -159,7 +107,6 @@ class OneToManyAssociation
      * Read associated models using master attributes
      *
      * @param array $masterAttributes
-     *
      * @return \Iterator
      */
     public function findAssociatedModels(array $masterAttributes)
@@ -176,9 +123,7 @@ class OneToManyAssociation
      * attribute in associated model
      *
      * @param string $masterAttr Name of attribute in master model
-     *
      * @param string $associatedAttr Name of attribute in associated model
-     *
      * @return void
      */
     public function addCondition($masterAttr, $associatedAttr)
@@ -194,9 +139,7 @@ class OneToManyAssociation
      * A static condition is met when value equals attribute in associated model
      *
      * @param mixed $value Anything that is convertable to string
-     *
      * @param string $associatedAttr Name of attribute in associated model
-     *
      * @return void
      */
     public function addStaticCondition($value, $associatedAttr)
@@ -219,9 +162,7 @@ class OneToManyAssociation
      * Build array of conditions from master attributes
      *
      * @param array $masterAttributes
-     *
      * @return array
-     *
      * @throws Exception if a required master attribute is missing     
      */
     protected function buildConditions(array $masterAttributes)

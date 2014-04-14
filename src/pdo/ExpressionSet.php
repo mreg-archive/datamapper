@@ -1,29 +1,29 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo;
+namespace datamapper\pdo;
 
 /**
  * Internal class for organizing expressions into substatements
  *
- * @package datamapper\pdo
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
+ * @todo ExpressionSet has an unnecesary limitation that expressions can not
+ *     share titels. Removing this enables more dynamic queries.. For example:
+ *     $conditions = array(
+ *         new Expression('date', $from->getTimestamp(), '>'),
+ *         new Expression('date', $to->getTimestamp(), '<=')
+ *     )
  */
 class ExpressionSet
 {
     /**
-     * Array of Expressions
-     *
-     * @var array
+     * @var array Array of Expressions
      */
     private $expressions = array();
 
@@ -51,7 +51,6 @@ class ExpressionSet
      * Add Expression to collection
      *
      * @param Expression $expr
-     *
      * @return void
      */
     public function addExpression(Expression $expr)
@@ -74,7 +73,6 @@ class ExpressionSet
      * Remove expression by name
      *
      * @param string $name
-     *
      * @return void
      */
     public function removeExpression($name)
@@ -86,7 +84,6 @@ class ExpressionSet
      * Check if expression exists
      *
      * @param string $name
-     *
      * @return bool
      */
     public function isExpression($name)
@@ -98,7 +95,6 @@ class ExpressionSet
      * Get expression by name
      *
      * @param string $name
-     *
      * @return Expression If no expression is found FALSE is returned
      */
     public function getExpression($name)

@@ -1,23 +1,17 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\exception
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\exception;
+namespace datamapper\exception;
 
 /**
- * Data not found exception
- *
- * @package datamapper\exception
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
-class DataNotFoundException extends \iio\datamapper\Exception
+class DataNotFoundException extends \datamapper\Exception
 {
 }

@@ -1,24 +1,20 @@
 <?php
 /**
- * This file is part of the datamapper package
- *
- * Copyright (c) 2012 Hannes Forsgård
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Hannes Forsgård <hannes.forsgard@gmail.com>
- * @package datamapper\pdo\access
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
  */
 
-namespace iio\datamapper\pdo\access;
+namespace datamapper\pdo\access;
 
-use iio\datamapper\pdo\Expression;
+use datamapper\pdo\Expression;
 
 /**
  * Expression for row based access control
  *
- * @package datamapper\pdo\access
+ * @author Hannes Forsgård <hannes.forsgard@fripost.org>
  */
 class Mode extends Expression implements AccessInterface
 {
@@ -29,7 +25,6 @@ class Mode extends Expression implements AccessInterface
      * @param string $table Name of table access is being checked on
      * @param string $uname Name of user
      * @param array $ugroups List of groups user belongs to
-     *
      * @throws Exception if action is invalid
      */
     public function __construct($action, $table, $uname, array $ugroups)
