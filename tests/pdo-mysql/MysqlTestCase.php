@@ -10,7 +10,7 @@ class MysqlTestCase extends \PHPUnit_Framework_TestCase
     {
         $pdo = new \pdo('mysql:host=localhost', DB_USER, DB_PSWD);
         $pdo->query('CREATE DATABASE ' . DB_NAME);
-        $pathToSql = realpath(__DIR__ . "/../../../src/iio/datamapper/pdo/access/sql/access-mysql.sql");
+        $pathToSql = realpath(__DIR__ . "/../../src/iio/datamapper/pdo/access/sql/access-mysql.sql");
         $command = "mysql -u" . DB_USER . " -p" . DB_PSWD . ' ' . DB_NAME . " < " . $pathToSql;
         exec($command);
     }

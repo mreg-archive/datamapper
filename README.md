@@ -1,15 +1,7 @@
 datamapper
 ==========
 
-PHP data mapper
-
 Implementation of the data mapper design pattern.
-
-Supports multiple relational datbases through PDO.
-
-Currently there is no support for NoSQL databases. Support for MongoDB is
-planed.
-
 
 ## The prototype design pattern and cloning
 
@@ -78,22 +70,11 @@ For more information see the [PHP documentation](http://php.net/manual/en/langua
 
 ## Testing
 
-The testsuite uses the composer autoloader. To run tests from project root dir:
+To run the phpunit testsuite from the project root dir simply type
 
-    curl -s http://getcomposer.org/installer | php
-    php composer.phar install
-    cd tests
-    phpunit
+    $ phpunit
 
-If you are using Phing this can ba automated using
-
-    phing test
-
-Or to do a complete build (also triggers CodeSniffer and other checks)
-
-    phing
-
-To test against MySQL add your server credentials to `phpunit.xml`. To only test
+To test against MySQL add your server credentials to `phpunit.xml.dist`. To only test
 the parts that don't require MySQL specify testpath.
 
-    phpunit unit/pdo
+    phpunit tests/pdo
